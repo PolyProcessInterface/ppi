@@ -1,10 +1,12 @@
-# Java files
+# Maven build
 *.class
-/.classpath
-/.project
-/.settings
 /target
 
 
 # IDE files
-.vscode
+/.classpath
+/.project
+/.settings
+/.vscode
+/.idea
+ppi.iml

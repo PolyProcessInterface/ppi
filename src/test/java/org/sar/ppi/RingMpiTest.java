@@ -15,6 +15,7 @@ public class RingMpiTest
     @Test
     public void shouldAnswerWithTrue()
     {
+        RingMpi.main(new String[0]);
         assertTrue( true );
     }
 }
