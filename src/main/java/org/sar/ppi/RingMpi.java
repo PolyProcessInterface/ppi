@@ -1,9 +1,11 @@
+package org.sar.ppi;
+
 import mpi.Comm;
 import mpi.MPI;
 import mpi.MPIException;
 import mpi.Status;
 
-public class Main {
+public class RingMpi {
 
     public static void main(String[] args) {
         try {

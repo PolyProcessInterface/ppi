@@ -8,7 +8,7 @@
 wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.2.tar.gz
 tar zxvf openmpi-4.0.2.tar.gz
 cd openmpi-4.0.2
-./configure --enable-mpi-java --with-jdk-bindir=/usr/lib/jvm/java-8-openjdk-amd64/bin/ --with-jdk-headers=/usr/lib/jvm/java-8-openjdk-amd64/include --prefix=/usr/local
+./configure --enable-mpi-java --with-jdk-bindir=$JAVA_HOME/bin/ --with-jdk-headers=$JAVA_HOME/include
 make -j2
 sudo make install
 sudo ldconfig
@@ -53,8 +53,8 @@ public class Main {
 
 ### compile
 
-    javac -cp /usr/local/lib/mpi.jar Main.java
+    mvn install
 
 ### run
 
-    mpirun --oversubscribe -np 6 java Main
+    ./mpirun 6 RingMpi
