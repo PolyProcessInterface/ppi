@@ -11,6 +11,7 @@ cd openmpi-4.0.2
 ./configure --enable-mpi-java --with-jdk-bindir=/usr/lib/jvm/java-8-openjdk-amd64/bin/ --with-jdk-headers=/usr/lib/jvm/java-8-openjdk-amd64/include --prefix=/usr/local
 make -j2
 sudo make install
+sudo ldconfig
 cd -
 ```
 
