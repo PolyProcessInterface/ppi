@@ -45,7 +45,8 @@
         <configuration>
           <argLine>-Djava.library.path=${java.library.path}</argLine>
         </configuration>
-        </plugin>
+      </plugin>
     </plugins>
   </build>
+
 </project>
