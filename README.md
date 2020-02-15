@@ -57,4 +57,14 @@ public class Main {
 
 ### run
 
-    ./mpirun 6 RingMpi
+    ./mpirun.sh 6 RingMpi
+
+## Peersim
+
+### Install
+
+```bash
+wget http://downloads.sourceforge.net/project/peersim/peersim-1.0.5.zip
+unzip peersim-1.0.5.zip
+sudo cp peersim-1.0.5/*.jar /usr/local/lib
+```

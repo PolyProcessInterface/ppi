@@ -1,4 +1,4 @@
-package message;
+package org.sar.ppi;
 
 import peersim.config.Configuration;
 import peersim.core.Control;

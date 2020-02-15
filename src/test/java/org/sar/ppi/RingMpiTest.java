@@ -16,7 +16,7 @@ public class RingMpiTest {
      * Quite dirty for now but at least it can run mpi.
      */
     @Test
-    public void shouldAnswerWithTrue() throws IOException {
+    public void runThroughScript() throws IOException {
         String s = null;
         Process p = Runtime.getRuntime().exec("./mpirun.sh 6 RingMpi");
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
