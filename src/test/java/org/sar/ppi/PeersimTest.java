@@ -10,12 +10,12 @@ import peersim.Simulator;
  * Unit test for simple App.
  */
 public class PeersimTest {
-    /**
-     * Run Peersim.
-     */
-    @Test
-    public void runPeersim() {
-        Simulator.main(new String[] { "message.conf" });
-        assertTrue(true);
-    }
+	/**
+	 * Run Peersim.
+	 */
+	@Test
+	public void runPeersim() {
+		Simulator.main(new String[] { "message.conf" });
+		assertTrue(true);
+	}
 }

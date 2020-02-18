@@ -7,17 +7,17 @@ import mpi.MPIException;
  */
 public class PpiException extends RuntimeException {
 
-    /**
-     * Version
-     */
-    private static final long serialVersionUID = 1L;
+	/**
+	 * Version
+	 */
+	private static final long serialVersionUID = 1L;
 
-    public PpiException(MPIException e) {
-        super(e);
-    }
+	public PpiException(MPIException e) {
+		super(e);
+	}
 
-    public PpiException(String msg, MPIException e) {
-        super(msg, e);
-    }
+	public PpiException(String msg, MPIException e) {
+		super(msg, e);
+	}
 
 }

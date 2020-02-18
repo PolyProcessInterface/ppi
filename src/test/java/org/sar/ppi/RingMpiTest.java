@@ -12,24 +12,24 @@ import org.junit.Test;
  * Unit test for simple App.
  */
 public class RingMpiTest {
-    /**
-     * Quite dirty for now but at least it can run mpi.
-     */
-    @Test
-    public void runThroughScript() throws IOException {
-        String s = null;
-        Process p = Runtime.getRuntime().exec("./mpiruntest.sh 6 RingMpi");
-        BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+	/**
+	 * Quite dirty for now but at least it can run mpi.
+	 */
+	@Test
+	public void runThroughScript() throws IOException {
+		String s = null;
+		Process p = Runtime.getRuntime().exec("./mpiruntest.sh 6 RingMpi");
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
-        // read the output from the command
-        while ((s = stdInput.readLine()) != null) {
-            System.out.println(s);
-        }
-        // read any errors from the attempted command
-        while ((s = stdError.readLine()) != null) {
-            System.err.println(s);
-        }
-        assertTrue(true);
-    }
+		// read the output from the command
+		while ((s = stdInput.readLine()) != null) {
+			System.out.println(s);
+		}
+		// read any errors from the attempted command
+		while ((s = stdError.readLine()) != null) {
+			System.err.println(s);
+		}
+		assertTrue(true);
+	}
 }
