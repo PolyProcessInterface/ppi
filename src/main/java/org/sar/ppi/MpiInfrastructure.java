@@ -19,11 +19,11 @@ public class MpiInfrastructure extends Infrastructure {
         try {
             MPI.Init(args);
             Comm comm = MPI.COMM_WORLD;
-            currentNode = new Node(comm.getRank());
+            currentNode = new MpiNode(comm.getRank());
             while (true) {
                 Object buf = new Object();
                 Status status = comm.recv(buf, 1, MPI.INT, MPI.ANY_SOURCE, MPI.ANY_TAG);
-                protocol.processMessage(new Node(status.getSource()), buf);
+                protocol.processMessage(new MpiNode(status.getSource()), buf);
             }
         } catch (MPIException e) {
             throw new PpiException("Init fail.", e);
