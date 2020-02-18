@@ -5,4 +5,5 @@ package org.sar.ppi;
  */
 public interface Node {
 
+    public int getId();
 }

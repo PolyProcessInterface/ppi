@@ -10,4 +10,9 @@ public class MpiNode implements Node{
         this.id = id;
     }
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
 }
