@@ -1,8 +1,8 @@
 # Parallel Programing Interface
 
-## OPENMI java
+## Dependencies
 
-### Install
+### OPENMI java
 
 ```bash
 wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.2.tar.gz
@@ -15,7 +15,15 @@ sudo ldconfig
 cd -
 ```
 
-### Ring implementation
+### Peersim
+
+```bash
+wget http://downloads.sourceforge.net/project/peersim/peersim-1.0.5.zip
+unzip peersim-1.0.5.zip
+sudo cp peersim-1.0.5/*.jar /usr/local/lib
+```
+
+## MPI Ring implementation
 
 ```java
 import mpi.Comm;
@@ -57,14 +65,4 @@ public class Main {
 
 ### run
 
-    ./mpirun.sh 6 RingMpi
-
-## Peersim
-
-### Install
-
-```bash
-wget http://downloads.sourceforge.net/project/peersim/peersim-1.0.5.zip
-unzip peersim-1.0.5.zip
-sudo cp peersim-1.0.5/*.jar /usr/local/lib
-```
+    ./mpiruntest.sh 6 RingMpi

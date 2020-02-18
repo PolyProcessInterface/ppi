@@ -18,7 +18,7 @@ public class RingMpiTest {
     @Test
     public void runThroughScript() throws IOException {
         String s = null;
-        Process p = Runtime.getRuntime().exec("./mpirun.sh 6 RingMpi");
+        Process p = Runtime.getRuntime().exec("./mpiruntest.sh 6 RingMpi");
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
         BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 

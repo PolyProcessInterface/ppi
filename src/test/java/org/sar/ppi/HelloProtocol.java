@@ -69,9 +69,9 @@ public class HelloProtocol implements EDProtocol {
 			direBonjour(host);
 		}
 	}
+
 	@Override
 	public void processEvent(Node host, int pid, Object event) {
-		// TODO Auto-generated method stub
 		if(pid!=my_pid) throw new IllegalArgumentException("Incoherence sur l'id de protocole");
 		if(event instanceof HelloMessage) {
 			receiveHelloMessage(host,(HelloMessage) event);

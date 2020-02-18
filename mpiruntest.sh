@@ -10,5 +10,5 @@ nb_proc=$1
 shift
 class=$1
 shift
-cd target/classes
+cd target/test-classes
 mpirun --oversubscribe -np $nb_proc $* java org/sar/ppi/$class
