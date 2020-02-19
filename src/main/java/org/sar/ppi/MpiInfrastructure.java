@@ -26,7 +26,7 @@ public class MpiInfrastructure extends Infrastructure {
 			protocol.startNode(currentNode);
 			while (running) {
 				Object buf = new Object();
-				Status status = comm.recv(buf, 1, MPI.INT, MPI.ANY_SOURCE, MPI.ANY_TAG);
+				Status status = comm.recv(buf, 0, MPI.INT, MPI.ANY_SOURCE, MPI.ANY_TAG);
 				protocol.processMessage(new MpiNode(status.getSource()), buf);
 			}
 			MPI.Finalize();
@@ -40,7 +40,7 @@ public class MpiInfrastructure extends Infrastructure {
 		//juste pour faire des teste
 		try {
 			//pour le message y a MPI.BYTE qui peux etre intéressant
-			comm.send(message,1,MPI.INT,dest.getId(),MPI.ANY_TAG);
+			comm.send(null,0,MPI.INT,dest.getId(), 1);
 		} catch (MPIException e) {
 			throw new PpiException("Send to"+dest.getId()+"failed",e);
 		}
