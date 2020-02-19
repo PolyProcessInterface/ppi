@@ -67,7 +67,7 @@ public class MpiInfrastructure extends Infrastructure {
 
 	@Override
 	public Node getNode(int id) {
-		return ( id<size() ? new MpiNode(id) : null);
+		return new MpiNode(id);
 	}
 
 	@Override
