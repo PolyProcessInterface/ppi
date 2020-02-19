@@ -1,6 +1,39 @@
 # Parallel Programing Interface
 
-## Dependencies
+A high level Java interface to develop distributed protocols.
+
+## Example
+
+```java
+import org.sar.ppi.Protocol;
+
+public class HelloProtocol extends Protocol {
+
+	@Override
+	public void processMessage(Node src, Object message) {
+		Node host = infra.getCurrentNode();
+		System.out.println("" + host.getId() + " Received hello from "  + src.getId());
+		if (host.getId() != 0) {
+			infra.send(infra.getNode((host.getId() + 1) % infra.size()), 0);
+		}
+		infra.exit();
+	}
+
+	@Override
+	public void startNode(Node node) {
+		if (node.getId() == 0) {
+			infra.send(infra.getNode(1), 0);
+		}
+	}
+}
+```
+
+## Requirement
+
+- Java >= 1.8
+- [Maven](https://maven.apache.org/)
+
+## Install dependencies
 
 ### OPENMI java
 
@@ -23,46 +56,13 @@ unzip peersim-1.0.5.zip
 sudo cp peersim-1.0.5/*.jar /usr/local/lib
 ```
 
-## MPI Ring implementation
+## Compile
 
-```java
-import mpi.Comm;
-import mpi.MPI;
-import mpi.MPIException;
-import mpi.Status;
+    mvn compile
 
-public class Main {
+If you installed the libraries in a different location you can use the options
+`-Dmpi.path=/your/prefix/lib` and `-Dpeersim.path=/your/prefix/lib`.
 
-    public static void main(String[] args) {
-        try {
-            MPI.Init(args);
-            Comm comm = MPI.COMM_WORLD;
-            int size = comm.getSize();
-            int rank = comm.getRank();
-            int neighbour = (rank + 1) % size;
-            int hellotag = 1;
-            Integer msg = 0;
-            Status status;
-            if (rank == 0) {
-                comm.send(msg, 0, MPI.INT, neighbour, hellotag);
-                status = comm.recv(msg, 0, MPI.INT, MPI.ANY_SOURCE, hellotag);
-            } else {
-                status = comm.recv(msg, 0, MPI.INT, MPI.ANY_SOURCE, hellotag);
-                comm.send(msg, 0, MPI.INT, neighbour, hellotag);
-            }
-            System.out.println(rank + " Received hello from " + status.getSource());
-            MPI.Finalize();
-        } catch (MPIException e) {
-            e.printStackTrace();
-        }
-    }
-}
-```
+## Run tests
 
-### compile
-
-    mvn install
-
-### run
-
-    ./mpiruntest.sh 6 RingMpi
+    mvn test

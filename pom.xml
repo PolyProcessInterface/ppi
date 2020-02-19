@@ -15,8 +15,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <mpi.prefix>/usr/local</mpi.prefix>
-    <java.library.path>${mpi.prefix}/lib</java.library.path>
+    <mpi.path>/usr/local/lib</mpi.path>
+    <peersim.path>/usr/local/lib</peersim.path>
   </properties>
 
   <dependencies>
@@ -26,7 +26,7 @@
       <artifactId>mpi</artifactId>
       <version>4.0.2</version>
       <scope>system</scope>
-      <systemPath>${java.library.path}/mpi.jar</systemPath>
+      <systemPath>${mpi.path}/mpi.jar</systemPath>
     </dependency>
     <!-- Peersim -->
     <dependency>
@@ -34,21 +34,21 @@
       <artifactId>djep</artifactId>
       <version>1.0.0</version>
       <scope>system</scope>
-      <systemPath>${java.library.path}/djep-1.0.0.jar</systemPath>
+      <systemPath>${peersim.path}/djep-1.0.0.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>jep</groupId>
       <artifactId>jep</artifactId>
       <version>2.3.0</version>
       <scope>system</scope>
-      <systemPath>${java.library.path}/jep-2.3.0.jar</systemPath>
+      <systemPath>${peersim.path}/jep-2.3.0.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>peersim</groupId>
       <artifactId>peersim</artifactId>
       <version>1.0.5</version>
       <scope>system</scope>
-      <systemPath>${java.library.path}/peersim-1.0.5.jar</systemPath>
+      <systemPath>${peersim.path}/peersim-1.0.5.jar</systemPath>
     </dependency>
 
     <!-- Test Dependencies -->
@@ -67,7 +67,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.22.2</version>
         <configuration>
-          <argLine>-Djava.library.path=${java.library.path}</argLine>
+          <argLine>-Djava.library.path=${mpi.path}:${peersim.path}:${java.library.path}</argLine>
         </configuration>
       </plugin>
 
