@@ -17,7 +17,19 @@ public class ExampleProtocol extends Protocol {
 	@Override
 	public void startNode(Node node) {
 		if (node.getId() == 0) {
-			infra.send(infra.getNode(1), 0);
+			infra.send(infra.getNode(0), 0);
 		}
+	}
+	// a changer
+	public void setInfra(Infrastructure i){
+		super.infra=i;
+	}
+
+	public static void main(String[] args) {
+		ExampleProtocol e = new ExampleProtocol();
+		MpiInfrastructure mpe = new MpiInfrastructure(e);
+		e.setInfra(mpe);
+		mpe.run(args);
+		mpe.exit();
 	}
 }

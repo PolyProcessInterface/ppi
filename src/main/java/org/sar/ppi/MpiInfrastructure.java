@@ -36,15 +36,30 @@ public class MpiInfrastructure extends Infrastructure {
 	}
 
 	@Override
-	public void send(Node dest, Object message) {
-		// TODO Auto-generated method stub
+	public void send(Node dest, Object message)  throws PpiException{
+		//juste pour faire des teste
+		try {
+			//pour le message y a MPI.BYTE qui peux etre intéressant
+			comm.send(message,1,MPI.INT,dest.getId(),MPI.ANY_TAG);
+		} catch (MPIException e) {
+			throw new PpiException("Send to"+dest.getId()+"failed",e);
+		}
 	}
-
+	//Je bloquer sur le reste j'ai fait ça
 	@Override
 	public void broadcast(Object messsage) {
-		// TODO Auto-generated method stub
+		int rank =currentNode.getId();
+		int i= rank+1;
+		int nbp = size();
+		while(i!=rank){
+			try {
+				comm.send(messsage,1,MPI.INT,i,MPI.ANY_TAG);
+				i=(i+1)%nbp;
+			} catch (MPIException e) {
+				throw new PpiException("Send to"+i+"failed",e);
+			}
+		}
 	}
-
 	@Override
 	public void exit() {
 		running = false;
@@ -52,8 +67,7 @@ public class MpiInfrastructure extends Infrastructure {
 
 	@Override
 	public Node getNode(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		return ( id<size() ? new MpiNode(id) : null);
 	}
 
 	@Override

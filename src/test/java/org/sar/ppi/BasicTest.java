@@ -1,0 +1,31 @@
+package org.sar.ppi;
+
+import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import static org.junit.Assert.assertTrue;
+
+public class BasicTest {
+    @Test
+    public void runFirstBasicTest() throws IOException {
+
+        String s = null;
+        Process p = Runtime.getRuntime().exec("./mpiruntest.sh 6 ExampleProtocol");
+        BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+
+        // read the output from the command
+        while ((s = stdInput.readLine()) != null) {
+            System.out.println(s);
+        }
+        // read any errors from the attempted command
+        while ((s = stdError.readLine()) != null) {
+            System.err.println(s);
+        }
+        assertTrue(true);
+    }
+}
