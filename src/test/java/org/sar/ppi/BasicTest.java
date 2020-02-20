@@ -13,7 +13,7 @@ public class BasicTest {
     public void runFirstBasicTest() throws IOException {
 
         String s = null;
-        Process p = Runtime.getRuntime().exec("./mpirunjava.sh 6 ExampleProtocol");
+        Process p = Runtime.getRuntime().exec("./mpirunjava.sh 6 Ppi org.sar.ppi.ExampleProtocol org.sar.ppi.MpiInfrastructure");
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
         BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 

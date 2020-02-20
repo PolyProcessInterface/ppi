@@ -1,7 +1,5 @@
 package org.sar.ppi;
 
-import mpi.MPIException;
-
 /**
  * PpiException
  */
@@ -12,11 +10,11 @@ public class PpiException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public PpiException(MPIException e) {
+	public PpiException(Exception e) {
 		super(e);
 	}
 
-	public PpiException(String msg, MPIException e) {
+	public PpiException(String msg, Exception e) {
 		super(msg, e);
 	}
 

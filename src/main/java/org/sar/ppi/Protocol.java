@@ -7,6 +7,10 @@ public abstract class Protocol {
 
 	protected Infrastructure infra;
 
+	public void setInfra(Infrastructure infra){
+		this.infra = infra;
+	}
+
 	/**
 	 * Handler to process a received message.
 	 *
