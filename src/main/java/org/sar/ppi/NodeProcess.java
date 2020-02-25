@@ -1,9 +1,9 @@
 package org.sar.ppi;
 
 /**
- * Protocol
+ * Process
  */
-public abstract class Protocol {
+public abstract class NodeProcess {
 
 	protected Infrastructure infra;
 
@@ -20,9 +20,7 @@ public abstract class Protocol {
 	public abstract void processMessage(int src, Object message);
 
 	/**
-	 * Start execution sequence for one node.
-	 *
-	 * @param node the node to start.
+	 * Start execution sequence for the current node.
 	 */
-	public abstract void startNode(int node);
+	public abstract void start();
 }

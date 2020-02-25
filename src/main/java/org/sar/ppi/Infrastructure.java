@@ -2,11 +2,11 @@ package org.sar.ppi;
 
 public abstract class Infrastructure {
 
-	protected Protocol protocol;
+	protected NodeProcess process;
 	protected int currentNode;
 
-	public Infrastructure(Protocol protocol) {
-		this.protocol = protocol;
+	public Infrastructure(NodeProcess process) {
+		this.process = process;
 	}
 
 	/**

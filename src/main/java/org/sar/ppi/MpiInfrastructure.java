@@ -13,8 +13,8 @@ public class MpiInfrastructure extends Infrastructure {
 	protected boolean running = true;
 	protected Comm comm;
 
-	public MpiInfrastructure(Protocol protocol) {
-		super(protocol);
+	public MpiInfrastructure(NodeProcess process) {
+		super(process);
 	}
 
 	@Override
@@ -23,11 +23,11 @@ public class MpiInfrastructure extends Infrastructure {
 			MPI.Init(args);
 			comm = MPI.COMM_WORLD;
 			currentNode = comm.getRank();
-			protocol.startNode(currentNode);
+			process.start();
 			while (running) {
 				Object buf = new Object();
 				Status status = comm.recv(buf, 0, MPI.INT, MPI.ANY_SOURCE, MPI.ANY_TAG);
-				protocol.processMessage(status.getSource(), buf);
+				process.processMessage(status.getSource(), buf);
 			}
 			MPI.Finalize();
 		} catch (MPIException e) {

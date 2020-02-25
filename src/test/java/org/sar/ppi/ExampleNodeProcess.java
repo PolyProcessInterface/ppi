@@ -1,9 +1,9 @@
 package org.sar.ppi;
 
 /**
- * ExampleProtocol
+ * ExampleNodeProces
  */
-public class ExampleProtocol extends Protocol {
+public class ExampleNodeProcess extends NodeProcess {
 
 	@Override
 	public void processMessage(int src, Object message) {
@@ -16,8 +16,8 @@ public class ExampleProtocol extends Protocol {
 	}
 
 	@Override
-	public void startNode(int node) {
-		if (node == 0) {
+	public void start() {
+		if (infra.getId() == 0) {
 			infra.send(1, 0);
 		}
 	}
