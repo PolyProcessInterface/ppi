@@ -7,22 +7,22 @@ A high level Java interface to develop distributed protocols.
 ```java
 import org.sar.ppi.Protocol;
 
-public class HelloProtocol extends Protocol {
+public class ExampleNodeProcess extends NodeProcess {
 
 	@Override
-	public void processMessage(Node src, Object message) {
-		Node host = infra.getCurrentNode();
-		System.out.println("" + host.getId() + " Received hello from "  + src.getId());
-		if (host.getId() != 0) {
-			infra.send(infra.getNode((host.getId() + 1) % infra.size()), 0);
+	public void processMessage(int src, Object message) {
+		int host = infra.getId();
+		System.out.println("" + host + " Received hello from "  + src);
+		if (host != 0) {
+			infra.send((host + 1) % infra.size(), 0);
 		}
 		infra.exit();
 	}
 
 	@Override
-	public void startNode(Node node) {
-		if (node.getId() == 0) {
-			infra.send(infra.getNode(1), 0);
+	public void start() {
+		if (infra.getId() == 0) {
+			infra.send(1, 0);
 		}
 	}
 }

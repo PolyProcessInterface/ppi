@@ -2,17 +2,17 @@ package org.sar.ppi;
 
 public abstract class Infrastructure {
 
-	protected Protocol protocol;
-	protected Node currentNode;
+	protected NodeProcess process;
+	protected int currentNode;
 
-	public Infrastructure(Protocol protocol) {
-		this.protocol = protocol;
+	public Infrastructure(NodeProcess process) {
+		this.process = process;
 	}
 
 	/**
 	 * @return the currentNode
 	 */
-	public Node getCurrentNode() {
+	public int getId() {
 		return currentNode;
 	}
 
@@ -29,22 +29,7 @@ public abstract class Infrastructure {
 	 * @param dest    the destination node.
 	 * @param message the message to send.
 	 */
-	public abstract void send(Node dest, Object message);
-
-	/**
-	 * Get a node in the infrastructure from its id.
-	 *
-	 * @param id the id of the node.
-	 * @return the node.
-	 */
-	public abstract Node getNode(int id);
-
-	/**
-	 * Broadcast a message to all the other nodes.
-	 *
-	 * @param messsage the message to broadcast.
-	 */
-	public abstract void broadcast(Object messsage);
+	public abstract void send(int dest, Object message);
 
 	/**
 	 * Stop the execution of the infrastructure for th current node.
