@@ -22,12 +22,12 @@ public class MpiInfrastructure extends Infrastructure {
 		try {
 			MPI.Init(args);
 			comm = MPI.COMM_WORLD;
-			currentNode = new MpiNode(comm.getRank());
+			currentNode = comm.getRank();
 			protocol.startNode(currentNode);
 			while (running) {
 				Object buf = new Object();
 				Status status = comm.recv(buf, 0, MPI.INT, MPI.ANY_SOURCE, MPI.ANY_TAG);
-				protocol.processMessage(new MpiNode(status.getSource()), buf);
+				protocol.processMessage(status.getSource(), buf);
 			}
 			MPI.Finalize();
 		} catch (MPIException e) {
@@ -36,19 +36,19 @@ public class MpiInfrastructure extends Infrastructure {
 	}
 
 	@Override
-	public void send(Node dest, Object message)  throws PpiException{
+	public void send(int dest, Object message)  throws PpiException{
 		//juste pour faire des teste
 		try {
 			//pour le message y a MPI.BYTE qui peux etre intéressant
-			comm.send(null,0,MPI.INT,dest.getId(), 1);
+			comm.send(null, 0, MPI.INT, dest, 1);
 		} catch (MPIException e) {
-			throw new PpiException("Send to"+dest.getId()+"failed",e);
+			throw new PpiException("Send to" + dest + "failed", e);
 		}
 	}
 	//Je bloquer sur le reste j'ai fait ça
 	@Override
 	public void broadcast(Object messsage) {
-		int rank =currentNode.getId();
+		int rank = currentNode;
 		int i= rank+1;
 		int nbp = size();
 		while(i!=rank){
@@ -63,11 +63,6 @@ public class MpiInfrastructure extends Infrastructure {
 	@Override
 	public void exit() {
 		running = false;
-	}
-
-	@Override
-	public Node getNode(int id) {
-		return new MpiNode(id);
 	}
 
 	@Override
