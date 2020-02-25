@@ -32,13 +32,6 @@ public abstract class Infrastructure {
 	public abstract void send(int dest, Object message);
 
 	/**
-	 * Broadcast a message to all the other nodes.
-	 *
-	 * @param messsage the message to broadcast.
-	 */
-	public abstract void broadcast(Object messsage);
-
-	/**
 	 * Stop the execution of the infrastructure for th current node.
 	 */
 	public abstract void exit();

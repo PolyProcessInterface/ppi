@@ -45,21 +45,7 @@ public class MpiInfrastructure extends Infrastructure {
 			throw new PpiException("Send to" + dest + "failed", e);
 		}
 	}
-	//Je bloquer sur le reste j'ai fait ça
-	@Override
-	public void broadcast(Object messsage) {
-		int rank = currentNode;
-		int i= rank+1;
-		int nbp = size();
-		while(i!=rank){
-			try {
-				comm.send(messsage,1,MPI.INT,i,MPI.ANY_TAG);
-				i=(i+1)%nbp;
-			} catch (MPIException e) {
-				throw new PpiException("Send to"+i+"failed",e);
-			}
-		}
-	}
+
 	@Override
 	public void exit() {
 		running = false;
