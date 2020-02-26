@@ -6,11 +6,11 @@ package org.sar.ppi;
 public class ExampleNodeProcess extends NodeProcess {
 
 	@Override
-	public void processMessage(int src, Object message) {
-		int host = infra.getId();
-		System.out.println("" + host + " Received hello from "  + src);
-		if (host != 0) {
-			infra.send((host + 1) % infra.size(), 0);
+	public void processMessage(Message message) {
+		long hostid = message.getIddest();
+		System.out.println("" + hostid + " Received hello from "  + message.getIdsrc());
+		if (hostid != 0) {
+			infra.send(new ObjectMessage(message.getIddest() , message.getIddest()+1%infra.size() , 0 , null));
 		}
 		infra.exit();
 	}
@@ -18,7 +18,13 @@ public class ExampleNodeProcess extends NodeProcess {
 	@Override
 	public void start() {
 		if (infra.getId() == 0) {
-			infra.send(1, 0);
+			infra.send(new ObjectMessage(0 , 1 , 0 , null));
 		}
+	}
+
+	@Override
+	public Object clone() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

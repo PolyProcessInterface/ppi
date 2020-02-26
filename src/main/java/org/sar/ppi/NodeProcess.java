@@ -17,10 +17,15 @@ public abstract class NodeProcess {
 	 * @param src     node which sent the message.
 	 * @param message the message received.
 	 */
-	public abstract void processMessage(int src, Object message);
+	public abstract void processMessage(Message message);
 
 	/**
 	 * Start execution sequence for the current node.
 	 */
 	public abstract void start();
+	
+	/**
+	 * Needed for peersim
+	 */
+	public abstract Object clone();
 }

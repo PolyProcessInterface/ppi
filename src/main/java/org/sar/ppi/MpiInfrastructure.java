@@ -40,14 +40,14 @@ public class MpiInfrastructure extends Infrastructure {
 	}
 
 	@Override
-	public void send(int dest, Object message)  throws PpiException{
+	public void send(Message message)  throws PpiException{
 		try {
 			byte [] tab = ContentHandler.ParseObject(message);
 			System.out.print("tableau envoyer= ");
 			printByteArray(tab);
-			comm.send(tab, tab.length, MPI.BYTE, dest, 1);
+			comm.send(tab, tab.length, MPI.BYTE, (int) message.getIddest(), 1);
 		} catch (MPIException e) {
-			throw new PpiException("Send to" + dest + "failed", e);
+			throw new PpiException("Send to" + message.getIddest() + "failed", e);
 		}
 	}
 
