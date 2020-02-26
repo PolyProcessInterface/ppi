@@ -1,0 +1,13 @@
+network.size 10
+simulation.endtime 50000
+random.seed 1
+
+protocol.transport UniformRandomTransport
+protocol.transport.mindelay 10
+protocol.transport.maxdelay 100
+
+protocol.infra PeerSimInfrastructure
+protocol.infra.transport transport
+
+init.i PeerSimInit
+init.i.infrapid infra
