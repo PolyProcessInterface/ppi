@@ -25,8 +25,15 @@ public class MpiInfrastructure extends Infrastructure {
 			currentNode = comm.getRank();
 			process.start();
 			while (running) {
-				Object buf = new Object();
-				Status status = comm.recv(buf, 0, MPI.INT, MPI.ANY_SOURCE, MPI.ANY_TAG);
+				Object buf;
+				byte [] tab = new byte[100];
+				Status status = comm.recv(tab, 81, MPI.INT, MPI.ANY_SOURCE, MPI.ANY_TAG);
+				System.out.println("tableau recus= "+tab);
+				printByteArray(tab);
+				buf =ContentHandler.RetriveObject(tab);
+				System.out.println(" ici = "+buf.toString());
+				if(buf == null)
+					System.out.println("AHHHHHH");
 				process.processMessage(status.getSource(), buf);
 			}
 			MPI.Finalize();
@@ -37,10 +44,11 @@ public class MpiInfrastructure extends Infrastructure {
 
 	@Override
 	public void send(int dest, Object message)  throws PpiException{
-		//juste pour faire des teste
 		try {
-			//pour le message y a MPI.BYTE qui peux etre intéressant
-			comm.send(null, 0, MPI.INT, dest, 1);
+			byte [] tab = ContentHandler.ParseObject(message);
+			System.out.print("tableau envoyer= ");
+			printByteArray(tab);
+			comm.send(tab, tab.length, MPI.BYTE, dest, 1);
 		} catch (MPIException e) {
 			throw new PpiException("Send to" + dest + "failed", e);
 		}
@@ -58,5 +66,13 @@ public class MpiInfrastructure extends Infrastructure {
 		} catch (MPIException e) {
 			throw new PpiException("Fail to get size.", e);
 		}
+	}
+
+	private void printByteArray(byte[] tab){
+		System.out.print("[");
+		for (int i =0,len=tab.length;i<len;i++){
+			System.out.print(tab[i]+" ,");
+		}
+		System.out.println("]");
 	}
 }

@@ -18,4 +18,5 @@ public class PpiException extends RuntimeException {
 		super(msg, e);
 	}
 
+    public PpiException(String error) { super(error);}
 }

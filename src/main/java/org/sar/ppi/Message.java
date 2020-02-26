@@ -1,4 +1,8 @@
 package org.sar.ppi;
 
-public class Message {
+public  class Message {
+
+    Message(Object o){
+
+    }
 }
