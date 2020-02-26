@@ -27,13 +27,10 @@ public class MpiInfrastructure extends Infrastructure {
 			while (running) {
 				Object buf;
 				byte [] tab = new byte[100];
-				Status status = comm.recv(tab, 81, MPI.INT, MPI.ANY_SOURCE, MPI.ANY_TAG);
-				System.out.println("tableau recus= "+tab);
+				Status status = comm.recv(tab, 100, MPI.BYTE, MPI.ANY_SOURCE, MPI.ANY_TAG);
+				System.out.println("tableau recus= ");
 				printByteArray(tab);
 				buf =ContentHandler.RetriveObject(tab);
-				System.out.println(" ici = "+buf.toString());
-				if(buf == null)
-					System.out.println("AHHHHHH");
 				process.processMessage(status.getSource(), buf);
 			}
 			MPI.Finalize();
