@@ -14,6 +14,7 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	private final int pid_transport; // id du protocole de transport
 	
 	private final int my_pid; // identifiant du protocole
+	private boolean sended = false;
 	
 	public PeerSimInfrastructure(String prefix, NodeProcess np) {
 		super(np);
@@ -45,17 +46,27 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 	@Override
 	public void send(Message message) {
+		Node host = Network.get((int) message.getIdsrc());
+		Transport tr = (Transport) host.getProtocol(pid_transport);
+		Node dest = Network.get((int) message.getIddest());
+		ObjectMessage obj = (ObjectMessage) message;
+		tr.send(host, dest, obj.getContent(), my_pid);
 		
-		Node host=Network.get((int) message.getIdsrc());
-		Transport tr= (Transport) host.getProtocol(pid_transport);
-		tr.send(host,Network.get((int) message.getIddest()),message, my_pid);
+		sended = true;
 	}
-
+	
+	private void receive(Node host, Message message) {
+		ObjectMessage obj = (ObjectMessage) message;
+		String msg = obj.getContent().toString();
+		System.out.println("Contenu : " + msg);
+		if(!sended) {
+			//this.send( Message a creer? ) ? ou process.processMessage((Message) event);
+		}
+	}
 
 	@Override
 	public void exit() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -63,17 +74,26 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		return Network.size();
 	}
 
-	public void initialisation(Node host) {
+	public void initialization(Node host) {
 		if(host.getID()==0) {
+			Message msg = new ObjectMessage(host.getID(), (host.getID()+1)%Network.size(), my_pid, "Test"); // envoi "Test" à son voisin
+			this.send(msg);
 			//sendFirstMessage(host); // this is just an example
 		}
 	}
+	
 	@Override
 	public void processEvent(Node host, int pid, Object event) {
-		if(pid!=my_pid) throw new IllegalArgumentException("Incoherence sur l'id de protocole");
+		if(pid!=my_pid) throw new IllegalArgumentException("Inconsistency on protocol id");
 		
-		//TO DO -- AIGUILLAGE DU TRAITEMENT DE L'EVENT
-		this.process.processMessage((Message) event);
+		//TO DO -- AIGUILLAGE DU TRAITEMENT DE L'EVENT (mais pr l'instant on en a qu'un)
+		if(event instanceof Message) {
+			this.receive(host, (Message) event);
+			//process.processMessage((Message) event); // processMessage à implanter ici ou dans un NodeProtocol
+		}else {
+			throw new IllegalArgumentException("Unknown event for this protocol");
+		}
+		//this.process.processMessage((Message) event);
 	}
 
 }
