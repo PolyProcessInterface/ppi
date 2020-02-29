@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import static org.junit.Assert.assertTrue;
 
 public class BasicTest {
-	/*
+	
     @Test
     public void runFirstBasicTest() throws IOException {
 
@@ -51,7 +51,7 @@ public class BasicTest {
         }
         assertTrue(true);
     }
-*/
+
     @Test
     public void firstTestPeerSim() {
     	

@@ -60,24 +60,24 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 	@Override
 	public void run(String[] args) {
+		/*
 		String[] tab=new String[1];
 		tab[0]="notreconfig.conf";
 		Simulator.main(tab);	// Direct dans le main ?
+		*/
 	}
 
 	@Override
-	public void send(Message message) {
+	public void send(int dest, Object message) {
 
 		if(running) {
 
 			
-			Node host = Network.get((int) message.getIdsrc());
-			Transport tr = (Transport) host.getProtocol(pid_transport);
-			Node dest = Network.get((int) message.getIddest());
-			ObjectMessage obj = (ObjectMessage) message;
-			System.err.println(Network.get((int) message.getIdsrc()) + " SENDING TO \n"+Network.get((int) message.getIddest()));
-			tr.send(host, dest, obj.getContent(), my_pid);
-			System.err.println("SENT!");
+			Node nodeHost = Network.get(this.getId());
+			Transport tr = (Transport) nodeHost.getProtocol(pid_transport);
+			Node nodeDest = Network.get(dest);
+			//System.err.println(Network.get(this.getId()) + " SENDING TO \n"+Network.get(dest));
+			tr.send(nodeHost, nodeDest, message, my_pid);
 		}
 	}
 	@Override
@@ -102,12 +102,8 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		//TO DO -- AIGUILLAGE DU TRAITEMENT DE L'EVENT
 		
 		if(event instanceof Object) {
-
-			System.err.println("ProcessEventinstanceof");
-			process.processMessage((Message) event);
+			process.processMessage(0,event); // TO DO src ???
 		}else {
-
-			System.err.println("ProcessEvent");
 			throw new IllegalArgumentException("Unknown event for this protocol");
 		}
 	}

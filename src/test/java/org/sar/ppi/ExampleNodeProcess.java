@@ -6,11 +6,11 @@ package org.sar.ppi;
 public class ExampleNodeProcess extends NodeProcess {
 
 	@Override
-	public void processMessage(Message message) {
-		long hostid = message.getIddest();
-		System.out.println("" + hostid + " Received hello from "  + message.getIdsrc());
-		if (hostid != 0) {
-			infra.send(new ObjectMessage(message.getIddest() , message.getIddest()+1%infra.size() , 0 , null));
+	public void processMessage(int src, Object message) {
+		int host = infra.getId();
+		System.out.println("" + host + " Received hello from "  + src);
+		if (host != 0) {
+			infra.send((host + 1) % infra.size(), 0);
 		}
 		infra.exit();
 	}
@@ -18,10 +18,10 @@ public class ExampleNodeProcess extends NodeProcess {
 	@Override
 	public void start() {
 		if (infra.getId() == 0) {
-			System.err.println("SENDING FIRST MESSAGE");
-			infra.send(new ObjectMessage(0 , 1 , 0 , null));
+			//System.err.println("SENDING FIRST MESSAGE");
+			infra.send(1,0);
 		}else {
-			System.err.println("NOT SENDING FIRST MESSAGE BECAUSE ID ==   "+infra.getId());
+			//System.err.println("NOT SENDING FIRST MESSAGE BECAUSE ID ==   "+infra.getId());
 		}
 	}
 

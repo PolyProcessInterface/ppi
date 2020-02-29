@@ -29,7 +29,7 @@ public abstract class Infrastructure {
 	 * @param dest    the destination node.
 	 * @param message the message to send.
 	 */
-	public abstract void send(Message message);
+	public abstract void send(int dest,Object message);
 
 	/**
 	 * Stop the execution of the infrastructure for th current node.
