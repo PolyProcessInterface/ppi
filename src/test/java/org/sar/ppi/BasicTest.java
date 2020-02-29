@@ -2,6 +2,8 @@ package org.sar.ppi;
 
 import org.junit.Test;
 
+import peersim.Simulator;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,6 +11,7 @@ import java.io.InputStreamReader;
 import static org.junit.Assert.assertTrue;
 
 public class BasicTest {
+	/*
     @Test
     public void runFirstBasicTest() throws IOException {
 
@@ -33,7 +36,7 @@ public class BasicTest {
     public void runFirstBasicTestObject() throws IOException {
 
         String s = null;
-        Process p = Runtime.getRuntime().exec("./mpirunjava.sh 6 Ppi org.sar.ppi.ExampleSendObject org.sar.ppi.MpiInfrastructure");
+        Process p = Runtime.getRuntime().exec("./mpirunjava.sh 6 Ppi org.sar.ppi.ExampleNodeProces org.sar.ppi.MpiInfrastructure");
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
         BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
@@ -48,6 +51,14 @@ public class BasicTest {
         }
         assertTrue(true);
     }
-
+*/
+    @Test
+    public void firstTestPeerSim() {
+    	
+    	String[] tab=new String[1];
+		tab[0]="notreconfig.conf";
+		Simulator.main(tab);
+		assertTrue(true);
+    }
 
 }

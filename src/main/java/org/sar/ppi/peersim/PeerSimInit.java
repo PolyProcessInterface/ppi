@@ -1,7 +1,5 @@
 package org.sar.ppi.peersim;
 
-import org.sar.ppi.NodeProcess;
-
 import peersim.config.Configuration;
 import peersim.core.Control;
 import peersim.core.Network;
@@ -21,7 +19,6 @@ public class PeerSimInit implements Control {
 		
 		for(int i=0;i < Network.size();i++) {
 			Node node=Network.get(i);
-			
 			PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infrapid);
 			pInfra.initialization(node);
 			//NodeProcess np= (NodeProcess) node.getProtocol(infrapid);
