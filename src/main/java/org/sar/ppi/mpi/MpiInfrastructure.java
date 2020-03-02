@@ -1,4 +1,9 @@
-package org.sar.ppi;
+package org.sar.ppi.mpi;
+
+import org.sar.ppi.Infrastructure;
+import org.sar.ppi.Message;
+import org.sar.ppi.NodeProcess;
+import org.sar.ppi.PpiException;
 
 import mpi.Comm;
 import mpi.MPI;

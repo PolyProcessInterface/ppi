@@ -1,6 +1,9 @@
-package org.sar.ppi;
+package org.sar.ppi.mpi;
 
 import java.io.*;
+
+import org.sar.ppi.Message;
+import org.sar.ppi.PpiException;
 
 public class ContentHandler {
     // juste des teste
