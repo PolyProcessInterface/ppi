@@ -3,7 +3,6 @@ package org.sar.ppi;
 import mpi.Comm;
 import mpi.MPI;
 import mpi.MPIException;
-import mpi.Status;
 
 /**
  * MpiInfrastructure
@@ -31,14 +30,12 @@ public class MpiInfrastructure extends Infrastructure {
 			currentNode = comm.getRank();
 			process.start();
 			while (running) {
-				Object buf;
 				byte [] tab = new byte[MaxSize];
-				Status status = comm.recv(tab, MaxSize, MPI.BYTE, MPI.ANY_SOURCE, MPI.ANY_TAG);
+				comm.recv(tab, MaxSize, MPI.BYTE, MPI.ANY_SOURCE, MPI.ANY_TAG);
 				//System.out.println("tableau recus= ");
 				printByteArray(tab);
-				buf =ContentHandler.RetriveObject(tab);
-			//	System.out.println("buff apres= "+buf);
-				process.processMessage(status.getSource(), buf);
+				Message msg = ContentHandler.RetriveMessage(tab);
+				process.processMessage(msg);
 			}
 			MPI.Finalize();
 		} catch (MPIException e) {
@@ -47,13 +44,13 @@ public class MpiInfrastructure extends Infrastructure {
 	}
 
 	@Override
-	public void send(int dest, Object message)  throws PpiException{
+	public void send(Message message) throws PpiException{
 		try {
-			byte [] tab = ContentHandler.ParseObject(message);
+			byte[] tab = ContentHandler.ParseMessage(message);
 			//System.out.println("Object envoyer= "+message);
-			comm.send(tab, tab.length, MPI.BYTE, dest, 1);
+			comm.send(tab, tab.length, MPI.BYTE, message.getIddest(), 1);
 		} catch (MPIException e) {
-			throw new PpiException("Send to" + dest + "failed", e);
+			throw new PpiException("Send to" + message.getIddest() + "failed", e);
 		}
 	}
 

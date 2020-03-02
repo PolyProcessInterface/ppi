@@ -15,7 +15,7 @@ public class ContentHandler {
         throw new PpiException("ERROR OF PARSING");
     }
 
-    public static  byte[] ParseObject(Object message) {
+    public static byte[] ParseMessage(Message message) {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
              ObjectOutputStream out = new ObjectOutputStream(bos);) {
             out.writeObject(message);
@@ -26,10 +26,10 @@ public class ContentHandler {
         throw new PpiException("ERROR OF PARSING");
     }
 
-    public static Object RetriveObject(byte[] message) {
+    public static Message RetriveMessage(byte[] message) {
         try (ByteArrayInputStream bis = new ByteArrayInputStream(message);
              ObjectInput in = new ObjectInputStream(bis);) {
-            return in.readObject();
+            return (Message) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

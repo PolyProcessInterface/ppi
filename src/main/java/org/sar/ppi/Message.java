@@ -1,28 +1,24 @@
 package org.sar.ppi;
 
-public abstract class Message {
+import java.io.Serializable;
 
-	private final long idsrc;
-	private final long iddest;
-	private final int pid;
+public abstract class Message implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	private final int idsrc;
+	private final int iddest;
 	
-	public long getIdsrc() {
+	public int getIdsrc() {
 		return idsrc;
 	}
 
-	public long getIddest() {
+	public int getIddest() {
 		return iddest;
 	}
 
-	public int getPid() {
-		return pid;
-	}
-
-
-	public Message(long idsrc, long iddest, int pid) {
+	public Message(int idsrc, int iddest) {
 		this.idsrc = idsrc;
 		this.iddest = iddest;
-		this.pid = pid;
 	}
 
 }

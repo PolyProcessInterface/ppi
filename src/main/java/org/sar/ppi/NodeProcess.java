@@ -14,10 +14,9 @@ public abstract class NodeProcess {
 	/**
 	 * Handler to process a received message.
 	 *
-	 * @param src     node which sent the message.
 	 * @param message the message received.
 	 */
-	public abstract void processMessage(int src, Object message);
+	public abstract void processMessage(Message message);
 
 	/**
 	 * Start execution sequence for the current node.

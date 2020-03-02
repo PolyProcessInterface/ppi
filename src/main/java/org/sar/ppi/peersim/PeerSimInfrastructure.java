@@ -3,7 +3,6 @@ package org.sar.ppi.peersim;
 import java.lang.reflect.InvocationTargetException;
 
 import org.sar.ppi.*;
-import peersim.*;
 import peersim.config.Configuration;
 import peersim.core.Network;
 import peersim.core.Node;
@@ -68,14 +67,14 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	}
 
 	@Override
-	public void send(int dest, Object message) {
+	public void send(Message message) {
 
 		if(running) {
 
 			
 			Node nodeHost = Network.get(this.getId());
 			Transport tr = (Transport) nodeHost.getProtocol(pid_transport);
-			Node nodeDest = Network.get(dest);
+			Node nodeDest = Network.get(message.getIddest());
 			//System.err.println(Network.get(this.getId()) + " SENDING TO \n"+Network.get(dest));
 			tr.send(nodeHost, nodeDest, message, my_pid);
 		}
@@ -101,9 +100,9 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 		//TO DO -- AIGUILLAGE DU TRAITEMENT DE L'EVENT
 		
-		if(event instanceof Object) {
-			process.processMessage(0,event); // TO DO src ???
-		}else {
+		if (event instanceof Message) {
+			process.processMessage((Message) event); // TO DO src ???
+		} else {
 			throw new IllegalArgumentException("Unknown event for this protocol");
 		}
 	}
