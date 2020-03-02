@@ -21,10 +21,10 @@ public class MpiRunner implements Runner {
 	@Override
 	public void init(String[] args) throws PpiException {
 		String s = null;
+		boolean err = false;
+		String cmd = String.format("./mpirunjava.sh %s mpi.MpiRunner %s", args[2], args[0]);
 		try {
-			// TODO the 6 should be replaced by a parameter read from the args.
-			StringBuilder sb = new StringBuilder("./mpirunjava.sh 6 mpi.MpiRunner ").append(args[0]);
-			Process p = Runtime.getRuntime().exec(sb.toString());
+			Process p = Runtime.getRuntime().exec(cmd);
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
@@ -35,19 +35,23 @@ public class MpiRunner implements Runner {
 			// read any errors from the attempted command
 			while ((s = stdError.readLine()) != null) {
 				System.err.println(s);
+				err = true;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new PpiException("Could not run MPI", e);
+		}
+		if (err) {
+			throw new PpiException("An error occured with Mpi");
 		}
 	}
 
 	@Override
-	public void run(Class<? extends NodeProcess> processClass, String[] args)
+	public void run(Class<? extends NodeProcess> processClass, String[] options)
 			throws ReflectiveOperationException {
 		NodeProcess process = processClass.newInstance();
 		MpiInfrastructure infra = new MpiInfrastructure(process);
 		process.setInfra(infra);
-		infra.run(args);
+		infra.run(options);
 		infra.exit();
 	}
 
