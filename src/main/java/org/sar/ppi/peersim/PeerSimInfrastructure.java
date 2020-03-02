@@ -58,15 +58,6 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	}
 
 	@Override
-	public void run(String[] args) {
-		/*
-		String[] tab=new String[1];
-		tab[0]="notreconfig.conf";
-		Simulator.main(tab);	// Direct dans le main ?
-		*/
-	}
-
-	@Override
 	public void send(Message message) {
 
 		if(running) {

@@ -17,13 +17,6 @@ public abstract class Infrastructure {
 	}
 
 	/**
-	 * Start the infrastructure.
-	 *
-	 * @param args arguments to pass to pass to the infrastructure.
-	 */
-	public abstract void run(String[] args);
-
-	/**
 	 * Send a message to node.
 	 *
 	 * @param message the message to send.

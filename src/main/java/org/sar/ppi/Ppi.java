@@ -17,7 +17,7 @@ public class Ppi {
 			Class<? extends Runner> rClass = Class.forName(args[1]).asSubclass(Runner.class);
 			rClass.newInstance().init(args);
 		} catch (ReflectiveOperationException e) {
-			throw new PpiException("Failed to run the process", e);
+			throw new PpiException("Failed to init the process", e);
 		}
 	}
 

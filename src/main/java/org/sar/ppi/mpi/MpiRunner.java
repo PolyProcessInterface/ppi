@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.sar.ppi.Infrastructure;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Ppi;
 import org.sar.ppi.PpiException;
@@ -46,7 +45,7 @@ public class MpiRunner implements Runner {
 	public void run(Class<? extends NodeProcess> processClass, String[] args)
 			throws ReflectiveOperationException {
 		NodeProcess process = processClass.newInstance();
-		Infrastructure infra = new MpiInfrastructure(process);
+		MpiInfrastructure infra = new MpiInfrastructure(process);
 		process.setInfra(infra);
 		infra.run(args);
 		infra.exit();
