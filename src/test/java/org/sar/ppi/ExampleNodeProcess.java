@@ -18,7 +18,16 @@ public class ExampleNodeProcess extends NodeProcess {
 	@Override
 	public void start() {
 		if (infra.getId() == 0) {
-			infra.send(1, 0);
+			//System.err.println("SENDING FIRST MESSAGE");
+			infra.send(1,0);
+		}else {
+			//System.err.println("NOT SENDING FIRST MESSAGE BECAUSE ID ==   "+infra.getId());
 		}
+	}
+
+	@Override
+	public Object clone() {
+		// TODO Auto-generated method stub
+		return new ExampleNodeProcess();
 	}
 }

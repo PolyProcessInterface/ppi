@@ -23,4 +23,9 @@ public abstract class NodeProcess {
 	 * Start execution sequence for the current node.
 	 */
 	public abstract void start();
+	
+	/**
+	 * Needed for peersim
+	 */
+	public abstract Object clone();
 }
