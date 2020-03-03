@@ -22,15 +22,19 @@ public abstract class NodeProcess {
 	public void processMessage(Message message) {
 		Method[] methods = this.getClass().getMethods();
 		for (Method method : methods) {
-			MessageHandler annot = method.getAnnotation(MessageHandler.class);
-			if (annot == null)
+			Class<?>[] params = method.getParameterTypes();
+			if (!method.isAnnotationPresent(MessageHandler.class))
 				continue;
-			if (message.getClass().equals(annot.msgClass())) {
-				try {
-					method.invoke(this, message);
-				} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
-					e.printStackTrace();
-				}
+			if (params.length != 1)
+				throw new MessageHandlerException(method.getName() + ": should only have one parameter");
+			if (!Message.class.isAssignableFrom(params[0]))
+				throw new MessageHandlerException(method.getName() + ": first param must extend Message");
+			if (!params[0].equals(message.getClass()))
+				continue;
+			try {
+				method.invoke(this, message);
+			} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
+				e.printStackTrace();
 			}
 		}
 	}
