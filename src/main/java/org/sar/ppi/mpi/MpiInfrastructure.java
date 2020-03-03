@@ -27,7 +27,6 @@ public class MpiInfrastructure extends Infrastructure {
 		MaxSize = max_message_lenth;
 	}
 
-	@Override
 	public void run(String[] args) throws PpiException {
 		try {
 			MPI.Init(args);
