@@ -1,44 +1,23 @@
 package org.sar.ppi;
 
 import org.junit.Test;
-
-import peersim.Simulator;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import org.sar.ppi.mpi.MpiRunner;
+import org.sar.ppi.peersim.PeerSimRunner;
 
 import static org.junit.Assert.assertTrue;
 
 public class BasicTest {
-	
-    @Test
-    public void runFirstBasicTest() throws IOException {
 
-        String s = null;
-        Process p = Runtime.getRuntime().exec("./mpirunjava.sh 6 Ppi org.sar.ppi.ExampleNodeProcess org.sar.ppi.mpi.MpiInfrastructure");
-        BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-
-        // read the output from the command
-        while ((s = stdInput.readLine()) != null) {
-            System.out.println(s);
-        }
-        // read any errors from the attempted command
-        while ((s = stdError.readLine()) != null) {
-            System.err.println(s);
-        }
-        assertTrue(true);
-    }
-
-    @Test
-    public void firstTestPeerSim() {
-    	
-    	String[] tab=new String[1];
-		tab[0]="notreconfig.conf";
-		Simulator.main(tab);
+	@Test
+	public void runFirstBasicTest() {
+		Ppi.main(new String[] { ExampleNodeProcess.class.getName(), MpiRunner.class.getName() });
 		assertTrue(true);
-    }
+	}
+
+	@Test
+	public void firstTestPeerSim() {
+		Ppi.main(new String[] { ExampleNodeProcess.class.getName(), PeerSimRunner.class.getName() });
+		assertTrue(true);
+	}
 
 }

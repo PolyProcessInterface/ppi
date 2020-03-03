@@ -3,8 +3,8 @@
 /target
 
 # Libs
-/openmpi*
-/peersim*
+/openmpi-*
+/peersim-*
 
 
 # IDE files
