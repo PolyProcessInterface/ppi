@@ -19,17 +19,4 @@ public class BasicTest {
 		Ppi.main(new String[] { ExampleNodeProcess.class.getName(), PeerSimRunner.class.getName() });
 		assertTrue(true);
 	}
-
-	@Test
-	public void MpiAnnotatedExample() {
-		Ppi.main(new String[] { AnnotatedProcess.class.getName(), MpiRunner.class.getName() });
-		assertTrue(true);
-	}
-
-	@Test
-	public void PeersimAnnotatedExample() {
-		Ppi.main(new String[] { AnnotatedProcess.class.getName(), PeerSimRunner.class.getName() });
-		assertTrue(true);
-	}
-
 }

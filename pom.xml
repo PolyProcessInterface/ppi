@@ -68,6 +68,7 @@
         <version>2.22.2</version>
         <configuration>
           <argLine>-Djava.library.path=${mpi.path}:${peersim.path}:${java.library.path}</argLine>
+          <reuseForks>false</reuseForks>
         </configuration>
       </plugin>
 
