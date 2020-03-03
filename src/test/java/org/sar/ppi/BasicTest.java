@@ -9,14 +9,26 @@ import static org.junit.Assert.assertTrue;
 public class BasicTest {
 
 	@Test
-	public void runFirstBasicTest() {
+	public void MpiExample() {
 		Ppi.main(new String[] { ExampleNodeProcess.class.getName(), MpiRunner.class.getName() });
 		assertTrue(true);
 	}
 
 	@Test
-	public void firstTestPeerSim() {
+	public void PeersimExample() {
 		Ppi.main(new String[] { ExampleNodeProcess.class.getName(), PeerSimRunner.class.getName() });
+		assertTrue(true);
+	}
+
+	@Test
+	public void MpiAnnotatedExample() {
+		Ppi.main(new String[] { AnnotatedProcess.class.getName(), MpiRunner.class.getName() });
+		assertTrue(true);
+	}
+
+	@Test
+	public void PeersimAnnotatedExample() {
+		Ppi.main(new String[] { AnnotatedProcess.class.getName(), PeerSimRunner.class.getName() });
 		assertTrue(true);
 	}
 
