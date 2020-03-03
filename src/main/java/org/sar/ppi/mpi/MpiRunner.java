@@ -25,10 +25,9 @@ public class MpiRunner implements Runner {
 	public void init(String[] args) throws PpiException {
 		String s = null;
 		boolean err = false;
-		String cp = getClasspath();
 		String cmd = String.format(
-			"mpirun --oversubscribe -np %s java -cp %s org.sar.ppi.mpi.MpiRunner %s",
-			args[2], cp, args[0]);
+			"mpirun --oversubscribe --np %s java -cp %s %s %s",
+			args[2], getClasspath(), this.getClass().getName(), args[0]);
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
