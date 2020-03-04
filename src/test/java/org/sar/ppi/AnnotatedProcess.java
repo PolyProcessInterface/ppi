@@ -37,9 +37,4 @@ public class AnnotatedProcess extends NodeProcess {
 			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
 		}
 	}
-
-	@Override
-	public Object clone() {
-		return new AnnotatedProcess();
-	}
 }

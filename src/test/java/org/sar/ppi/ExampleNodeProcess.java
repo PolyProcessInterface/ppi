@@ -40,10 +40,4 @@ public class ExampleNodeProcess extends NodeProcess {
 			//System.err.println("NOT SENDING FIRST MESSAGE BECAUSE ID ==   "+infra.getId());
 		}
 	}
-
-	@Override
-	public Object clone() {
-		// TODO Auto-generated method stub
-		return new ExampleNodeProcess();
-	}
 }

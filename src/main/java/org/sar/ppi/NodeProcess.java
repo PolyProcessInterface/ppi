@@ -45,7 +45,13 @@ public abstract class NodeProcess {
 	public abstract void start();
 	
 	/**
-	 * Needed for peersim
+	 * Needed for peersim. Return a new intance of the current class by default.
 	 */
-	public abstract Object clone();
+	public Object clone() throws CloneNotSupportedException {
+		try {
+			return this.getClass().newInstance();
+		} catch (ReflectiveOperationException e) {
+			throw new CloneNotSupportedException();
+		}
+	}
 }
