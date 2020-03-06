@@ -3,7 +3,7 @@ package org.sar.ppi;
 /**
  * ExampleNodeProces
  */
-public class ExampleNodeProcess extends NodeProcess {
+public class AnnotatedProcess extends NodeProcess {
 
 	public static class ExampleMessage extends Message{
 	
@@ -20,13 +20,13 @@ public class ExampleNodeProcess extends NodeProcess {
 
 	}
 
-	@Override
-	public void processMessage(Message message) {
+	@MessageHandler
+	public void processExampleMessage(ExampleMessage message) {
 		int host = infra.getId();
-		System.out.println("" + host + " Received hello from "  + message.getIdsrc());
+		System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
 		if (host != 0) {
 			int dest = (host + 1) % infra.size();
-			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));
 		}
 		infra.exit();
 	}
@@ -34,10 +34,7 @@ public class ExampleNodeProcess extends NodeProcess {
 	@Override
 	public void start() {
 		if (infra.getId() == 0) {
-			//System.err.println("SENDING FIRST MESSAGE");
-			infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
-		}else {
-			//System.err.println("NOT SENDING FIRST MESSAGE BECAUSE ID ==   "+infra.getId());
+			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
 		}
 	}
 }
