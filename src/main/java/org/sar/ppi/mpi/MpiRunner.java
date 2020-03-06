@@ -27,7 +27,7 @@ public class MpiRunner implements Runner {
 		boolean err = false;
 		String cmd = String.format(
 			"mpirun --oversubscribe --np %s java -cp %s %s %s",
-			args[2], getClasspath(), this.getClass().getName(), args[0]);
+			args[2], System.getProperty("java.class.path"), this.getClass().getName(), args[0]);
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -59,12 +59,4 @@ public class MpiRunner implements Runner {
 		infra.run(options);
 		infra.exit();
 	}
-
-	private String getClasspath() {
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
-		return Stream.of(((URLClassLoader)cl).getURLs())
-			.map((url) -> url.getFile())
-			.collect(Collectors.joining(":"));
-	}
-
 }
