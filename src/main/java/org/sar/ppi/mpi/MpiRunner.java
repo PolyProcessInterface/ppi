@@ -3,6 +3,9 @@ package org.sar.ppi.mpi;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URLClassLoader;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Ppi;
@@ -22,7 +25,9 @@ public class MpiRunner implements Runner {
 	public void init(String[] args) throws PpiException {
 		String s = null;
 		boolean err = false;
-		String cmd = String.format("./mpirunjava.sh %s mpi.MpiRunner %s", args[2], args[0]);
+		String cmd = String.format(
+			"mpirun --oversubscribe --np %s java -cp %s %s %s",
+			args[2], getClasspath(), this.getClass().getName(), args[0]);
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -53,6 +58,13 @@ public class MpiRunner implements Runner {
 		process.setInfra(infra);
 		infra.run(options);
 		infra.exit();
+	}
+
+	private String getClasspath() {
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		return Stream.of(((URLClassLoader)cl).getURLs())
+			.map((url) -> url.getFile())
+			.collect(Collectors.joining(":"));
 	}
 
 }

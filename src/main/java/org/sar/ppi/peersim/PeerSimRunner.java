@@ -26,8 +26,8 @@ public class PeerSimRunner implements Runner {
 		{
 			Files.copy(Paths.get("peersim.base.conf"), os);
 			ps.println();
-			ps.printf("protocol.infra.nodeprocess %s\n", processClass.getName());
-			ps.printf("network.size %s", args[2]);
+			ps.println("protocol.infra.nodeprocess " + processClass.getName());
+			ps.println("network.size " + args[2]);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
