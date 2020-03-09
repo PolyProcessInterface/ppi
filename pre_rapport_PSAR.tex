@@ -1,0 +1,53 @@
+\documentclass{article}
+\usepackage{graphicx}
+
+\date{\today}
+\author{Tarik Atlaoui \\ Nicolas Peugnet \\ Kimmeng Ly \\ Max Eliet}
+
+\begin{document}
+
+
+\begin{titlepage}
+	\enlargethispage{2cm}
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+	\center
+	\textsc{\LARGE
+	Pre-rapport du PSAR 
+	} \\[1cm]
+	\HRule \\[0.4cm]
+	{ \huge \bfseries API générique pour le développement d'applications réparties \\[0.15cm] }
+	\HRule \\[4cm]
+	\large{Tarik Atlaoui \\[3mm] Nicolas Peugnet \\[3mm] Kimmeng Ly \\[3mm] Max Eliet} \\[3cm]
+	09 Mars 2020 \\[3cm]
+	\hfill \includegraphics[width=5cm]{logoSU.jpg}
+\end{titlepage}
+
+	\newpage
+	\pagenumbering{arabic}
+		\section{Introduction}
+			\large{
+			\indent Notre projet a pour but d'implémenter un intergiciel permettant l'execution d'applications réparties, aussi bien sur une infrastructure réelle que sur un simulateur, sans avoir à en modifier le code, afin de simplifier le développement de futures applications réparties.
+\\[2mm]
+			 \indent Dans notre cas, nous avons choisi d'implémenter cet intergiciel pour MPI (Message Passing Interface) en tant qu'API d'infrastructure réelle, et PeerSim en tant que simulateur à événements discrets.}
+
+		\section{Cahier des charges}
+			\subsection{Choix d'une interface générique}
+				\large{ \indent Nous avons commencé par définir une API générique : \textit{Infrastructure} regroupant les fonctionnalités qu'offriront à la fois PeerSim et MPI aux applications réparties, à commencer par une primitive d'envoi de message, que nous enrichirons au fur et à mesure.\\[2mm]
+					\indent De plus, nous avons encapsulé les fonctions de chaque noeud du système dans une classe \textit{NodeProcess}, par exemple le traitement à effectuer lors du démarrage du noeud ou de la récepion d'un message.  }
+
+			\subsection{Implantation de l'interface pour PeerSim et MPI}
+				\large{ Nous avons ensuite implanté les premières fonctionnalités de notre interface nécessaires au fonctionnement d'un programme de test basique faisant circuler d'un messsage à travers un anneau de noeuds du système.}
+
+			\subsection{Création d'une classe \textit{Message}}
+				\large{Nous avions ensuite besoin d'une classe représentant l'enveloppe d'un message, qui sera étendue par l'utilisateur pour ses propres messages.}
+
+	\newpage
+			\subsection{Unification du lancement de l'application}
+				\large{}
+			\subsection{Factorisation de l'aiguillage des messages}
+				\large{}
+			\subsection{Description d'un scenario}
+				\large{}
+			\subsection{Fonctions de wait et notify}
+				\large{}
+\end{document}
