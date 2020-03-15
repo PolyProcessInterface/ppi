@@ -1,0 +1,2575 @@
+<!DOCTYPE html>
+<html class=" js postmessage history draganddrop borderimage borderradius boxshadow textshadow cssgradients csstransforms csstransforms3d csstransitions generatedcontent localstorage sessionstorage" lang="en-US"><head><style type="text/css">.uib-position-measure{display:block !important;visibility:hidden !important;position:absolute !important;top:-9999px !important;left:-9999px !important;}.uib-position-scrollbar-measure{position:absolute !important;top:-9999px !important;width:50px !important;height:50px !important;overflow:scroll !important;}.uib-position-body-scrollbar-measure{overflow:scroll !important;}</style><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
+		
+			
+				
+			
+			
+			
+				
+					
+			 
+		
+		
+		
+		<meta name="Description" content="jmpi is a 100% Java-based implementation of the message-passing interface (MPI-1) standard jmpi comes with an efficient and effective MPI implementation in">
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<!-- Disable "click" touch event 300ms delay for Chrome/Firefox on Android -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+
+		<title>A ubiquitous message passing interface implementation in Java:jmpi - IEEE Conference Publication</title>
+		
+		
+
+
+<script src="https://cdn.ampproject.org/rtv/012002251816300/amp4ads-host-v0.js"></script><script src="pubads_impl_rendering_2020030501.js"></script><script src="utag.js" type="text/javascript" async=""></script><script async="" type="text/javascript" src="gpt.js"></script><script src="settings.js"></script>
+<link rel="stylesheet" type="text/css" href="cookieconsent.css">
+<script src="cookieconsent.js"></script>
+
+<script>
+window.addEventListener("load", function(){
+ window.cookieconsent.initialise(json)
+});
+</script>
+
+
+
+		
+
+
+
+
+
+ 
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+
+	
+
+	
+	
+	
+
+	
+
+	
+
+	
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+
+	
+
+	
+
+	
+		
+	
+		
+		
+			
+			
+	
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+
+
+
+
+
+<link rel="preload" href="integrator_002.js" as="script"><script type="text/javascript" src="integrator_002.js"></script><link rel="preload" href="integrator.js" as="script"><script type="text/javascript" src="integrator.js"></script><script src="pubads_impl_2020030501.js" async=""></script><style>.refinement-section[_ngcontent-c0]   input[type=password][_ngcontent-c0], .refinement-section[_ngcontent-c0]   input[type=text][_ngcontent-c0]{border:1px solid #b7b7b7;border-radius:0;-webkit-box-sizing:border-box;box-sizing:border-box;width:100%}.refinement-section[_ngcontent-c0]   .refinement-content[_ngcontent-c0]   label[_ngcontent-c0]{display:inline}.layout-btn-blue[_ngcontent-c0]{padding:.25em 2.5em}.global-ng-wrapper[_ngcontent-c0]{max-width:1280px;margin:0 auto;min-height:80vh}.remove-global-margin[_ngcontent-c0]{max-width:none;margin:none}</style><style>.global-viewport-margin[_ngcontent-c1]{margin:0 auto;max-width:1280px}
+.refinement-section[_ngcontent-c1]   input[type=password][_ngcontent-c1], .refinement-section[_ngcontent-c1]   input[type=text][_ngcontent-c1]{border:1px solid #b7b7b7;border-radius:0;-webkit-box-sizing:border-box;box-sizing:border-box;width:100%}.refinement-section[_ngcontent-c1]   .refinement-content[_ngcontent-c1]   label[_ngcontent-c1]{display:inline}.layout-btn-blue[_ngcontent-c1]{padding:.25em 2.5em}.global-ng-wrapper[_ngcontent-c1]{max-width:1280px;margin:0 auto;min-height:80vh}.remove-global-margin[_ngcontent-c1]{max-width:none;margin:none}.noscroll[_ngcontent-c1]{overflow:hidden}@media only screen and (max-width:767px){.subscription-details[_ngcontent-c1]   p[_ngcontent-c1]   .learn-more-link[_ngcontent-c1]{float:none;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;display:-webkit-box;display:-ms-flexbox;display:flex;padding:1.5rem;margin:1.5rem;margin-top:0}}
+.button-blue[_ngcontent-c1]{color:#fff;background:#069;border-radius:3px;-webkit-transition:all .3s ease-in-out 0s;transition:all .3s ease-in-out 0s}.button-blue[_ngcontent-c1]:hover{background:#0081c1}.button-blue[_ngcontent-c1]:active{background:#17445a}.button-blue.disabled[_ngcontent-c1], .button-blue[_ngcontent-c1]:disabled{color:#bbb;background:#f8f8f8;cursor:pointer;pointer-events:none;border:1px solid #bbb}.gl-notification[_ngcontent-c1]{left:0}.Notification--global[_ngcontent-c1]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;margin-top:10px;padding:10px 20px;border-radius:5px;background-color:#f5f4be}.Notification-text1[_ngcontent-c1]{color:#333}.stats-global-notification[_ngcontent-c1]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:100%;position:fixed;left:0;top:0;z-index:80001}.icon-container[_ngcontent-c1]{margin-right:10px}.check-mark[_ngcontent-c1]{font-size:1rem;color:#060}.notification-close[_ngcontent-c1]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;font-size:1.25rem;margin-left:10px;color:#333}</style><style>.global-viewport-margin[_ngcontent-c4]{margin:0 auto;max-width:1280px}
+.refinement-section[_ngcontent-c4]   input[type=password][_ngcontent-c4], .refinement-section[_ngcontent-c4]   input[type=text][_ngcontent-c4]{border:1px solid #b7b7b7;border-radius:0;-webkit-box-sizing:border-box;box-sizing:border-box;width:100%}.refinement-section[_ngcontent-c4]   .refinement-content[_ngcontent-c4]   label[_ngcontent-c4]{display:inline}.layout-btn-blue[_ngcontent-c4]{padding:.25em 2.5em}.global-ng-wrapper[_ngcontent-c4]{max-width:1280px;margin:0 auto;min-height:80vh}.remove-global-margin[_ngcontent-c4]{max-width:none;margin:none}.noscroll[_ngcontent-c4]{overflow:hidden}@media only screen and (max-width:767px){.subscription-details[_ngcontent-c4]   p[_ngcontent-c4]   .learn-more-link[_ngcontent-c4]{float:none;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;display:-webkit-box;display:-ms-flexbox;display:flex;padding:1.5rem;margin:1.5rem;margin-top:0}}
+.button-blue[_ngcontent-c4]{color:#fff;background:#069;border-radius:3px;-webkit-transition:all .3s ease-in-out 0s;transition:all .3s ease-in-out 0s}.button-blue[_ngcontent-c4]:hover{background:#0081c1}.button-blue[_ngcontent-c4]:active{background:#17445a}.button-blue.disabled[_ngcontent-c4], .button-blue[_ngcontent-c4]:disabled{color:#bbb;background:#f8f8f8;cursor:pointer;pointer-events:none;border:1px solid #bbb}.footer-new[_ngcontent-c4]{display:-webkit-box;display:-ms-flexbox;display:flex;background-color:#17445a;padding-top:3rem;color:#fff}@media only screen and (max-width:767px){.footer-new[_ngcontent-c4]{padding-top:.1rem}}.footer-new[_ngcontent-c4] > div[_ngcontent-c4]{padding-bottom:2rem}.footer-new[_ngcontent-c4]   h3[_ngcontent-c4]{font-size:1rem;font-weight:800;font-family:IBM Plex Serif,Arial,sans-serif}.footer-new[_ngcontent-c4]   ul[_ngcontent-c4]{list-style-type:none;padding-left:0}.footer-new[_ngcontent-c4]   li[_ngcontent-c4]{padding:.35rem 0;text-transform:uppercase;font-size:12px}.footer-new[_ngcontent-c4]   a[_ngcontent-c4]{width:100%;text-decoration:none;color:#fff}.footer-new[_ngcontent-c4]   a[_ngcontent-c4]:hover{color:#e4a42c}.footer-new[_ngcontent-c4]   .follow[_ngcontent-c4]   ul[_ngcontent-c4]{display:-webkit-box;display:-ms-flexbox;display:flex}.footer-new[_ngcontent-c4]   .follow[_ngcontent-c4]   ul[_ngcontent-c4]   li[_ngcontent-c4]{padding:0 .5rem}.footer-new[_ngcontent-c4]   .follow[_ngcontent-c4]   ul[_ngcontent-c4]   li[_ngcontent-c4]:first-child{padding-left:0}.footer-new[_ngcontent-c4]   .follow[_ngcontent-c4]   ul[_ngcontent-c4]   li[_ngcontent-c4]   a[_ngcontent-c4]{font-size:1.25rem}.footer-new[_ngcontent-c4]   .footer-wrapper[_ngcontent-c4]{-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;max-width:1280px;margin:0 auto}.footer-new[_ngcontent-c4]   .flexible-row-col[_ngcontent-c4]{display:-webkit-box;display:-ms-flexbox;display:flex;padding-bottom:3rem}@media only screen and (max-width:767px){.footer-new[_ngcontent-c4]   .flexible-row-col[_ngcontent-c4]{padding-bottom:.1rem;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}}.footer-new[_ngcontent-c4]   .footer-col[_ngcontent-c4]{-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;padding-left:2rem}@media only screen and (max-width:767px){.footer-new[_ngcontent-c4]   .footer-col[_ngcontent-c4]{padding-top:1rem}.footer-new[_ngcontent-c4]   .footer-col[_ngcontent-c4]:first-child{padding-top:2rem}.footer-new[_ngcontent-c4]   .footer-col[_ngcontent-c4]:last-child{padding-bottom:.25rem}}.footer-new[_ngcontent-c4]   .footer-bottom-section[_ngcontent-c4]   p[_ngcontent-c4]{margin:0;font-size:.75rem;padding-left:2rem;padding-right:2rem}.footer-new[_ngcontent-c4]   .footer-bottom-section[_ngcontent-c4]   p[_ngcontent-c4]:last-child{padding-top:1rem}.footer-new[_ngcontent-c4]   .nowrap[_ngcontent-c4]{white-space:nowrap}</style><style>.global-viewport-margin[_ngcontent-c5]{margin:0 auto;max-width:1280px}
+.refinement-section[_ngcontent-c5]   input[type=password][_ngcontent-c5], .refinement-section[_ngcontent-c5]   input[type=text][_ngcontent-c5]{border:1px solid #b7b7b7;border-radius:0;-webkit-box-sizing:border-box;box-sizing:border-box;width:100%}.refinement-section[_ngcontent-c5]   .refinement-content[_ngcontent-c5]   label[_ngcontent-c5]{display:inline}.layout-btn-blue[_ngcontent-c5]{padding:.25em 2.5em}.global-ng-wrapper[_ngcontent-c5]{max-width:1280px;margin:0 auto;min-height:80vh}.remove-global-margin[_ngcontent-c5]{max-width:none;margin:none}.noscroll[_ngcontent-c5]{overflow:hidden}@media only screen and (max-width:767px){.subscription-details[_ngcontent-c5]   p[_ngcontent-c5]   .learn-more-link[_ngcontent-c5]{float:none;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;display:-webkit-box;display:-ms-flexbox;display:flex;padding:1.5rem;margin:1.5rem;margin-top:0}}
+.button-blue[_ngcontent-c5]{color:#fff;background:#069;border-radius:3px;-webkit-transition:all .3s ease-in-out 0s;transition:all .3s ease-in-out 0s}.button-blue[_ngcontent-c5]:hover{background:#0081c1}.button-blue[_ngcontent-c5]:active{background:#17445a}.button-blue.disabled[_ngcontent-c5], .button-blue[_ngcontent-c5]:disabled{color:#bbb;background:#f8f8f8;cursor:pointer;pointer-events:none;border:1px solid #bbb}@media only screen and (max-width:767px){.document-main.sidebar-opened[_ngcontent-c5]{position:absolute;top:0;padding-top:128px;height:100%;overflow:hidden;opacity:.6}}.tab-inner[_ngcontent-c5]{padding-left:0;padding-right:0;padding-bottom:10px}.tab-inner[_ngcontent-c5]   .tab-content[_ngcontent-c5]{text-align:left;margin:20px;white-space:normal}.tab-inner[_ngcontent-c5]   .tab-content[_ngcontent-c5]   .action[_ngcontent-c5]{text-align:center;margin-top:10px}.tab-inner[_ngcontent-c5]   .tab-content[_ngcontent-c5]   .export-form[_ngcontent-c5]{width:100%}.tab-inner[_ngcontent-c5]   .tab-content[_ngcontent-c5]   .header[_ngcontent-c5]   a[_ngcontent-c5]{margin-top:-4px}.tab-inner[_ngcontent-c5]   ul.nav.nav-tabs[_ngcontent-c5]{font-size:small;border-bottom:1px solid #999;display:-moz-flex;display:-ms-flexbox;display:-ms-flex;display:-webkit-box;display:flex;-webkit-box-sizing:border-box;box-sizing:border-box;width:100%;padding-left:10px;padding-right:10px;margin-bottom:10px}.tab-inner[_ngcontent-c5]   ul.nav.nav-tabs[_ngcontent-c5]   .nav-item[_ngcontent-c5]   .nav-link[_ngcontent-c5]{padding:.4em .3em;background-color:#b7b7b7;border:1px solid #999;margin-bottom:-1px;margin-right:.1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#333;text-decoration:none}.tab-inner[_ngcontent-c5]   ul.nav.nav-tabs[_ngcontent-c5]   .nav-item[_ngcontent-c5]   .nav-link.active[_ngcontent-c5]{color:#069;font-weight:700;background-color:#f5f5f5;border-bottom:0}.overflow-ellipsis[_ngcontent-c5]{text-overflow:ellipsis}.fullWidth[_ngcontent-c5]{width:100%}.disqus-container[_ngcontent-c5]{padding:0 1em}@media only screen and (max-width:767px){.document-sidebar[_ngcontent-c5]{position:absolute;height:calc(100% - 129px);z-index:11000;right:0;padding:0;background:#fffbf5;border:2px solid #f8ac2e;max-width:40vw;-webkit-transform:translateX(40vw);transform:translateX(40vw);-webkit-transition:transform .25s ease-in-out 0s;-webkit-transition:-webkit-transform .25s ease-in-out 0s;transition:-webkit-transform .25s ease-in-out 0s;transition:transform .25s ease-in-out 0s;transition:transform .25s ease-in-out 0s,-webkit-transform .25s ease-in-out 0s}}@media only screen and (max-width:575px){.document-sidebar[_ngcontent-c5]{max-width:80vw;-webkit-transform:translateX(80vw);transform:translateX(80vw)}}@media only screen and (max-width:767px){.document-sidebar.opened[_ngcontent-c5]{position:relative;height:100%;margin-left:calc(100% - 40vw);-webkit-transform:translateX(0);transform:translateX(0);-webkit-box-flex:0;-ms-flex:0 0 auto;flex:0 0 auto}}@media only screen and (max-width:575px){.document-sidebar.opened[_ngcontent-c5]{margin-left:calc(100% - 80vw)}}@media only screen and (max-width:767px){.document-sidebar-content[_ngcontent-c5]{max-height:calc(100% - 129px);width:100%;overflow:scroll;position:absolute}}@media only screen and (max-width:767px){.document-sidebar-content.opened[_ngcontent-c5]{position:relative;height:100%;max-height:100%}}@media only screen and (max-width:767px){.document-sidebar.top-spacing[_ngcontent-c5]{margin-top:8.5rem}}@media only screen and (min-width:768px){.document-sidebar-rel-art[_ngcontent-c5]{padding:0 .65rem 1rem}}.header-rel-art-toggle-mobile[_ngcontent-c5]{top:-2px}</style><style>.global-viewport-margin[_ngcontent-c7]{margin:0 auto;max-width:1280px}
+.refinement-section[_ngcontent-c7]   input[type=password][_ngcontent-c7], .refinement-section[_ngcontent-c7]   input[type=text][_ngcontent-c7]{border:1px solid #b7b7b7;border-radius:0;-webkit-box-sizing:border-box;box-sizing:border-box;width:100%}.refinement-section[_ngcontent-c7]   .refinement-content[_ngcontent-c7]   label[_ngcontent-c7]{display:inline}.layout-btn-blue[_ngcontent-c7]{padding:.25em 2.5em}.global-ng-wrapper[_ngcontent-c7]{max-width:1280px;margin:0 auto;min-height:80vh}.remove-global-margin[_ngcontent-c7]{max-width:none;margin:none}.noscroll[_ngcontent-c7]{overflow:hidden}@media only screen and (max-width:767px){.subscription-details[_ngcontent-c7]   p[_ngcontent-c7]   .learn-more-link[_ngcontent-c7]{float:none;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;display:-webkit-box;display:-ms-flexbox;display:flex;padding:1.5rem;margin:1.5rem;margin-top:0}}
+.button-blue[_ngcontent-c7]{color:#fff;background:#069;border-radius:3px;-webkit-transition:all .3s ease-in-out 0s;transition:all .3s ease-in-out 0s}.button-blue[_ngcontent-c7]:hover{background:#0081c1}.button-blue[_ngcontent-c7]:active{background:#17445a}.button-blue.disabled[_ngcontent-c7], .button-blue[_ngcontent-c7]:disabled{color:#bbb;background:#f8f8f8;cursor:pointer;pointer-events:none;border:1px solid #bbb}.document-title[_ngcontent-c7], .document[_ngcontent-c7]   .document-header[_ngcontent-c7]   .document-title-container[_ngcontent-c7], .pure-g[_ngcontent-c7]{letter-spacing:normal}.document-title[_ngcontent-c7]{margin:0}.document-title-fix[_ngcontent-c7]{-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;width:100%}.document-disqus-anchor-icon[_ngcontent-c7]{display:inline-block}.document-header-inner-container[_ngcontent-c7]{max-width:100%;width:100%}.document-header-breadcrumbs-container[_ngcontent-c7]{padding:.4rem 1rem .8rem 1rem;margin:0;font-size:.8em}.document-header-metrics-banner[_ngcontent-c7]{padding:.4rem 1rem .8rem 1rem;width:100%}.document-header-title-container[_ngcontent-c7]{padding:.4rem 1rem .8rem 1rem;display:-webkit-box;display:-ms-flexbox;display:flex}@media only screen and (max-width:767px){.document-header-title-container[_ngcontent-c7]{-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}}.document-header-title-container[_ngcontent-c7]   .right-container[_ngcontent-c7]{margin-left:auto}@media only screen and (max-width:767px){.document-header-title-container[_ngcontent-c7]   .right-container[_ngcontent-c7]{margin-left:0;margin-right:auto}}.document-header-title-container[_ngcontent-c7]   .badge-container[_ngcontent-c7]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;margin-left:auto;background:no-repeat url("data:image/svg+xml;charset=utf-8,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 168 65'%3E%3Cdefs%3E%3Cstyle%3E.cls-1{fill:none;stroke:%23e5e5e5;stroke-linecap:round;stroke-linejoin:round;fill-rule:evenodd}%3C/style%3E%3C/defs%3E%3Ctitle%3Ebg_badge_border%3C/title%3E%3Cpath class='cls-1' d='M166.5 218h164.82a2.19 2.19 0 0 1 2.18 2.21v59.12a2.66 2.66 0 0 1-2.66 2.67H166.5l17.57-31.56z' transform='translate(-166 -217.5)'/%3E%3C/svg%3E");width:150px;height:60px;cursor:pointer}@media only screen and (max-width:767px){.document-header-title-container[_ngcontent-c7]   .badge-container[_ngcontent-c7]{margin-top:1rem}}.document-header-title-container[_ngcontent-c7]   .badge-container[_ngcontent-c7]   .fa-chevron-circle-down[_ngcontent-c7]{margin-top:auto;margin-left:auto;padding-right:.25rem;padding-bottom:.3rem;color:#069}.document-header-title-container[_ngcontent-c7]   .badge-container[_ngcontent-c7]   .badge[_ngcontent-c7]{width:45px;height:45px;margin-left:1.5rem}.document-header-title-container[_ngcontent-c7]   .badge-container[_ngcontent-c7]   .badge-text[_ngcontent-c7]{margin-left:.5rem;font-size:.75rem;font-weight:700;line-height:normal;color:#069}.document-header-title-container[_ngcontent-c7]   .badge-container[_ngcontent-c7]   .badge-icn-available[_ngcontent-c7]{background:no-repeat url("data:image/svg+xml;charset=utf-8,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 29 35'%3E%3Cdefs%3E%3Cstyle%3E.cls-1,.cls-4{fill:%231272c4}.cls-1,.cls-2,.cls-3{fill-rule:evenodd}.cls-2{fill:%23d8d9d9}.cls-3{fill:%23fff}%3C/style%3E%3C/defs%3E%3Ctitle%3Eicn_reviewed_badge%3C/title%3E%3Cpath class='cls-1' d='M246.6 239.31a2 2 0 0 1-.78.92 2.14 2.14 0 0 1-1.32.31 1.82 1.82 0 0 1-.43 1.21 2.08 2.08 0 0 1-1.23.7 1.8 1.8 0 0 1 0 1.35 1.88 1.88 0 0 1-.91 1 1.83 1.83 0 0 1 .51 1.26 1.87 1.87 0 0 1-.36 1.08 1.84 1.84 0 0 1 .67.94 1.8 1.8 0 0 1 0 1.17 2 2 0 0 1 1 .73 1.84 1.84 0 0 1 .33 1.23 2.16 2.16 0 0 1 1.29.4 1.93 1.93 0 0 1 .75 1.15 2.12 2.12 0 0 1 1.43 0 2 2 0 0 1 1.11.85 2.16 2.16 0 0 1 2.49-.14 2.12 2.12 0 0 1 2.25-.6 1.92 1.92 0 0 1 .78-.92 2.14 2.14 0 0 1 1.32-.31 1.8 1.8 0 0 1 .43-1.21 2 2 0 0 1 1.22-.7 1.8 1.8 0 0 1 0-1.35 1.88 1.88 0 0 1 .91-1 1.83 1.83 0 0 1-.51-1.26 1.8 1.8 0 0 1 .36-1.08 1.93 1.93 0 0 1-.67-.94 1.8 1.8 0 0 1 0-1.17 2.07 2.07 0 0 1-1-.73 1.8 1.8 0 0 1-.33-1.23 2.17 2.17 0 0 1-1.29-.41 1.9 1.9 0 0 1-.75-1.15 2.12 2.12 0 0 1-1.43 0 2.05 2.05 0 0 1-1.11-.85 2.13 2.13 0 0 1-2.49.13 2 2 0 0 1-1 .63 2.18 2.18 0 0 1-1.24-.01zm3.4-6.81a2 2 0 0 1 2.05 1.92v.17l.06-.16a2.08 2.08 0 0 1 2.6-1.19 1.89 1.89 0 0 1 1.27 2.44l-.06.19.13-.16a2.16 2.16 0 0 1 2.88-.33 1.86 1.86 0 0 1 .48 2.52 2.13 2.13 0 0 1 2.64.64 1.82 1.82 0 0 1-.12 2.28 2.06 2.06 0 0 1 2 1.38 1.85 1.85 0 0 1-.74 2.08 2 2 0 0 1 1.35 1.81 2 2 0 0 1-2.05 1.92h-.18l.17.06a1.9 1.9 0 0 1 1.27 2.44 2.11 2.11 0 0 1-2.61 1.19l-.2-.07.17.13a1.84 1.84 0 0 1 .36 2.69 2.15 2.15 0 0 1-2.69.46 1.85 1.85 0 0 1-.68 2.47 2.17 2.17 0 0 1-2.44-.11 2 2 0 0 1-1.47 1.84 2.15 2.15 0 0 1-2.23-.7 2 2 0 0 1-1.92 1.27 2 2 0 0 1-2.05-1.92v-.18l-.06.17a2.1 2.1 0 0 1-2.6 1.19 1.89 1.89 0 0 1-1.33-2.44l.06-.2-.13.16a2.15 2.15 0 0 1-2.88.34 1.85 1.85 0 0 1-.48-2.52 2.13 2.13 0 0 1-2.64-.64 1.82 1.82 0 0 1 .12-2.29 2 2 0 0 1-2-1.37 1.85 1.85 0 0 1 .74-2.09 1.93 1.93 0 0 1-1.35-1.8 2 2 0 0 1 2.05-1.92h.18l-.17-.06a1.89 1.89 0 0 1-1.27-2.44 2.09 2.09 0 0 1 2.6-1.19l.21.06-.17-.12a1.85 1.85 0 0 1-.36-2.7 2.16 2.16 0 0 1 2.69-.45 1.86 1.86 0 0 1 .68-2.48 2.15 2.15 0 0 1 2.44.12 2 2 0 0 1 1.47-1.84 2.13 2.13 0 0 1 2.22.69 2.07 2.07 0 0 1 1.99-1.26z' transform='translate(-235.5 -232.5)'/%3E%3Cpath class='cls-1' d='M6.53 19.08h15.54V35l-7.72-3.45L6.53 35V19.08z'/%3E%3Cpath class='cls-2' d='M249.84 255.33c5.23 0 9.5-4 9.5-9s-4.27-8.95-9.5-8.95-9.51 4-9.51 8.95 4.27 9 9.51 9z' transform='translate(-235.5 -232.5)'/%3E%3Cpath class='cls-3' d='M249.85 257.07c6.55 0 11.88-5 11.88-11.14s-5.33-11.13-11.88-11.13-11.85 5-11.85 11.13 5.31 11.14 11.85 11.14z' transform='translate(-235.5 -232.5)'/%3E%3Cellipse class='cls-4' cx='14.4' cy='13.58' rx='9.23' ry='8.84'/%3E%3C/svg%3E")}.document-header-title-container[_ngcontent-c7]   .badge-container[_ngcontent-c7]   .badge-icn-reviewed[_ngcontent-c7]{background:no-repeat url("data:image/svg+xml;charset=utf-8,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28.27 35.64'%3E%3Cdefs%3E%3Cstyle%3E.cls-1{fill:%23d8d9d9}.cls-1,.cls-2,.cls-3{fill-rule:evenodd}.cls-2{fill:%23fff}.cls-3,.cls-4{fill:%23196600}%3C/style%3E%3C/defs%3E%3Ctitle%3Eicn_available_badge%3C/title%3E%3Cpath class='cls-1' d='M145 111.26a9.12 9.12 0 1 0-9.27-9.11 9.21 9.21 0 0 0 9.27 9.11z' transform='translate(-130.25 -88.18)'/%3E%3Cpath class='cls-2' d='M145 113a11.34 11.34 0 1 0-11.58-11.34A11.48 11.48 0 0 0 145 113z' transform='translate(-130.25 -88.18)'/%3E%3Cpath class='cls-3' d='M141.07 95.12a2 2 0 0 1-.76.93 2 2 0 0 1-1.28.32 1.94 1.94 0 0 1-1.62 1.94 1.93 1.93 0 0 1 0 1.38 2 2 0 0 1-.89 1.05 1.91 1.91 0 0 1 .14 2.38 1.92 1.92 0 0 1 .66 1 2 2 0 0 1 0 1.19 2 2 0 0 1 .95.74 1.92 1.92 0 0 1 .33 1.26 1.94 1.94 0 0 1 1.25.41 1.91 1.91 0 0 1 .73 1.17 2 2 0 0 1 1.4 0 2 2 0 0 1 1.08.87 2 2 0 0 1 1.31-.48 2.05 2.05 0 0 1 1.12.34 2 2 0 0 1 1-.64 2.11 2.11 0 0 1 1.22 0 1.88 1.88 0 0 1 .75-.93 2 2 0 0 1 1.29-.32 1.84 1.84 0 0 1 .42-1.23 2 2 0 0 1 1.19-.72 1.9 1.9 0 0 1 0-1.37 2 2 0 0 1 .89-1 1.94 1.94 0 0 1-.49-1.28 1.9 1.9 0 0 1 .35-1.1 2 2 0 0 1-.66-1 1.93 1.93 0 0 1 0-1.19 2 2 0 0 1-1-.74 1.92 1.92 0 0 1-.32-1.26 2 2 0 0 1-1.26-.41 2 2 0 0 1-.73-1.17 2 2 0 0 1-2.48-.83 2 2 0 0 1-1.3.48 2.06 2.06 0 0 1-1.13-.34 2 2 0 0 1-1 .64 2.07 2.07 0 0 1-1.16-.09zm3.32-6.94a2 2 0 0 1 2 2v.18l.06-.17a2 2 0 0 1 2.55-1.25 1.94 1.94 0 0 1 1.24 2.48l-.07.2.13-.17a2 2 0 0 1 2.81-.33 1.94 1.94 0 0 1 .47 2.56 2 2 0 0 1 2.57.65 1.93 1.93 0 0 1-.11 2.33 2 2 0 0 1 1.91 1.4 1.94 1.94 0 0 1-.72 2.12 1.95 1.95 0 0 1-.69 3.79h-.18l.17.06a2 2 0 0 1 1.24 2.49 2 2 0 0 1-2.54 1.21l-.2-.06.17.12a2 2 0 0 1 .35 2.75 2 2 0 0 1-2.62.46 1.94 1.94 0 0 1-.67 2.52 2 2 0 0 1-2.38-.11 2 2 0 0 1-1.42 1.87 2 2 0 0 1-2.18-.71 2 2 0 0 1-3.87-.67v-.17l-.06.16a2 2 0 0 1-2.54 1.22 2 2 0 0 1-1.24-2.49l.07-.2-.13.17a2 2 0 0 1-2.8.34 1.94 1.94 0 0 1-.48-2.57 2 2 0 0 1-2.57-.65 1.93 1.93 0 0 1 .11-2.33 2 2 0 0 1-1.91-1.4 2 2 0 0 1 .73-2.12 2 2 0 0 1 .68-3.8h.18l-.17-.05a2 2 0 0 1-1.28-2.49 2 2 0 0 1 2.54-1.21l.2.07-.17-.13a1.94 1.94 0 0 1-.34-2.75 2 2 0 0 1 2.61-.46 1.94 1.94 0 0 1 .67-2.52 2 2 0 0 1 2.38.11 2 2 0 0 1 1.43-1.87 2 2 0 0 1 2.17.71 2 2 0 0 1 1.9-1.29z' transform='translate(-130.25 -88.18)'/%3E%3Cpath class='cls-3' d='M6.37 19.44h15.15v16.2l-7.53-3.51-7.62 3.51v-16.2z'/%3E%3Cpath class='cls-1' d='M144.23 111.43a9.12 9.12 0 1 0-9.27-9.11 9.2 9.2 0 0 0 9.27 9.11z' transform='translate(-130.25 -88.18)'/%3E%3Cpath class='cls-2' d='M144.24 113.2a11.34 11.34 0 1 0-11.58-11.34 11.48 11.48 0 0 0 11.58 11.34z' transform='translate(-130.25 -88.18)'/%3E%3Ccircle class='cls-4' cx='14.04' cy='13.83' r='9'/%3E%3C/svg%3E")}.document-header-cover-image[_ngcontent-c7]{padding:.4rem 1rem .8rem 1rem;padding-right:0}.document-header-cover-image[_ngcontent-c7]   img[_ngcontent-c7]{border:1px solid #000;max-width:98%}.document-banner-access[_ngcontent-c7]{width:100%;display:-webkit-box;display:-ms-flexbox;display:flex}.mobile-serp-nav[_ngcontent-c7]{padding:.4rem 1rem .8rem 1rem}.breadcrumbs-separator[_ngcontent-c7]{padding:.4rem}.book-chapter-mark-container[_ngcontent-c7]{padding-top:.5rem}.book-chapter-icon-container[_ngcontent-c7]{padding:.8rem 0;display:-webkit-box;display:-ms-flexbox;display:flex}.book-chapter-icon-link[_ngcontent-c7]{font-size:.87rem}.book-chapter-icon-link.truncated[_ngcontent-c7]{overflow:hidden;white-space:nowrap}.book-chapter-mark-container[_ngcontent-c7]{max-width:80vw}.icon-open-blue-book[_ngcontent-c7]{top:2px;position:relative;margin-right:.5em}.ellipsis--horizontal[_ngcontent-c7]{display:-webkit-box;display:-ms-flexbox;display:flex;max-height:1.2rem;border-radius:3px;padding:0 .4rem;color:#fff;background-color:#0081c1}.ellipsis--horizontal[_ngcontent-c7]:hover{opacity:.9}.ellipsis--horizontal.active[_ngcontent-c7]{background-color:#17445a}.publisher-info-label[_ngcontent-c7]{color:#060;font-size:1rem;font-weight:700}.cite-this-btn-wrapper[_ngcontent-c7]{display:-webkit-box;display:-ms-flexbox;display:flex}@media only screen and (max-width:767px){.cite-this-btn-wrapper[_ngcontent-c7]{-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between}}.cite-this-btn-wrapper[_ngcontent-c7]   .cite-this-btn[_ngcontent-c7]{padding:.5em 1.25em;border:2px solid #069}.cite-this-btn-wrapper[_ngcontent-c7]   .copy-msg-container[_ngcontent-c7]{padding:.75rem;border:1px solid #f7e6a4;background-color:#f9efc6;margin:0 auto;font-size:.8rem}@media only screen and (max-width:767px){.cite-this-btn-wrapper[_ngcontent-c7]   .copy-msg-container[_ngcontent-c7]{position:absolute;top:8%;left:24%;right:24%}}.publisher-title-tooltip[_ngcontent-c7]{margin-top:.3em;padding-right:1rem}@media only screen and (max-width:767px){.document-header-title-container[_ngcontent-c7]{position:relative}}</style><style>.action-item-container[_ngcontent-c9]{width:135px}.download-pdf[_ngcontent-c9]{padding-left:0!important}</style><style></style><style>.global-viewport-margin[_ngcontent-c16]{margin:0 auto;max-width:1280px}
+.refinement-section[_ngcontent-c16]   input[type=password][_ngcontent-c16], .refinement-section[_ngcontent-c16]   input[type=text][_ngcontent-c16]{border:1px solid #b7b7b7;border-radius:0;-webkit-box-sizing:border-box;box-sizing:border-box;width:100%}.refinement-section[_ngcontent-c16]   .refinement-content[_ngcontent-c16]   label[_ngcontent-c16]{display:inline}.layout-btn-blue[_ngcontent-c16]{padding:.25em 2.5em}.global-ng-wrapper[_ngcontent-c16]{max-width:1280px;margin:0 auto;min-height:80vh}.remove-global-margin[_ngcontent-c16]{max-width:none;margin:none}.noscroll[_ngcontent-c16]{overflow:hidden}@media only screen and (max-width:767px){.subscription-details[_ngcontent-c16]   p[_ngcontent-c16]   .learn-more-link[_ngcontent-c16]{float:none;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;display:-webkit-box;display:-ms-flexbox;display:flex;padding:1.5rem;margin:1.5rem;margin-top:0}}
+.button-blue[_ngcontent-c16]{color:#fff;background:#069;border-radius:3px;-webkit-transition:all .3s ease-in-out 0s;transition:all .3s ease-in-out 0s}.button-blue[_ngcontent-c16]:hover{background:#0081c1}.button-blue[_ngcontent-c16]:active{background:#17445a}.button-blue.disabled[_ngcontent-c16], .button-blue[_ngcontent-c16]:disabled{color:#bbb;background:#f8f8f8;cursor:pointer;pointer-events:none;border:1px solid #bbb}.iq-plus-inner-container[_ngcontent-c16]{border:2px solid #f8ac2e;font-size:.88em}.iq-plus-error-container[_ngcontent-c16]{overflow:hidden;color:#196600;font-weight:700;display:-webkit-box;display:-ms-flexbox;display:flex;min-height:200px;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center}.iq-plus-error-container[_ngcontent-c16]   p[_ngcontent-c16]{padding:1.5em}.iq-plus-graph[_ngcontent-c16]{overflow:hidden;background-color:#fff}.iq-plus-graph[_ngcontent-c16]   .img-responsive[_ngcontent-c16]{width:100%;cursor:pointer}.iq-plus-graph-loading-div[_ngcontent-c16]{background-color:#17445a;padding:.7em;border-radius:50%;display:inline-block}.iq-plus-graph-loading-div[_ngcontent-c16]   i[_ngcontent-c16]{position:relative;top:2.5px;right:2.5px}.iq-plus-graph-inner-container[_ngcontent-c16]{display:-webkit-box;display:-ms-flexbox;display:flex;padding:.5em 1em;min-height:32px}.iq-plus-graph-name[_ngcontent-c16]{width:42%;font-size:.8em;font-weight:700;color:#069;text-align:right}.iq-plus-graph-value[_ngcontent-c16]{width:60%;margin-left:5px}.iq-plus-graph-data-visualization[_ngcontent-c16]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;font-size:.9em;font-weight:700;color:#fff;background-image:-webkit-gradient(linear,left top,right top,from(#e37222),to(#e4a42c));background-image:linear-gradient(90deg,#e37222,#e4a42c);height:100%;min-width:1.3em}.iq-plus-bottom-message[_ngcontent-c16]{background-color:#17445a;color:#fff}.iq-plus-bottom-message[_ngcontent-c16]   p[_ngcontent-c16]{margin:0;padding-bottom:.5em}.iq-plus-header[_ngcontent-c16]{padding:.5em 1em;font-weight:700;background-color:#fffbf5;color:#333;border-bottom:2px solid #f8ac2e}.iq-plus-footer[_ngcontent-c16]{border-top:2px solid #f8ac2e}.img-iqplus-default[_ngcontent-c16]{cursor:default}.Spinner[_ngcontent-c16]{margin:0;position:relative;height:122px}.arrow-down-container[_ngcontent-c16]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;cursor:pointer;padding-bottom:1rem}.arrow-down[_ngcontent-c16]{color:#069;font-size:1.5rem}</style><link rel="prefetch" href="https://tpc.googlesyndication.com/safeframe/1-0-37/html/container.html"><style>.global-viewport-margin[_ngcontent-c17]{margin:0 auto;max-width:1280px}
+.refinement-section[_ngcontent-c17]   input[type=password][_ngcontent-c17], .refinement-section[_ngcontent-c17]   input[type=text][_ngcontent-c17]{border:1px solid #b7b7b7;border-radius:0;-webkit-box-sizing:border-box;box-sizing:border-box;width:100%}.refinement-section[_ngcontent-c17]   .refinement-content[_ngcontent-c17]   label[_ngcontent-c17]{display:inline}.layout-btn-blue[_ngcontent-c17]{padding:.25em 2.5em}.global-ng-wrapper[_ngcontent-c17]{max-width:1280px;margin:0 auto;min-height:80vh}.remove-global-margin[_ngcontent-c17]{max-width:none;margin:none}.noscroll[_ngcontent-c17]{overflow:hidden}@media only screen and (max-width:767px){.subscription-details[_ngcontent-c17]   p[_ngcontent-c17]   .learn-more-link[_ngcontent-c17]{float:none;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;display:-webkit-box;display:-ms-flexbox;display:flex;padding:1.5rem;margin:1.5rem;margin-top:0}}
+.button-blue[_ngcontent-c17]{color:#fff;background:#069;border-radius:3px;-webkit-transition:all .3s ease-in-out 0s;transition:all .3s ease-in-out 0s}.button-blue[_ngcontent-c17]:hover{background:#0081c1}.button-blue[_ngcontent-c17]:active{background:#17445a}.button-blue.disabled[_ngcontent-c17], .button-blue[_ngcontent-c17]:disabled{color:#bbb;background:#f8f8f8;cursor:pointer;pointer-events:none;border:1px solid #bbb}.cite-this-container[_ngcontent-c17]{border-radius:3px;padding:1.5em;border:2px solid #333;max-width:1200px;color:#333}.cite-this-container[_ngcontent-c17]   .btn-wrapper[_ngcontent-c17]{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:end;-ms-flex-pack:end;justify-content:flex-end;font-size:.85rem}@media only screen and (max-width:767px){.cite-this-container[_ngcontent-c17]   .btn-wrapper[_ngcontent-c17]{-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}}.cite-this-container[_ngcontent-c17]   .btn-wrapper[_ngcontent-c17]   .layout-btn-blue[_ngcontent-c17]{padding:.75em 1.25em}.cite-this-container[_ngcontent-c17]   .btn-wrapper[_ngcontent-c17] > a[_ngcontent-c17]{-ms-flex-item-align:center;align-self:center;padding-right:1rem}@media only screen and (max-width:767px){.cite-this-container[_ngcontent-c17]   .btn-wrapper[_ngcontent-c17] > a[_ngcontent-c17]{-webkit-box-ordinal-group:2;-ms-flex-order:1;order:1;padding:1rem 0 0 0}}.cite-this-container[_ngcontent-c17]   .btn-wrapper[_ngcontent-c17] > a[_ngcontent-c17]:hover{text-decoration:none}.cite-this-container[_ngcontent-c17]   .title[_ngcontent-c17]{text-align:center;padding-bottom:1.75rem;font-weight:700}.cite-this-container[_ngcontent-c17]   .text[_ngcontent-c17]{padding-bottom:1.75rem;font-size:.85rem}</style><style>.download-citations[_ngcontent-c21]{width:100%}.download-citations[_ngcontent-c21]   .stats-download-citations-radioButtons-container[_ngcontent-c21]   section[_ngcontent-c21]{text-align:left}.download-citations[_ngcontent-c21]   .stats-download-citations-radioButtons-container[_ngcontent-c21]   section.stats-include[_ngcontent-c21]{border-right:1px solid #e7e7e7}.download-citations[_ngcontent-c21]   .stats-download-citations-radioButtons-container[_ngcontent-c21]   section.stats-include.mobile-div[_ngcontent-c21]{border:0}.download-citations[_ngcontent-c21]   .stats-download-citations-radioButtons-container[_ngcontent-c21]   section[_ngcontent-c21]   label[_ngcontent-c21]{color:#2c2c2c;padding-bottom:1em;font-size:1em}.download-citations[_ngcontent-c21]   .stats-download-citations[_ngcontent-c21]   .buttons[_ngcontent-c21]{text-align:center;margin-top:2em}.download-citations[_ngcontent-c21]   .stats-download-citations[_ngcontent-c21]   .buttons[_ngcontent-c21]   .stats-download-citations-button-cancel[_ngcontent-c21]{margin-right:.5em}.download-citations[_ngcontent-c21]   .stats-download-citations[_ngcontent-c21]   .buttons[_ngcontent-c21]   .stats-download-citations-button-download[_ngcontent-c21]{margin-left:1em}</style><style>.email-popup[_ngcontent-c22]{width:100%;color:#000}.email-popup[_ngcontent-c22]   i.popover-close-icon[_ngcontent-c22]{background-image:url(/assets/img/sprite.png?v=1528231377898);background-position:-340px -65px;width:15px;height:15px;display:-webkit-box;display:-ms-flexbox;display:flex;float:right;cursor:pointer}.email-popup[_ngcontent-c22]   .stats-email-popover-container[_ngcontent-c22]   .form-group[_ngcontent-c22]{text-align:left}.email-popup[_ngcontent-c22]   .stats-email-popover-container[_ngcontent-c22]   .form-group[_ngcontent-c22]   .header[_ngcontent-c22]{font-size:1.5em;text-align:left;margin-bottom:1em}.email-popup[_ngcontent-c22]   .stats-email-popover-container[_ngcontent-c22]   .form-group[_ngcontent-c22]   .email-input-div[_ngcontent-c22]{padding-bottom:10px}.email-popup[_ngcontent-c22]   .stats-email-popover-container[_ngcontent-c22]   .form-group[_ngcontent-c22]   .email-input-div[_ngcontent-c22]   input[_ngcontent-c22]{height:28px;width:100%}.email-popup[_ngcontent-c22]   .stats-email-popover-container[_ngcontent-c22]   .form-group[_ngcontent-c22]   .email-input-div[_ngcontent-c22]   input[_ngcontent-c22], .email-popup[_ngcontent-c22]   .stats-email-popover-container[_ngcontent-c22]   .form-group[_ngcontent-c22]   .email-input-div[_ngcontent-c22]   textarea[_ngcontent-c22]{font-size:1.2em}.email-popup[_ngcontent-c22]   .stats-email-popover-container[_ngcontent-c22]   .form-group[_ngcontent-c22]   label[_ngcontent-c22]{font-size:1.2em;color:#2c2c2c}.email-popup[_ngcontent-c22]   .stats-email-popover-container[_ngcontent-c22]   .form-group[_ngcontent-c22]   textarea[_ngcontent-c22]{width:100%;height:75px}.email-popup[_ngcontent-c22]   .stats-email-popover-container[_ngcontent-c22]   .form-group[_ngcontent-c22]   .captcha[_ngcontent-c22]{padding:0 10.5px}.email-popup[_ngcontent-c22]   .stats-email-popover-container[_ngcontent-c22]   .stats-email-popover-button-send[_ngcontent-c22]{margin-left:15px}</style><style>.download-collabratec-container[_ngcontent-c23]{width:190px}.download-collabratec-container[_ngcontent-c23]   p[_ngcontent-c23]{color:#2c2c2c}</style><style>.manage-citation-alerts-container[_ngcontent-c24]{width:151px}.manage-citation-alerts-container[_ngcontent-c24]   .manage-alerts-link[_ngcontent-c24]{margin:10px 0}</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1px; bottom: 2px; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style>[_nghost-c12]{width:100%}.ft-toc[_ngcontent-c12]{height:52px;border-top:1px solid #e5e5e5;border-bottom:1px solid #e5e5e5}.ft-toc[_ngcontent-c12] > div[_ngcontent-c12]{margin-top:13px}.ft-toc[_ngcontent-c12]   a.toc-link[_ngcontent-c12]{font-size:1.2em;font-weight:700}.ft-toc[_ngcontent-c12]   a.toc-link[_ngcontent-c12]:hover{text-decoration:none}.ft-toc[_ngcontent-c12]   a.toc-link[_ngcontent-c12]   img[_ngcontent-c12]{position:relative;top:-2px;margin-right:.3em}.full-text-toc-wrapper[_ngcontent-c12]   .previous-next-nav-ctrl[_ngcontent-c12]{overflow:visible}.stats-document-container-fullTextSection[_ngcontent-c12]{padding:0 15px}.stats-document-container-rh[_ngcontent-c12]{padding-right:1em;padding-left:1em}.previous-next-nav-ctrl[_ngcontent-c12]{overflow:visible}.toc-container[_ngcontent-c12]{margin-bottom:.7em;font-weight:700}.toc-container[_ngcontent-c12]   a[_ngcontent-c12]:hover{text-decoration:none}</style><style>.accordion-header[_ngcontent-c33]{color:#069;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.accordion-header[_ngcontent-c33]   .accordion-chevron[_ngcontent-c33]   .fa[_ngcontent-c33]{font-size:1.5rem}.accordion-header[_ngcontent-c33]:hover{color:#0081c1}.container-active[_ngcontent-c33]   .accordion-header[_ngcontent-c33]{color:#17445a}</style><style>.abstract-first-page-preview[_ngcontent-c10]{border:1px solid #000;width:100%}.abstract-graphic-asset[_ngcontent-c10]{width:450px!important}.isbn-value[_ngcontent-c10]{white-space:nowrap}.document-cadmore-player-container[_ngcontent-c10]{padding-bottom:1rem}</style><style>.global-viewport-margin[_ngcontent-c46]{margin:0 auto;max-width:1280px}
+.refinement-section[_ngcontent-c46]   input[type=password][_ngcontent-c46], .refinement-section[_ngcontent-c46]   input[type=text][_ngcontent-c46]{border:1px solid #b7b7b7;border-radius:0;-webkit-box-sizing:border-box;box-sizing:border-box;width:100%}.refinement-section[_ngcontent-c46]   .refinement-content[_ngcontent-c46]   label[_ngcontent-c46]{display:inline}.layout-btn-blue[_ngcontent-c46]{padding:.25em 2.5em}.global-ng-wrapper[_ngcontent-c46]{max-width:1280px;margin:0 auto;min-height:80vh}.remove-global-margin[_ngcontent-c46]{max-width:none;margin:none}.noscroll[_ngcontent-c46]{overflow:hidden}@media only screen and (max-width:767px){.subscription-details[_ngcontent-c46]   p[_ngcontent-c46]   .learn-more-link[_ngcontent-c46]{float:none;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;display:-webkit-box;display:-ms-flexbox;display:flex;padding:1.5rem;margin:1.5rem;margin-top:0}}
+.button-blue[_ngcontent-c46]{color:#fff;background:#069;border-radius:3px;-webkit-transition:all .3s ease-in-out 0s;transition:all .3s ease-in-out 0s}.button-blue[_ngcontent-c46]:hover{background:#0081c1}.button-blue[_ngcontent-c46]:active{background:#17445a}.button-blue.disabled[_ngcontent-c46], .button-blue[_ngcontent-c46]:disabled{color:#bbb;background:#f8f8f8;cursor:pointer;pointer-events:none;border:1px solid #bbb}.document-player-container[_ngcontent-c46]{margin:auto;width:100%;max-width:640px
+  }
+.document-player-config[_ngcontent-c46]{height:700px;overflow:hidden!important;position:relative!important}
+.document-player-config[_ngcontent-c46]   iframe[_ngcontent-c46]{position:absolute;top:0;left:0}
+.document-player-config.cmpl_no_transcript[_ngcontent-c46]{padding-top:56.25%;height:auto}
+.cmpl_picture_pop[_ngcontent-c46]{display:none}@media only screen and (max-width:767px){.document-player-container[_ngcontent-c46]   .cmpl_picture_pop[_ngcontent-c46]{display:block}.document-player-container[_ngcontent-c46]   .document-player-config[_ngcontent-c46]{display:none}}</style><style>.header-rel-art-pub[_ngcontent-c15]{margin:.25rem 0 .25rem}.header-rel-art-pub[_ngcontent-c15]:last-child{margin:0 0 .5rem}</style><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/jax/input/TeX/config.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/jax/output/HTML-CSS/config.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/tex2jax.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/AMSmath.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/AMSsymbols.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/ieeemacros.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/cancel.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/AMScd.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/color_ieee.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/cellcolor_ieee.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/enclose.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/euler_ieee.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/upgreek.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/ieee_stixext.js?V=2.7.4"></script><script type="text/javascript" src="https://ieeexplore.ieee.org/xploreAssets/MathJax-274/extensions/TeX/ietmacros.js?V=2.7.4"></script></head><body class="body-resp cmpl_embed_complete"><div id="MathJax_Message" style="">Loading [MathJax]/extensions/TeX/ietmacros.js</div><div style="display: none;" id="lightningjs-usabilla_live"><div><iframe id="lightningjs-frame-usabilla_live" frameborder="0"></iframe></div></div><g:compress>
+	<link rel="stylesheet" href="simplePassMeter.css">
+	<link rel="stylesheet" type="text/css" media="screen, print" href="styles.css">
+	<link rel="stylesheet" href="idangerous.css">
+	<link rel="stylesheet" type="text/css" media="screen, print" href="jquery-ui-1.css">
+</g:compress>
+
+
+
+
+		
+
+	<script type="text/javascript">
+		var googletag = googletag || {};
+		googletag.cmd = googletag.cmd || [];
+		(function() {
+		var gads = document.createElement('script');
+		gads.async = true;
+		gads.type = 'text/javascript';
+		var useSSL = 'https:' == document.location.protocol;
+		gads.src = (useSSL ? 'https:' : 'http:') + 
+		'//securepubads.g.doubleclick.net/tag/js/gpt.js';
+		var node = document.getElementsByTagName('script')[0];
+		node.parentNode.insertBefore(gads, node);
+		})();
+	</script>
+
+		<script type="text/javascript" src="jquery_002.js" charset="utf-8"></script>
+		
+	
+	
+		<p class="JumpLink" id="PageTop"><a href="#" title="Click here to Skip to main content" accesskey="s">Skip to Main Content</a></p>
+
+		<div id="global-notification" class="row stats-global-notification">
+			<div class="hide u-hide-important col Notification Notification--global Notification--fixed">
+				<a href="" class="Notification-close js-close" aria-label="close message button"><i class="fa fa-close"></i></a>
+				<div class="Notification-header"></div>
+				<div class="Notification-text"></div>
+			</div>
+		</div>
+
+		<div id="LayoutWrapper">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col">
+						
+							
+
+
+
+
+
+
+
+
+
+
+	
+		<script type="text/javascript" src="6Mc4deRE.js"></script>
+	
+
+	
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+		
+	
+	
+
+
+
+
+	
+
+
+
+
+	
+
+
+
+
+
+<div class="Metanav stats-metanav">
+	<div class="Metanav-ieee-links">
+		<ul class="Menu Menu--horizontal Menu--dividers">
+			<li class="Menu-item stats-extLink stats-Unav_exit_aaa"><a href="http://www.ieee.org/" id="u-home" class="ieeeorg">IEEE.org</a></li>
+			<li class="Menu-item stats-extLink">IEEE <em>Xplore</em> Digital Library</li>
+			<li class="Menu-item stats-extLink"><a href="http://standards.ieee.org/" id="u-standards" class="exitstandardsorg">IEEE-SA</a></li>
+			<li class="Menu-item stats-extLink"><a href="http://spectrum.ieee.org/" id="u-spectrum" class="exitspectrum">IEEE Spectrum</a></li>
+			<li class="Menu-item stats-extLink"><a href="http://www.ieee.org/sitemap.html" id="u-more" class="exitmoreieeesites">More Sites</a></li>
+		</ul>
+	</div>
+	<div class="Metanav-user-links">
+		<ul class="Menu Menu--horizontal Menu--dividers u-relative u-pullRight">
+			
+				<li class="Menu-item stats-mnEvLinks" id="global-header-cart-count">
+					<a class="cart stats-Unav_exit_Cart" href="https://www.ieee.org/cart/public/myCart/page.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore" title="View Cart" tabindex="0"><span id="cartCount">Cart&nbsp;</span></a>
+					<div class="content-r cart-summary product-cart" style="display:none" id="mc_ieee-mini-cart-include_wrapper">
+						<a class="cart-close" onclick="closeCart(event);" tabindex="0"></a>
+						<span style="display:none" id="mc_ieee-mini-cart-include"></span><div id="mc_minicart-container" class="mc-minicart-content"></div>
+					</div>
+				</li>
+			
+			
+			
+				
+								
+						<li class="Menu-item stats-mnEvLinks"><a class="create-account-new stats-Unav_CreateAcct" href="https://www.ieee.org/profile/public/createwebaccount/showCreateAccount.html?sourceCode=xplore&amp;car=IEEE-Xplore&amp;autoSignin=Y&amp;signinurl=https%3A%2F%2Fieeexplore.ieee.org%2FXplore%2Flogin.jsp%3Furl%3D%2FXplore%2Fhome.jsp%26reason%3Dauthenticate&amp;url=https%3A%2F%2Fieeexplore.ieee.org%2Fabstract%2Fdocument%2F760461%2F" title="Create Account">Create Account</a></li>
+					
+					
+				
+				<li class="Menu-item stats-mnEvLinks">
+					<a class="sign-in stats-Unav_P_SignIn" href="#" title="Sign In">Personal Sign In</a>
+					
+
+
+<div id="personal-sign-in" class="hide Overlay Overlay--right stats-metanav-signin-modal" aria-hidden="true">
+	<div class="Overlay-tab">
+		<span class="Overlay-label">Personal Sign In</span>
+	</div>
+	<div class="Overlay-body">
+		<div class="Notification hide u-mb-1">
+			<div class="Notification-header"></div>
+			<div class="Notification-text"></div>
+		</div>
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- If for signin forms that need to be hidden, use this template -->
+
+    
+        <div id="gdpr-hidden-personal-signin-gdpr-container" class="gdpr-signin-container col-md-12" style="display: none;">
+            <div class="welcome-msg u-pb-1">
+                For IEEE to continue sending you helpful information on our products
+                and services, please consent to our updated Privacy Policy.
+            </div>
+            <div class="checkbox-disclaimer row">
+                <div class="col-1">
+                    <label class="custom-checkbox">
+                        <input id="gdpr-hidden-personal-signin-gdpr-checkbox" onchange="acceptGdpr(this)" type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    I have read and accepted the <a href="https://www.ieee.org/security-privacy.html" target="_blank">IEEE Privacy Policy</a>.
+                </div>
+            </div>
+
+        
+            
+
+            
+            <div class="u-pt-1 u-align-right col-12">
+                <button id="gdpr-hidden-personal-signin-back-signin-btn" class="layout-btn-blue disabled">Accept &amp; Sign In
+            
+        
+        
+               		<span id="gdpr-hidden-personal-signin-SpinnerImage" class="hide">
+						<img src="move-spinner.gif">
+					</span>
+                </button>
+            </div>
+        </div>
+    
+    
+    
+
+
+
+       
+        <script>
+        	function acceptGdpr(checkBox){
+                var gdprTextBox=jQuery(".gdpr-hidden-personal-signin").find(".gdprAccepted");
+                if(!gdprTextBox || !gdprTextBox.val() || !gdprTextBox.val()==='unknown'){
+                	alert("Required \n <input type='hidden' name='gdprAccepted' class='gdprAccepted' value='unknown' /> \n In Form gdpr-hidden-personal-signin")
+                }                
+                gdprTextBox.val(checkBox.checked);
+        	}
+        	function showGdpr(){
+         		jQuery(".gdpr-hidden-personal-signin").addClass('hidden-signin-form');
+                jQuery('#gdpr-hidden-personal-signin-gdpr-container').show();
+                jQuery('#gdpr-hidden-personal-signin-SpinnerImage').hide();
+        	}
+        	function hideGdpr(){
+                jQuery('#gdpr-hidden-personal-signin-gdpr-container').hide();
+                jQuery(".gdpr-hidden-personal-signin").removeClass('hidden-signin-form');
+        	}    
+            // On GDPR checkbox click, toggle enable/disable back to sign in button.
+            jQuery('#gdpr-hidden-personal-signin-gdpr-checkbox').change(function(){
+                if (jQuery(this).is(':checked')) {
+                    jQuery('#gdpr-hidden-personal-signin-back-signin-btn').removeClass('disabled');
+                } else {
+                    jQuery('#gdpr-hidden-personal-signin-back-signin-btn').addClass('disabled');
+                }
+            });
+        	jQuery('#gdpr-hidden-personal-signin-back-signin-btn').on('dblclick',function(event){
+        		event.preventDefault();
+        		return false;
+        	});
+            // On Back to sign in button click, show sign in form.
+            jQuery('#gdpr-hidden-personal-signin-back-signin-btn').click(function(){
+            	jQuery(this).attr("disabled","disabled")
+        		jQuery('#gdpr-hidden-personal-signin-SpinnerImage').show();
+                jQuery(".gdpr-hidden-personal-signin").find(".js-submit").click();
+            });    
+            // On Back to sign in button click, show sign in form.
+
+        </script>
+    
+    
+
+
+    
+	
+     	<script>
+          // If checkbox is show, hide the sign in form until checkbox accepted.
+          jQuery(document).ready(function(){
+          	hideGdpr();
+          });
+        </script>	
+	
+         
+		
+
+		<form action="https://ieeexplore.ieee.org/servlet/LoginModalController" class="gdpr-hidden-personal-signin form-personal-signin pure-form row justify-content-center">
+				<input name="src2" id="src2" value="loginModalWindow" type="hidden"> 
+				<input name="url2" id="url2" value="/xpl/loginModal.jsp" type="hidden">
+				<div class="col-6 col-md-5 u-pr-1">
+					<label class="overlabel" for="username">Email Address</label>
+					<input class="pure-input-1 username" name="username" autocomplete="off" placeholder="Email Address" type="text">
+				</div>
+				<div class="col-6 col-md-5">
+					<label class="overlabel" for="password">Password</label>
+					<input class="pure-input-1 password" name="password" placeholder="Password" type="password">
+				</div>
+				<input name="gdprAccepted" class="gdprAccepted" value="unknown" type="hidden"> 
+				<div class="margin-left-auto">
+					<button class="js-submit pure-button pure-button-primary stats-Unav_Per_SignIn">Sign In</button>
+				</div>
+		</form>
+		
+		
+						
+				<a href="https://www.ieee.org/profile/public/forgotpassword/forgotUsernamePassword.html?sourceCode=xplore&amp;signinurl=https%3A%2F%2Fieeexplore.ieee.org%2FXplore%2Flogin.jsp%3Furl%3D%2FXplore%2Fhome.jsp%26reason%3Dauthenticate&amp;url=https%3A%2F%2Fieeexplore.ieee.org%2FXplore%2Flogin.jsp%3Furl%3D%2FXplore%2Fhome.jsp%26reason%3Dauthenticate" class="gdpr-hidden-personal-signin u-pullRight js-forgotUserPass-new stats-forgotUserPass stats-Unav_Per_SignIn_Forgot_UP">Forgot Password?</a>
+			
+			
+		
+		
+</div>
+
+				</div></li>
+			
+		</ul>
+	</div>
+</div> <!-- Metanav -->
+<!--
+TODOS
+* update the way the shopping cart updates counts.  It's inserting string text + count.
+* port logic for modal service unavailable to js
+ -->
+
+
+
+	
+
+
+<div class="Header" id="xplore-header" data-service="true" data-inst="false" data-web="false">
+	<div class="row">
+		<div class="logo-container logo-container-left">
+			
+				
+					<a href="https://ieeexplore.ieee.org/Xplore/home.jsp" accesskey="1" title="Delivering full text access to the world's highest quality technical literature in engineering and technology" alt="IEEE Advancing Technology for Humanity" class="logo-xplore"></a>
+				
+				
+			
+		</div>
+
+		<div class="institutional-sign-in-container">
+				
+					
+					
+				
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+		
+		<div class="institutional-signin">
+			<i class="icon icon-single-caret"></i><a class="u-alignMiddle" href="javascript:Modal.show('/xpl/mwInstSignIn.jsp')">Institutional Sign In</a>
+		</div>
+
+	
+
+
+		</div>
+
+		<div class="logo-container logo-container-right">
+			<span class="logo-ieee u-pullRight"></span>
+		</div>
+	</div>
+</div>
+
+
+
+
+<!--  code for desktop capturing removed -->
+
+							
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="Toolbar stats-toolbar-menu">
+	<ul class="Toolbar-list">
+		<li id="primary-browse" class="Toolbar-item Toolbar-item-browse is-menu">
+			<a class="Toolbar-button Toolbar-button-browse stats-browse-content" tabindex="0">
+				<span class="Toolbar-button-browse-text">Browse<i class="Toolbar-dropdown-icon"></i></span>
+			</a>
+			<ul class="Menu Menu--overlay Toolbar-subnav-menu Toolbar-browse-subnav-menu" style="display: none;">
+				<li><a href="https://ieeexplore.ieee.org/browse/books/title/" class="Books stats-browse-book">Books</a></li>
+				<li><a href="https://ieeexplore.ieee.org/browse/conferences/title/" accesskey="c" class="ConfProceedings stats-browse-conf">Conferences</a></li>
+				<li><a href="https://ieeexplore.ieee.org/xpl/courses.jsp" class="EducationCourses stats-browse-course">Courses</a></li>
+				<li><a href="https://ieeexplore.ieee.org/browse/periodicals/title/" accesskey="j" class="Journals_Mag stats-browse-jrnl">Journals &amp; Magazines</a></li>
+				<li><a href="https://ieeexplore.ieee.org/browse/standards/collection/ieee" accesskey="b" class="Standards stats-browse-std">Standards</a></li>
+				<!-- <li>
+					<a tabindex="0" id="byTopicLink" class="ByTopic stats-browse-by-topic">Topics <i class="Toolbar-topics-caret-icon fa fa-angle-right"></i></a>
+					
+
+
+
+
+<script>
+	function goToTopic(topic) {
+		var topicMap = applySpecialCharacterMapping(topic); 
+		var url = "/xpl/topicbrowse.jsp?topic=" + escape(topicMap);
+		window.top.location.href = url;
+	}
+</script>
+
+
+<div id="browse-by-topic" class="Overlay stats-browsebytopic-menu">
+	<div class="Overlay-body">
+		<ul class="List List--no-style">
+			
+				
+					<li><a href="/browse/topics/Aerospace">Aerospace</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Ancillary Data">Ancillary Data</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Audio">Audio</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Bioengineering">Bioengineering</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Career Development">Career Development</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Communication, Networking and Broadcast Technologies">Communication, Networking and Broadcast Technologies</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Communication, Networking and Broadcast technologies">Communication, Networking and Broadcast technologies</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Components, Circuits, Devices and Systems">Components, Circuits, Devices and Systems</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Compression">Compression</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Computing and Processing">Computing and Processing</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Control">Control</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/D-Cinema">D-Cinema</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Dielectrics and Plasmas">Dielectrics and Plasmas</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Emerging Technologies">Emerging Technologies</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Engineered Materials">Engineered Materials</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Engineered Materials, Dielectrics and Plasmas">Engineered Materials, Dielectrics and Plasmas</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Engineering Profession">Engineering Profession</a></li>
+				
+			
+				
+			
+				
+					<li><a href="/browse/topics/Fields, Waves and Electromagnetics">Fields, Waves and Electromagnetics</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/File Formats">File Formats</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Film">Film</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/General Topics for Engineers">General Topics for Engineers</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Geoscience">Geoscience</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/IEEE Standards">IEEE Standards</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Identification">Identification</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Image Formats">Image Formats</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Interfaces">Interfaces</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Metadata">Metadata</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Networks">Networks</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Nuclear Engineering">Nuclear Engineering</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Photonics and Electro-Optics">Photonics and Electro-Optics</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Photonics and Electrooptics">Photonics and Electrooptics</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Power, Energy and Industry Applications">Power, Energy and Industry Applications</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Power, Energy, and Industry Applications">Power, Energy, and Industry Applications</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Projection">Projection</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Recording">Recording</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Robotic and Control Systems">Robotic and Control Systems</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Robotics and Control Systems">Robotics and Control Systems</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Security">Security</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Security, D-Cinema">Security, D-Cinema</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Signal Processing and Analysis">Signal Processing and Analysis</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Signal Procressing and Analysis">Signal Procressing and Analysis</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Stereoscopic">Stereoscopic</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Subtitles">Subtitles</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Telecommunications">Telecommunications</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Television">Television</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Test & Measurement">Test & Measurement</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Time & Sync">Time & Sync</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Transportation">Transportation</a></li>
+				
+			
+				
+					<li><a href="/browse/topics/Wrappers">Wrappers</a></li>
+				
+			
+		</ul>
+	</div>
+</div>
+
+				</li> -->
+			</ul>
+		</li>
+		
+		
+		<li class="Toolbar-item is-menu hide-mobile">
+			<a class="Toolbar-button Toolbar-button-settings" tabindex="0">My Settings<i class="Toolbar-dropdown-icon"></i></a>
+			<ul class="Menu Menu--overlay Toolbar-subnav-menu stats-my-settings" style="display: none;">
+				
+				<li><a href="https://ieeexplore.ieee.org/alerts/journals-magazines" class="ALERTS">Alerts</a></li>
+                					
+				
+				
+					<li><a href="https://ieeexplore.ieee.org/my-settings/my-xplore" class="stats-my-xplore"><i>MyXplore</i> App</a></li>
+				
+				<li><a href="https://ieeexplore.ieee.org/Xplore/login.jsp?reason=fromPreferencesMenu&amp;url=/user/preferences" class="" id="">Preferences</a></li>
+				<li><a href="https://ieeexplore.ieee.org/articleSale/purchaseHistory.jsp" class="PURCHASEHISTORY" id="PURCHASEHISTORY">Purchase History</a></li>
+				<li><a href="https://ieeexplore.ieee.org/search/searchHistoryMore.jsp" id="search-history" class="searchhistory">Search History</a></li>
+				<li><a href="https://ieeexplore.ieee.org/xpl/accessinfo" class="WHATCANIACCESS" id="WHATCANIACCESS">What can I access?</a></li>
+			</ul>
+		</li>
+		
+		
+		 <li class="Toolbar-item is-menu hide-mobile">
+			<a class="Toolbar-button Toolbar-button-help" tabindex="0">Get Help<i class="Toolbar-dropdown-icon"></i></a>
+			<ul class="Menu Menu--overlay Toolbar-subnav-menu stats-get-help" style="display: none;">
+				<li><a href="https://ieeexplore.ieee.org/xpl/contact" id="Feedback">Contact Us</a></li>
+				<li><a href="https://ieeexplore.ieee.org/Xplorehelp/Help_start.html" id="Resources">Resources and Help</a></li>
+			</ul>
+		</li>
+
+		
+			<li class="Toolbar-item Toolbar-item-subscribe hide-mobile"><a href="https://innovate.ieee.org/Xplore/Subscribebutton" target="_blank" class="Toolbar-button Toolbar-button-subscribe stats-Xplnav_exit_subscribe"><div class="Toolbar-button-subscribe-text">Subscribe</div></a></li>
+		
+
+		
+	</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+						
+						
+
+
+
+
+
+
+
+	
+		
+		
+			
+			
+			
+		
+	
+	
+
+
+
+
+						<div id="global-alert-message"></div>
+						
+
+
+
+
+
+
+<script type="text/javascript">
+	
+	
+	document.write('<base href="/abstract/document/" />');
+	
+	
+	
+</script><!-- base href="https://ieeexplore.ieee.org/abstract/document/" -->
+
+<script type="text/javascript" src="Embed.js"></script>
+<!--- This is a picture popup embed for mobilew view.  -->
+<script type="text/javascript" src="PicturePop.js"></script>
+
+
+
+
+
+
+
+<script type="text/javascript">
+var body_rightsLink ="", body_publisher = "";
+var recordId = "";
+
+
+var AUTHOR_PROFILE = 'ON';
+if (AUTHOR_PROFILE.toUpperCase() == "OFF"){
+	var AUTHOR_PROFILE_ENABLED = false;
+}else{
+	var AUTHOR_PROFILE_ENABLED = true;
+}
+
+var global = {
+	document: {
+		disqus:{
+			remote_auth_s3 : '',
+			public_api_key:'1lxKgMbpNIbQvfk2tqLcWeSVloE8rgIY2CV1tCu3Vp641oL4eEITYBbkViJJGNYY',
+			short_name:'ieeexplore',
+			client_url:'https://ieeexplore.ieee.org',
+			sso_enabled:'{$sessionProfile.provisioned}'
+		},
+
+		fullTextAccess: false,
+		isAccessFromInstitution: false
+		
+	}
+};
+	
+	global.document.metadata={"userInfo":{"institute":false,"member":false,"individual":false,"guest":false,"subscribedContent":false,"fileCabinetContent":false,"fileCabinetUser":false,"institutionalFileCabinetUser":false,"showPatentCitations":true,"showGet802Link":false,"showOpenUrlLink":false,"tracked":false,"delegatedAdmin":false,"isInstitutionDashboardEnabled":false,"isInstitutionProfileEnabled":false,"isRoamingEnabled":false,"isDelegatedAdmin":false},"authors":[{"name":"K. Dincer","affiliation":"Dept. of Comput. Eng., Baskent Univ., Ankara, Turkey","firstName":"K.","lastName":"Dincer","affiliation":"Dept. of Comput. Eng., Baskent Univ., Ankara, Turkey","id":"37323396000"}],"isbn":[{"format":"Print ISBN","value":"0-7695-0143-5"}],"articleNumber":"760461","dbTime":"3 ms","metrics":{"citationCountPaper":8,"citationCountPatent":0,"totalDownloads":33},"pdfUrl":"/stamp/stamp.jsp?tp=&arnumber=760461","purchaseOptions":{"showOtherFormatPricingTab":false,"showPdfFormatPricingTab":true,"pdfPricingInfoAvailable":true,"otherPricingInfoAvailable":false,"mandatoryBundle":false,"optionalBundle":false,"pdfPricingInfo":[{"memberPrice":"$14.95","nonMemberPrice":"$33.00","partNumber":"760461","type":"PDF"}]},"formulaStrippedArticleTitle":"A ubiquitous message passing interface implementation in Java:jmpi","getProgramTermsAccepted":false,"sections":{"abstract":"true","authors":"true","figures":"false","multimedia":"false","references":"true","citedby":"true","keywords":"true","definitions":"false","algorithm":"false","dataset":"false","cadmore":"false","footnotes":"false","disclaimer":"false","metrics":"true"},"keywords":[{"type":"IEEE Keywords","kwd":["Message passing","Java","Computer interfaces","Computer networks","Distributed computing","Object oriented modeling","Libraries","Pervasive computing","Application software","Sun"]},{"type":"INSPEC: Controlled Indexing","kwd":["message passing","Java","application program interfaces","performance evaluation"]},{"type":"INSPEC: Non-Controlled Indexing","kwd":["ubiquitous message passing interface implementation","Java","jmpi","Java-based implementation","MPI-1","application programming interface","communication benchmark performance","SUN UltraSparc workstations"]}],"title":"A ubiquitous message passing interface implementation in Java:jmpi","abstract":"jmpi is a 100% Java-based implementation of the message-passing interface (MPI-1) standard jmpi comes with an efficient and effective MPI implementation in Java and supports a user-friendly Java application programming interface (API) for MPI. We present the implementation details and give some early communication benchmark performance results on a cluster of SUN UltraSparc workstations.","allowComments":false,"doi":"10.1109/IPPS.1999.760461","publicationTitle":"Proceedings 13th International Parallel Processing Symposium and 10th Symposium on Parallel and Distributed Processing. IPPS/SPDP 1999","displayPublicationTitle":"Proceedings 13th International Parallel Processing Symposium and 10th Symposium on Parallel and Distributed Processing. IPPS/SPDP 1999","pdfPath":"/iel4/6155/16457/00760461.pdf","rightsLink":"http://s100.copyright.com/AppDispatchServlet?publisherName=ieee&publication=proceedings&title=A+ubiquitous+message+passing+interface+implementation+in+Java%3Ajmpi&isbn=0-7695-0143-5&publicationDate=1999&author=K.+Dincer&ContentID=10.1109/IPPS.1999.760461&orderBeanReset=true&startPage=203&endPage=207&proceedingName=Proceedings+13th+International+Parallel+Processing+Symposium+and+10th+Symposium+on+Parallel+and+Distributed+Processing.+IPPS%2FSPDP+1999","startPage":"203","endPage":"207","pubLink":"/xpl/conhome/6155/proceeding","issueLink":"/xpl/tocresult.jsp?isnumber=16457","standardTitle":"A ubiquitous message passing interface implementation in Java:jmpi","isJournal":false,"isConference":true,"isBook":false,"dateOfInsertion":"06 August 2002","isGetArticle":false,"isGetAddressInfoCaptured":false,"isMarketingOptIn":false,"xploreDocumentType":"Conference Publication","applyOUPFilter":false,"pubTopics":[{"name":"Computing and Processing"},{"name":"Communication, Networking and Broadcast Technologies"}],"publisher":"IEEE","isOUP":false,"isDynamicHtml":false,"isStandard":false,"isNotDynamicOrStatic":true,"chronOrPublicationDate":"12-16 Apr 1999","htmlAbstractLink":"/document/760461/","isACM":false,"conferenceDate":"12-16 April 1999","isProduct":false,"isEphemera":false,"isMorganClaypool":false,"isOpenAccess":false,"isStaticHtml":false,"isChapter":false,"isEarlyAccess":false,"publicationDate":"1999","accessionNumber":"6251699","persistentLink":"https://ieeexplore.ieee.org/servlet/opac?punumber=6155","isSMPTE":false,"isFreeDocument":false,"isSAE":false,"isNow":false,"isCustomDenial":false,"isPromo":false,"startPage":"203","openAccessFlag":"F","ephemeraFlag":"false","chorusFlag":"false","title":"A ubiquitous message passing interface implementation in Java:jmpi","confLoc":"San Juan, Puerto Rico, USA, USA","accessionNumber":"6251699","html_flag":"false","ml_html_flag":"false","promoFlag":"false","sourcePdf":"00760461.pdf","content_type":"Conferences","mlTime":"PT0.02614S","chronDate":"12-16 Apr 1999","pdfPath":"/iel4/6155/16457/00760461.pdf","isNumber":"16457","rightsLinkFlag":"1","dateOfInsertion":"06 August 2002","contentType":"conferences","publicationDate":"1999","publicationNumber":"6155","citationCount":"8","articleId":"760461","publicationTitle":"Proceedings 13th International Parallel Processing Symposium and 10th Symposium on Parallel and Distributed Processing. IPPS/SPDP 1999","sections":{"abstract":"true","authors":"true","figures":"false","multimedia":"false","references":"true","citedby":"true","keywords":"true","definitions":"false","algorithm":"false","dataset":"false","cadmore":"false","footnotes":"false","disclaimer":"false","metrics":"true"},"onlineDate":"","conferenceDate":"12-16 April 1999","publicationYear":"1999","subType":"IEEE Conference","lastupdate":"2020-02-07","mediaPath":"","endPage":"207","displayPublicationTitle":"Proceedings 13th International Parallel Processing Symposium and 10th Symposium on Parallel and Distributed Processing. IPPS/SPDP 1999","doi":"10.1109/IPPS.1999.760461"};
+
+
+
+	global.document.snippet="true";
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div ng-app="xpl.document" class="ng-scope">
+	
+	
+		<div class="Search ng-isolate-scope" ng-class="{'Search-with-count': showCount}" show-count="false">
+	<!-- TODO Start: Integrate latest count -->
+	<!-- ngIf: showCount -->
+	<!-- TODO End: Integrate latest count -->
+	
+	<div class="Search-main-container">
+		<select class="Search-control stats-search-type-dropdown ng-pristine ng-untouched ng-valid ng-not-empty" ng-options="s.name for s in search" ng-change="onToggle(activeSearchType)" ng-model="activeSearchType" aria-label="content type dropdown" aria-invalid="false"><option label="All" value="object:4" selected="selected">All</option><option label="Books" value="object:5">Books</option><option label="Conferences" value="object:6">Conferences</option><option label="Courses" value="object:7">Courses</option><option label="Journals &amp; Magazines" value="object:8">Journals &amp; Magazines</option><option label="Standards" value="object:9">Standards</option><option label="Authors" value="object:10">Authors</option><option label="Citations" value="object:11">Citations</option></select>
+		<form class="js-inputs Search-inputs ng-pristine ng-valid" autocomplete="off">
+			<div class="Notification Notification--float hide velocity-animating" style="opacity: 0.982031;">
+				<div class="Notification-header"></div>
+				<div class="Notification-text"></div>
+			</div>
+			<div class="Search-group-input-wrapper">
+				<div class="Search-group-container">
+					<fieldset class="Search-group stats-search-basic" ng-show="search.basic.isActive" aria-hidden="false">
+						<div class="Search-input-container Search-fullwidth-input">
+							<div class="u-relative stats-basic-input Typeahead ng-isolate-scope ng-empty ng-valid" placeholder="Enter keywords or phrases (Note: Searches metadata only by default. A search for 'smart grid' = 'smart AND grid')" ul-class="Search-basic-typeahead ui-autocomplete ui-front ui-menu ui-widget ui-widget-content" ng-model="search.basic.input.query" on-return="onTypeaheadReturn($event)" service-method="getSuggestions()" min-chars="3" aria-invalid="false">
+	<input class="Typeahead-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="ngModel" ng-keydown="onKeyDown($event)" ng-keyup="onKeyUp($event)" ng-blur="onBlur($event)" ng-focus="onFocus($event)" placeholder="Enter keywords or phrases (Note: Searches metadata only by default. A search for 'smart grid' = 'smart AND grid')" aria-invalid="false" type="text">
+	<ul class="Typeahead-menu Search-basic-typeahead ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ng-hide" ng-hide="!items || !items.length || items.length &lt; 1 || hideDiv" aria-hidden="true">
+		<!-- ngRepeat: item in items track by $index -->
+	</ul>
+</div></div>
+					</fieldset>
+					<!-- NOTE: <fieldset> elements render whitespace characters as textnodes with widths and structuring the div's like so helps get rid of spacing issues -->
+					<fieldset class="Search-group stats-search-author ng-hide" ng-show="search.author.isActive" aria-hidden="true">
+						<input name="matchBoolean" value="true" autocomplete="off" type="hidden">
+						<div class="Search-input-container Search-halfwidth-input">
+							<label for="fname" class="overlabel">First Name / Given Name</label>
+							<input class="stats-fname-input ng-pristine ng-untouched ng-valid ng-empty" id="fname" ng-model="search.author.input.searchWithin.firstName" placeholder="First Name / Given Name" aria-invalid="false" type="text">
+						</div><div class="Search-input-container Search-halfwidth-input">
+							<label for="lname" class="overlabel">Family Name / Last Name / Surname</label>
+							<input class="stats-lname-input ng-pristine ng-untouched ng-valid ng-empty" id="lname" ng-model="search.author.input.searchWithin.lastName" placeholder="Family Name / Last Name / Surname" aria-invalid="false" type="text">
+						</div>
+					</fieldset>
+					<fieldset class="Search-group stats-search-books ng-hide" ng-show="search.books.isActive" aria-hidden="true">
+						<div class="Search-input-container Search-fullwidth-input">
+							<label for="bk_query" class="overlabel">Enter keyword or title</label>
+							<input class="stats-books-query-input ng-pristine ng-untouched ng-valid ng-empty" id="bk_query" ng-model="search.books.input.query" placeholder="Enter keyword or title" aria-invalid="false" type="text">
+						</div>
+					</fieldset>
+					<fieldset class="Search-group stats-search-conferences ng-hide" ng-show="search.conferences.isActive" aria-hidden="true">
+						<div class="Search-input-container Search-fullwidth-input">
+							<label for="conf_title" class="overlabel">Enter keyword or title</label>
+							<input class="stats-conf-title-input ng-pristine ng-untouched ng-valid ng-empty" id="conf_title" ng-model="search.conferences.input.query" placeholder="Enter keyword or title" aria-invalid="false" type="text">
+						</div>
+					</fieldset>
+					<fieldset class="Search-group stats-search-courses ng-hide" ng-show="search.courses.isActive" aria-hidden="true">
+						<div class="Search-input-container Search-fullwidth-input">
+							<label for="crs_query" class="overlabel">Enter keyword or title</label>
+							<input class="stats-courses-query-input ng-pristine ng-untouched ng-valid ng-empty" id="crs_query" ng-model="search.courses.input.query" placeholder="Enter keyword or title" aria-invalid="false" type="text">
+						</div>
+					</fieldset>
+					<fieldset class="Search-group stats-search-periodicals ng-hide" ng-show="search.periodicals.isActive" aria-hidden="true">
+						<div class="Search-input-container Search-fullwidth-input">
+							<label for="per_title" class="overlabel">Enter keyword or title</label>
+							<input class="stats-jm-query-input ng-pristine ng-untouched ng-valid ng-empty" id="per_title" ng-model="search.periodicals.input.query" placeholder="Enter keyword or title" aria-invalid="false" type="text">
+						</div>
+					</fieldset>
+					<fieldset class="Search-group stats-search-standards ng-hide" ng-show="search.standards.isActive" aria-hidden="true">
+						<div class="Search-input-container Search-fullwidth-input">
+							<label for="std_query" class="overlabel">Enter keyword or title</label>
+							<input class="stats-standards-query-input ng-pristine ng-untouched ng-valid ng-empty" id="std_query" ng-model="search.standards.input.query" placeholder="Enter keyword or title" aria-invalid="false" type="text">
+						</div>
+					</fieldset>
+					<fieldset class="Search-group stats-search-pubs ng-hide" ng-show="search.publication.isActive" aria-hidden="true">
+						<div class="Search-input-container Search-pubtitle-input">
+							<label for="pqs_title" class="overlabel">Publication Title</label>
+							<input class="stats-citations-query-input ng-pristine ng-untouched ng-valid ng-empty" id="pqs_title" ng-model="search.publication.input.searchWithin.title" placeholder="Publication Title" aria-invalid="false" type="text">
+						</div><div class="Search-input-container Search-pubvol-input">
+							<label for="pqs_volume" class="overlabel">Volume</label>
+							<input class="stats-citations-vol-input ng-pristine ng-untouched ng-valid ng-empty" id="pqs_volume" ng-model="search.publication.input.searchWithin.volume" placeholder="Volume" aria-invalid="false" type="text">
+						</div><div class="Search-input-container Search-pubissue-input">
+							<label for="pqs_issue" class="overlabel">Issue</label>
+							<input class="stats-citations-issue-input ng-pristine ng-untouched ng-valid ng-empty" id=" pqs_issue" ng-model="search.publication.input.searchWithin.issue" placeholder="Issue" aria-invalid="false" type="text">
+						</div><div class="Search-input-container Search-pubpage-input">
+							<label for="pqs_spage" class="overlabel">Start Page</label>
+							<input class="stats-citations-page-input ng-pristine ng-untouched ng-valid ng-empty" id="pqs_spage" ng-model="search.publication.input.searchWithin.startPage" placeholder="Start Page" aria-invalid="false" type="text">
+						</div>
+					</fieldset>
+				</div>
+				<div class="Search-form-submit-container">
+					<button class="js-search Search-submit Button btn-search stats-search-submit" type="submit" aria-label="Search">
+						<i class="fa fa-search Search-submit-icon"></i>
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div class="Search-misc-container">
+		<div class="Search-within-publication-container">
+			<!-- ngIf: $ctrl.withinPublication.isActive -->
+		</div>
+
+		<div class="Search-options-container">
+			<div class="Search-option stats-search-menu">
+				<a class="Search-option-title" href="https://ieeexplore.ieee.org/search/advanced" target="_self" id="advancedSearch" ng-click="$ctrl.clearSessionStorage()">Advanced Search</a>
+			</div>
+			<div class="Search-option Search-menu stats-search-menu" ng-class="{ 'active': showMenu} " ng-mouseleave="showMenu = false">
+				<a href="#" class="Search-option-title" id="otherSearchOptions" ng-click="showMenu = !showMenu">Other Search Options<i class="icon icon--flip icon-more-options-caret"></i></a>
+				<ul class="Menu Menu--overlay">
+					<li><a href="https://ieeexplore.ieee.org/search/advanced/command" target="_self" class="CommandSearch" id="commandSearch" ng-click="$ctrl.clearSessionStorage()">Command Search</a></li>
+					<li><a href="https://ieeexplore.ieee.org/search/advanced/citation" target="_self" class="CitationSearch" id="citationSearch" ng-click="$ctrl.clearSessionStorage()">Citation Search</a></li>
+					<li><a href="https://ieeexplore.ieee.org/search/searchHistoryMore.jsp" target="_self" class="searchhistory" id="searchHistory">Search History</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+</div>
+	
+	<div class="global-content-wrapper">
+		<xpl-root _nghost-c0="" ng-version="5.1.2"><xpl-global-notification _ngcontent-c0="" _nghost-c1=""><!----></xpl-global-notification>
+<!---->
+<!---->
+<div _ngcontent-c0="" class="global-ng-wrapper">
+    <router-outlet _ngcontent-c0=""></router-outlet><xpl-document-details _nghost-c5=""><div _ngcontent-c5="" class="row document ng-document stats-document">
+	<div _ngcontent-c5="" class="document-main col-9">
+		<!----><section _ngcontent-c5="" class="document-main-leaderboard-ad col-12">
+			<!----><xpl-leaderboard-ad _ngcontent-c5="" class="hide-desktop" _nghost-c6=""><!----><div _ngcontent-c6="" class="Ads-leaderboard">
+	<div _ngcontent-c6="" class="row u-flex-wrap-nowrap">
+		<!----><div _ngcontent-c6="" class="ads-close-container">
+			<i _ngcontent-c6="" aria-hidden="true" class="ads-close-button"></i>
+		</div>
+	</div>
+	
+	<div _ngcontent-c6="" class="ad-leaderboard-ad-container">
+		<!---->
+		<!----><div _ngcontent-c6="" class="Ads-leaderBoardTablet" xplgoogleadmigr=""><div id="div-gpt-ad-1527779562942-0" style="width: 576px; height: 71px; display: none; margin: 0px auto; padding-bottom: 0.5em;"></div><script type="text/javascript">googletag.cmd.push(function() { googletag.display("div-gpt-ad-1527779562942-0"); });</script></div>
+		<!----><div _ngcontent-c6="" class="Ads-leaderBoardMobile" xplgoogleadmigr=""><div id="div-gpt-ad-1527779762448-0" style="width: 320px; height: 40px; margin: 0px auto; padding-bottom: 0.5em;" data-google-query-id="CK_WqsLUnOgCFdCPGwodLBMIFQ"><div id="google_ads_iframe_/4250/IEEEXplore/DocDetailsTop_1__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/4250/IEEEXplore/DocDetailsTop_1" title="3rd party ad content" name="google_ads_iframe_/4250/IEEEXplore/DocDetailsTop_1" scrolling="no" marginwidth="0" marginheight="0" style="border: 0px none; vertical-align: bottom;" srcdoc="" data-google-container-id="1" width="320" height="40" frameborder="0"></iframe></div></div><script type="text/javascript">googletag.cmd.push(function() { googletag.display("div-gpt-ad-1527779762448-0"); });</script></div>
+	</div>
+</div>
+</xpl-leaderboard-ad>
+		</section>
+		
+		<section _ngcontent-c5="" class="document-main-header row">
+			<!----><div _ngcontent-c5="" class="col-12">
+				<xpl-document-header _ngcontent-c5="" _nghost-c7=""><!----><section _ngcontent-c7="" class="document-header row">
+	<!----><div _ngcontent-c7="" class="document-header-breadcrumbs-container col-12">
+		<div _ngcontent-c7="" class="breadcrumbs col">
+			<!----><span _ngcontent-c7="">
+				<!----><a _ngcontent-c7="" href="https://ieeexplore.ieee.org/browse/conferences/title/">Conferences</a>
+				<!---->
+				<span _ngcontent-c7="" class="breadcrumbs-separator"> &gt;</span>
+			</span><span _ngcontent-c7="">
+				<!----><a _ngcontent-c7="" href="https://ieeexplore.ieee.org/xpl/conhome/6155/proceeding">Proceedings 13th Internationa...</a>
+				<!---->
+				<span _ngcontent-c7="" class="breadcrumbs-separator"></span>
+			</span>
+			<a _ngcontent-c7="" class="icon-help-blue hide-mobile" href="https://ieeexplore.ieee.org/Xplorehelp/#/ieee-xplore-training/working-with-documents#interactive-html" id="help" target="blank" text="Help" title="Get help using Conference documents"></a>
+		</div>
+	</div>
+
+	<div _ngcontent-c7="" class="document-header-inner-container row">
+		<!---->
+		<div _ngcontent-c7="" class="col-12">
+			
+			<!----><div _ngcontent-c7="" class="row stats-document-header">
+				<div _ngcontent-c7="" class="row document-title-fix">
+					<!---->
+					
+					<div _ngcontent-c7="" class="document-header-title-container col">
+						<div _ngcontent-c7="" class="left-container">
+							<h1 _ngcontent-c7="" class="document-title">
+								<span _ngcontent-c7="">A ubiquitous message passing interface implementation in Java:jmpi</span>
+								<!---->
+								<!---->
+							</h1>
+
+							<div _ngcontent-c7="" class="u-mb-1 u-mt-05 cite-this-btn-wrapper">
+								<!----><div _ngcontent-c7="" class="publisher-title-tooltip black-tooltip">
+									<span _ngcontent-c7="" class="publisher-info-label" placement="right">
+										Publisher: IEEE</span>
+									<!---->
+								</div>
+								<xpl-cite-this-modal _ngcontent-c7="" _nghost-c17=""><!---->
+
+									<div _ngcontent-c7="">
+										<button _ngcontent-c7="" class="layout-btn-white cite-this-btn" placement="bottom">Cite This</button>
+									</div>
+								</xpl-cite-this-modal>
+								<!---->
+							</div>
+
+							<!---->
+
+							<!---->
+
+							<!---->
+
+							<!---->
+
+							<!---->
+						</div>
+
+						<!---->
+					</div>
+					
+				</div>
+				
+				<!----><div _ngcontent-c7="" class="hide-desktop">
+					<!---->
+				</div>
+				<!---->
+				<div _ngcontent-c7="" class="document-main-subheader">
+					<div _ngcontent-c7="" class="document-main-author-banner">
+						<!----><div _ngcontent-c7="" class="document-authors-banner stats-document-authors-banner">
+							<div _ngcontent-c7="" class="row authors-banner-row u-flex-align-items-center u-flex-wrap-nowrap">
+								<div _ngcontent-c7="" class="authors-banner-row-top">
+									<div _ngcontent-c7="" class="authors-count-container">
+										<div _ngcontent-c7="" class="authors-count u-mr-02">
+											1
+										</div>
+										<div _ngcontent-c7="" class="authors-count-text">Author(s)</div>
+									</div>
+								</div>
+								<div _ngcontent-c7="" class="authors-banner-row-middle">
+									<div _ngcontent-c7="" class="authors-container stats-document-authors-banner-authorsContainer">
+										<div _ngcontent-c7="" class="authors-info-container overflow-ellipsis">
+											<!----><span _ngcontent-c7="" class="authors-info">
+												<!----><span _ngcontent-c7="" class="blue-tooltip">
+													<!----><a _ngcontent-c7="" placement="bottom" triggers="hover" href="https://ieeexplore.ieee.org/author/37323396000">
+														<span _ngcontent-c7="">K. Dincer</span>
+														<!---->
+													</a><!---->
+													<!---->
+													<!---->
+												</span>
+												<!---->
+												<!---->
+												<span _ngcontent-c7=""></span>
+												<!---->
+											</span>
+										</div>
+									</div>
+								</div>
+								<div _ngcontent-c7="" class="u-flex-display-flex u-flex-align-items-center nowrap">
+									<div _ngcontent-c7="" class="authors-view-all-link-container hide-mobile">
+										<a _ngcontent-c7="">View All Authors</a>
+									</div>
+					
+									<div _ngcontent-c7="" class="authors-mobile-view-all-container blue-tooltip hide-desktop">
+										<a _ngcontent-c7="" class="authors-viewall-link" placement="bottom-right" triggers="click:click" xplpopoverclosehandler="">
+											<i _ngcontent-c7="" class="authors-viewall-icon"></i>
+										</a>
+									</div>
+									<!---->
+								</div>
+							</div>
+						</div>
+					</div>
+		
+					<div _ngcontent-c7="" class="document-header-metrics-banner row">
+						
+						<div _ngcontent-c7="" class="document-banner col stats-document-banner">
+							
+							<xpl-login-modal-trigger _ngcontent-c7="" _nghost-c19=""><!---->
+
+								<!----><button _ngcontent-c7="" class="sip-modal-button stats-document-banner-purchaseOrSignIn">
+									<!---->
+									<!----><div _ngcontent-c7="">
+										<div _ngcontent-c7="" class="strong">
+											Sign In<!----><span _ngcontent-c7=""> or Purchase</span>
+										</div>
+									<div _ngcontent-c7="" class="button-subtext">to View Full Text</div>
+									</div>
+								</button>
+							</xpl-login-modal-trigger>
+							
+							<!---->
+							<!---->
+							
+							<!---->
+							
+							<!----><div _ngcontent-c7="" class="document-banner-metric-container row">
+								<!----><button _ngcontent-c7="" class="document-banner-metric col">
+									<div _ngcontent-c7="" class="document-banner-metric-count">8</div>
+									<div _ngcontent-c7="">Paper</div>
+									<div _ngcontent-c7="">Citations</div>
+								</button>
+				
+								<!---->
+				
+								<!----><button _ngcontent-c7="" class="document-banner-metric col">
+									<div _ngcontent-c7="" class="document-banner-metric-count">33</div>
+									<!---->
+									<!----><div _ngcontent-c7="">
+										<div _ngcontent-c7="">Full</div>
+										<div _ngcontent-c7="">Text Views</div>	
+									</div>
+								</button>
+							</div>
+
+							<div _ngcontent-c7="" class="document-banner-access">
+								<!---->
+										
+								<!----> 
+							</div>
+						</div> 
+						
+						
+						<!----> 
+						
+		
+						<!----> 
+		
+						<div _ngcontent-c7="" class="col-9-24 hide-mobile">
+							<!---->
+							<!----><xpl-document-toolbar _ngcontent-c7="" _nghost-c20=""><div _ngcontent-c20="" class="col-actions stats-document-container-lh u-printing-invisible-ie u-printing-invisible-ff">
+	<div _ngcontent-c20="" class="action-item-container">
+		<ul _ngcontent-c20="" class="doc-actions doc-toolbar stats-document-lh-actions black-tooltip">
+			<li _ngcontent-c20="" class="doc-actions-item" placement="bottom">
+				
+				<!---->
+				
+				<!---->
+				
+				<xpl-login-modal-trigger _ngcontent-c20="" _nghost-c19=""><!---->
+
+					<!----><a _ngcontent-c20="" class="doc-actions-link stats-document-lh-action-downloadPdf_3" href="#" title="You do not have access to this PDF">
+						<i _ngcontent-c20="" class="icon doc-act-icon-pdf"></i>
+					</a>
+				</xpl-login-modal-trigger>
+				
+				<!---->
+			</li>
+			<li _ngcontent-c20="" class="doc-actions-item" placement="bottom">
+				<xpl-popover-download-citation _ngcontent-c20="" class="white-blue-border-tooltip citation-popover" placement="bottom-right" _nghost-c21=""><!---->
+
+<a _ngcontent-c21="" class="doc-actions-link stats-document-lh-action-downloadCitations hide-mobile" triggers="click:click" xplpopoverclosehandler="">
+	<i _ngcontent-c21="" class="icon doc-act-icon-citations"></i> <span _ngcontent-c21="" class="doc-actions-text"> Download Citation </span>	 
+</a></xpl-popover-download-citation>
+			</li>
+			<li _ngcontent-c20="" class="doc-actions-item" placement="bottom">
+				<a _ngcontent-c20="" class="doc-actions-link stats-document-lh-action-viewReferences" target="blank" href="https://ieeexplore.ieee.org/xpl/dwnldReferences?arnumber=760461">
+					<i _ngcontent-c20="" class="icon doc-act-icon-references"></i>
+				</a>
+			</li>
+			<li _ngcontent-c20="" class="doc-actions-item" placement="bottom">
+				<xpl-email-article _ngcontent-c20="" class="white-blue-border-tooltip email-popover" label="Email" placement="bottom-right" _nghost-c22=""><!---->
+<a _ngcontent-c22="" class="doc-actions-link stats-document-lh-action-email" triggers="click:click" xplpopoverclosehandler="">
+	<!----><span _ngcontent-c22="">
+		<!----><span _ngcontent-c22="" class="hide-mobile">
+			<i _ngcontent-c22="" class="icon doc-act-icon-email"></i>
+			<span _ngcontent-c22="" class="doc-actions-text">Email</span>
+		</span>
+		<!---->
+	</span>
+	<!---->
+</a>
+</xpl-email-article>
+			</li>
+			
+			<li _ngcontent-c20="" class="stats-permission doc-actions-item" placement="bottom">
+				<!----><a _ngcontent-c20="" class="doc-actions-link stats-document-lh-action-requestPermissions_1">
+					<i _ngcontent-c20="" class="icon doc-act-icon-copyright"></i>
+				</a>
+				<!---->
+			</li>
+			<li _ngcontent-c20="" class="doc-actions-item disabled-look enable-hover" placement="bottom">
+				<xpl-popover-download-collabratec _ngcontent-c20="" class="white-blue-border-tooltip download-collabratec" _nghost-c23=""><!---->
+<a _ngcontent-c23="" class="doc-actions-link stats-document-lh-action-export_1" href="#" triggers="click:click" xplpopoverclosehandler="">
+	<i _ngcontent-c23="" class="icon doc-act-icon-export"></i> <span _ngcontent-c23="" class="hide-desktop">Export to Collabratec</span>
+</a>
+</xpl-popover-download-collabratec>
+			</li>
+			<li _ngcontent-c20="" class="doc-actions-item" placement="bottom">
+				<xpl-manage-alerts _ngcontent-c20="" class="white-blue-border-tooltip alerts-popover" _nghost-c24=""><!---->
+<a _ngcontent-c24="" class="doc-actions-link stats-document-lh-action-alerts hide-mobile" triggers="click:click" xplpopoverclosehandler="">
+	<i _ngcontent-c24="" class="icon doc-act-icon-alert"></i> <span _ngcontent-c24="" class="doc-actions-text">Alerts</span>
+</a>
+
+<div _ngcontent-c24="" class="manage-alerts-popover-content hide-desktop">
+	<h1 _ngcontent-c24="" class="header">Alerts</h1>
+	<div _ngcontent-c24="" class="manage-alerts-link">
+		<a _ngcontent-c24="" href="https://ieeexplore.ieee.org/alerts/citation">
+			Manage Content Alerts
+			<i _ngcontent-c24="" class="icon icon-courses-chevron-blue"></i>
+			
+		</a>
+	</div>
+	<div _ngcontent-c24="" class="manage-alerts-link">
+		<a _ngcontent-c24="">
+			Add to Citation Alerts
+			<i _ngcontent-c24="" class="icon icon-courses-chevron-blue"></i>
+		</a>
+	</div>
+</div></xpl-manage-alerts>
+			</li>
+			<!---->
+		</ul>
+	</div>
+</div></xpl-document-toolbar>
+						</div>
+						<!---->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<hr _ngcontent-c7="">
+</section>
+
+<!----></xpl-document-header>
+			</div>
+		</section>
+
+		<div _ngcontent-c5="" class="row document-main-body">
+			<div _ngcontent-c5="" class="document-main-left-trail col-5-24 ">
+				<!----><div _ngcontent-c5="" class="col-24-24">
+					<div _ngcontent-c5="" class="row">
+						
+						<nav _ngcontent-c5="" class="col-24-24 bg-ltgry tab-nav">
+							<div _ngcontent-c5="" class="doc-tabs-list stats-document-tabs" id="document-tabs">
+								<!----><div _ngcontent-c5="" class="browse-pub-tab active" routerlinkactive="active">
+									<a _ngcontent-c5="" class="document-tab-link" href="https://ieeexplore.ieee.org/abstract/document/760461">Abstract</a>
+								</div>
+
+								<!---->
+
+								<!----><div _ngcontent-c5="" class="browse-pub-tab" routerlinkactive="active">
+									<a _ngcontent-c5="" class="document-tab-link" href="https://ieeexplore.ieee.org/abstract/document/760461/authors">Authors</a>
+								</div><div _ngcontent-c5="" class="browse-pub-tab" routerlinkactive="active">
+									<a _ngcontent-c5="" class="document-tab-link" href="https://ieeexplore.ieee.org/abstract/document/760461/references">References</a>
+								</div><div _ngcontent-c5="" class="browse-pub-tab" routerlinkactive="active">
+									<a _ngcontent-c5="" class="document-tab-link" href="https://ieeexplore.ieee.org/abstract/document/760461/citations">Citations</a>
+								</div><div _ngcontent-c5="" class="browse-pub-tab" routerlinkactive="active">
+									<a _ngcontent-c5="" class="document-tab-link" href="https://ieeexplore.ieee.org/abstract/document/760461/keywords">Keywords</a>
+								</div><div _ngcontent-c5="" class="browse-pub-tab" routerlinkactive="active">
+									<a _ngcontent-c5="" class="document-tab-link" href="https://ieeexplore.ieee.org/abstract/document/760461/metrics">Metrics</a>
+								</div><div _ngcontent-c5="" class="browse-pub-tab similar" routerlinkactive="active">
+									<a _ngcontent-c5="" class="document-tab-link" href="https://ieeexplore.ieee.org/abstract/document/760461/similar">More Like This</a>
+								</div>
+							</div>
+						</nav>
+					</div>
+				</div>
+			</div>
+
+			<div _ngcontent-c5="" class="document-main-content-container">
+				<!----><xpl-left-side-bar _ngcontent-c5="" _nghost-c9=""><div _ngcontent-c9="" class="col-2 col-actions ng-col-actions hide-desktop stats-document-container-lh u-printing-invisible-ie u-printing-invisible-ff col-actions-mobile-closed ng-col-actions-mobile-closed" cssclasstostick="document-mobile-leftrail-stick" fromelementid="mobile-tab-pane" offsetfrom="100" offsetto="-800" scrollreset="true" tillelementid="full-text-footer" xplscrollsnapmigr="">
+	<div _ngcontent-c9="">
+		<!----><div _ngcontent-c9="" class="doc-actions-mobile-expand-button"></div>
+		<ul _ngcontent-c9="" class="doc-actions stats-document-lh-actions">
+			<li _ngcontent-c9="" class="doc-actions-item black-tooltip disabled-look">
+				<!---->
+				<!---->
+				<xpl-login-modal-trigger _ngcontent-c9="" _nghost-c19=""><!---->
+
+					<!----><a _ngcontent-c9="" class="doc-actions-link stats-document-lh-action-downloadPdf_3" href="#" title="You do not have access to this PDF">
+						<i _ngcontent-c9="" class="icon doc-act-icon-pdf"></i> Download PDF
+					</a>
+				</xpl-login-modal-trigger>
+			</li>
+			<li _ngcontent-c9="" class="doc-actions-item black-tooltip">
+				<!----><a _ngcontent-c9="" class="doc-actions-link stats-document-lh-action-downloadPdf_3">
+					<i _ngcontent-c9="" class="icon doc-act-icon-citations"></i> Download Citation
+				</a>
+				<!---->
+				<!---->
+			</li>
+			<li _ngcontent-c9="" class="doc-actions-item">
+				<!----><a _ngcontent-c9="" class="doc-actions-link stats-document-lh-action-viewReferences" target="blank" href="https://ieeexplore.ieee.org/xpl/dwnldReferences?arnumber=760461">
+					<i _ngcontent-c9="" class="icon doc-act-icon-references"></i> View References
+				</a>
+				<!---->
+			</li>
+			<li _ngcontent-c9="" class="doc-actions-item">
+				<a _ngcontent-c9="" class="doc-actions-link stats-document-lh-action-email">
+					<span _ngcontent-c9="">
+						<i _ngcontent-c9="" class="icon doc-act-icon-email"></i>
+						Email
+					</span>
+				</a>					
+				<!---->
+			</li>
+			<li _ngcontent-c9="" class="stats-permission doc-actions-item">
+				<!----><a _ngcontent-c9="" class="doc-actions-link stats-document-lh-action-requestPermissions_1" title="Request permission for reuse.">
+					<i _ngcontent-c9="" class="icon doc-act-icon-copyright"></i> Request Permissions
+				</a>
+				<!---->
+			</li>
+			<li _ngcontent-c9="" class="doc-actions-item disabled-look black-tooltip">
+				<!---->
+				
+				<!----><a _ngcontent-c9="" class="doc-actions-link stats-document-lh-action-downloadPdf_3" placement="right" triggers="click" xplpopoverclosehandler="">
+					<i _ngcontent-c9="" class="icon doc-act-icon-export"></i> Export to Collabratec
+				</a><!---->
+			</li>
+			<li _ngcontent-c9="" class="doc-actions-item">
+				<!----><a _ngcontent-c9="" class="doc-actions-link stats-document-lh-action-alerts">
+					<i _ngcontent-c9="" class="icon doc-act-icon-alert"></i> Alerts
+				</a>						
+				<!---->
+				<!---->
+			</li>
+
+			<!---->
+		</ul>
+	</div>
+</div>
+
+<!---->
+</xpl-left-side-bar>
+				<section _ngcontent-c5="" class="tab-pane col-24-24 u-printing-display-inline-ie u-printing-display-inline-ff">
+					<div _ngcontent-c5="" id="mobile-tab-pane"></div>
+					<!---->
+					<!----><div _ngcontent-c5="" class="document-main-left-trail-content">
+						<!---->
+						<div _ngcontent-c5="" id=""><router-outlet _ngcontent-c5=""></router-outlet><xpl-document-abstract _nghost-c10=""><section _ngcontent-c10="" class="document-abstract document-tab">
+	<!----><div _ngcontent-c10="" class="col-12 hide-desktop mobile-graphical-abstract">
+		<!---->
+		<!---->
+	</div>
+		
+	
+	<div _ngcontent-c10="" class="abstract-mobile-div hide-desktop">
+		<div _ngcontent-c10="" class="row">
+			<!----><div _ngcontent-c10="" class="mobile-col-12">
+				<!---->
+				
+				<!----><div _ngcontent-c10="" class="u-pb-1">
+					<strong _ngcontent-c10=""> Abstract:</strong>
+					<span _ngcontent-c10="" xplmathjax="">jmpi is a 100% Java-based 
+implementation of the message-passing interface (MPI-1) standard jmpi 
+comes with an efficient and effective MPI implementation in Java and 
+suppo...</span>
+					<!----><span _ngcontent-c10="">
+						<a _ngcontent-c10="" class="mobile-toggle-btn">View more</a>
+					</span>
+				</div>
+				
+				<!---->
+				<!---->
+			</div>
+		</div>
+
+		<!---->
+		
+		<!---->
+		
+		<!---->
+
+		<div _ngcontent-c10="" class="metadata-toggle-btn mobile-content">
+			<strong _ngcontent-c10="">
+				<i _ngcontent-c10="" class="icon-caret-abstract"></i>
+				<span _ngcontent-c10="">Metadata</span>
+			</strong>
+		</div>
+
+		<!---->
+		<!---->
+	</div>
+
+	
+	<div _ngcontent-c10="" class="abstract-desktop-div hide-mobile">
+		<div _ngcontent-c10="" class="abstract-text row">
+			<!---->
+
+			<!----><div _ngcontent-c10="" class="col-12">
+				<!---->
+				<!----><div _ngcontent-c10="" class="u-mb-1">
+					<strong _ngcontent-c10=""> Abstract:</strong>
+					<div _ngcontent-c10="">jmpi is a 100% Java-based implementation of 
+the message-passing interface (MPI-1) standard jmpi comes with an 
+efficient and effective MPI implementation in Java and supports a 
+user-friendly Java application programming interface (API) for MPI. We 
+present the implementation details and give some early communication 
+benchmark performance results on a cluster of SUN UltraSparc 
+workstations.</div>
+				</div>
+				<!---->
+				<!---->
+			</div>
+		</div>
+
+		<!---->
+
+		<!---->
+		
+		<!---->
+	
+		<!---->
+		<!----><div _ngcontent-c10="" class="u-pb-1 stats-document-abstract-publishedIn" data-tealium_data="{&quot;docType&quot;: &quot;Conference&quot;}">
+			<strong _ngcontent-c10="">Published in: </strong>
+			<a _ngcontent-c10="" href="https://ieeexplore.ieee.org/xpl/conhome/6155/proceeding">Proceedings
+ 13th International Parallel Processing Symposium and 10th Symposium on 
+Parallel and Distributed Processing. IPPS/SPDP 1999</a>
+		</div>
+		<!---->
+		<div _ngcontent-c10="" class="row u-pt-1">
+			<div _ngcontent-c10="" class="col-6">
+				<!---->
+				<!---->
+				<!---->
+				<!---->
+				<!---->
+				<!----><div _ngcontent-c10="" class="u-pb-1 doc-abstract-confdate"> 
+					<strong _ngcontent-c10="">Date of Conference: </strong>
+					12-16 April 1999
+				</div>
+				<!---->
+				<!---->
+				<!----><div _ngcontent-c10="" class="u-pb-1 doc-abstract-dateadded"> 
+					<strong _ngcontent-c10="">Date Added to IEEE <i _ngcontent-c10="">Xplore</i>: </strong>
+					06 August 2002
+				</div>
+		
+				<!----><div _ngcontent-c10="" class="u-pb-1"> 
+					
+					<!---->
+					
+					<!----><div _ngcontent-c10="">
+						<!----><div _ngcontent-c10="">
+							<strong _ngcontent-c10="">Print ISBN:</strong> <span _ngcontent-c10="" class="isbn-value">0-7695-0143-5</span>
+						</div>
+					</div>
+				</div>
+				<!---->
+
+				<!---->
+			</div>
+			<div _ngcontent-c10="" class="col-6">
+				<!----><div _ngcontent-c10="" class="u-pb-1">
+					<strong _ngcontent-c10="">INSPEC Accession Number: </strong>
+					6251699
+				</div>
+				<!----><div _ngcontent-c10="" class="u-pb-1 stats-document-abstract-doi">
+					<strong _ngcontent-c10="">DOI: </strong>
+					<a _ngcontent-c10="" append-to-href="?src=document" target="_blank" href="https://doi.org/10.1109/IPPS.1999.760461">10.1109/IPPS.1999.760461</a>
+				</div>
+				<!---->
+				<!---->
+				<!---->			
+				<!----><div _ngcontent-c10="" class="u-pb-1 doc-abstract-publisher publisher-info-container black-tooltip"> 
+					<strong _ngcontent-c10="">Publisher:</strong>
+					<span _ngcontent-c10="" class="publisher-info-label" placement="bottom">IEEE</span>
+					<!---->
+				</div>
+				<!---->
+				<!----><div _ngcontent-c10="" class="u-pb-1 doc-abstract-conferenceLoc">
+					<strong _ngcontent-c10="">Conference Location: </strong>
+					San Juan, Puerto Rico, USA, USA
+				</div>
+				<!---->
+				<!---->
+			</div>
+		</div>
+
+		<!---->
+		<div _ngcontent-c10="" class="document-cadmore-player-container">
+			<xpl-cadmore-player _ngcontent-c10="" _nghost-c46=""><!----></xpl-cadmore-player>
+		</div>
+		<!---->
+	</div>
+</section></xpl-document-abstract></div>
+						<!----><xpl-leaderboard-middle-ad _ngcontent-c5="" class=" hide-desktop" _nghost-c11=""><!----><div _ngcontent-c11="" class="Ads-leaderboard">
+	<div _ngcontent-c11="" class="row u-flex-wrap-nowrap">
+		<!----><div _ngcontent-c11="" class="ads-close-container">
+			<i _ngcontent-c11="" aria-hidden="true" class="ads-close-button"></i>
+		</div>
+	</div>
+
+	<div _ngcontent-c11="" class="ad-leaderboard-ad-container">
+		<!---->
+		<!----><div _ngcontent-c11="" class="Ads-leaderBoardMiddleTablet" xplgoogleadmigr=""><div id="div-gpt-ad-1527780343424-0" style="width: 576px; height: 71px; display: none; margin: 0px auto; padding-bottom: 0.5em;"></div><script type="text/javascript">googletag.cmd.push(function() { googletag.display("div-gpt-ad-1527780343424-0"); });</script></div>
+		<!----><div _ngcontent-c11="" class="Ads-leaderBoardMiddleMobile" xplgoogleadmigr=""><div id="div-gpt-ad-1527780523694-0" style="width:320px;
+			height:40px; display:block; margin: 0 auto; padding-bottom: 0.5em;"><div id="google_ads_iframe_/4250/IEEEXplore/DocDetailsMiddle_2__container__" style="border: 0pt none; width: 320px; height: 40px;"></div></div><script type="text/javascript">googletag.cmd.push(function() { googletag.display("div-gpt-ad-1527780523694-0"); });</script></div>
+	</div>
+</div></xpl-leaderboard-middle-ad>
+						<xpl-document-full-text _ngcontent-c5="" _nghost-c12=""><section _ngcontent-c12="">
+	<!----><div _ngcontent-c12="" class="header-gray-line"></div>
+	<!---->
+	<hr _ngcontent-c12="">
+	<div _ngcontent-c12="" class="row document-full-text-content">
+		
+		<!---->
+		<!---->
+	</div>
+	<!---->
+</section></xpl-document-full-text>
+						<xpl-accordian-section _ngcontent-c5="" _nghost-c13=""><div _ngcontent-c13="" class="document-accordion-section-container hide-mobile">
+	<xpl-document-accordion _ngcontent-c13="" class="accordion-panel-container" _nghost-c33=""><!---->
+	<div _ngcontent-c33="">
+		<div _ngcontent-c33="" class="accordion-header accordion-button" role="tab" id="authors-header" aria-expanded="false" aria-disabled="false">
+			<!---->
+				<h3 _ngcontent-c13="" id="authors">Authors</h3>
+			
+			<!----><div _ngcontent-c33="" class="accordion-chevron">
+				<i _ngcontent-c33="" class="fa fa-angle-down"></i>
+			</div> 
+		</div>
+		<!---->
+	</div>
+
+	<div _ngcontent-c33="">
+		<div _ngcontent-c33="" class="accordion-header accordion-button" role="tab" id="references-header" aria-expanded="false" aria-disabled="false">
+			<!---->
+				<h3 _ngcontent-c13="" id="references">References</h3>
+			
+			<!----><div _ngcontent-c33="" class="accordion-chevron">
+				<i _ngcontent-c33="" class="fa fa-angle-down"></i>
+			</div> 
+		</div>
+		<!---->
+	</div>
+
+	<div _ngcontent-c33="">
+		<div _ngcontent-c33="" class="accordion-header accordion-button" role="tab" id="citations-header" aria-expanded="false" aria-disabled="false">
+			<!---->
+				<h3 _ngcontent-c13="" id="citations">Citations</h3>
+			
+			<!----><div _ngcontent-c33="" class="accordion-chevron">
+				<i _ngcontent-c33="" class="fa fa-angle-down"></i>
+			</div> 
+		</div>
+		<!---->
+	</div>
+
+	<div _ngcontent-c33="">
+		<div _ngcontent-c33="" class="accordion-header accordion-button" role="tab" id="keywords-header" aria-expanded="false" aria-disabled="false">
+			<!---->
+				<h3 _ngcontent-c13="" id="keywords">Keywords</h3>
+			
+			<!----><div _ngcontent-c33="" class="accordion-chevron">
+				<i _ngcontent-c33="" class="fa fa-angle-down"></i>
+			</div> 
+		</div>
+		<!---->
+	</div>
+
+	<div _ngcontent-c33="">
+		<div _ngcontent-c33="" class="accordion-header accordion-button" role="tab" id="metrics-header" aria-expanded="false" aria-disabled="false">
+			<!---->
+				<h3 _ngcontent-c13="" id="metrics">Metrics</h3>
+			
+			<!----><div _ngcontent-c33="" class="accordion-chevron">
+				<i _ngcontent-c33="" class="fa fa-angle-down"></i>
+			</div> 
+		</div>
+		<!---->
+	</div>
+</xpl-document-accordion>
+	<!---->
+</div></xpl-accordian-section>
+					</div>
+				</section>
+
+				
+			</div>
+
+			<div _ngcontent-c5="" class="document-disqus-container col-24-24">
+				<div _ngcontent-c5="" class="row">
+					<!---->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div _ngcontent-c5="" class="document-sidebar col-3 top-spacing">
+		<!----><div _ngcontent-c5="" class="header-rel-art-toggle-mobile">
+			<i _ngcontent-c5="" class="header-rel-art-toggle-icon"></i>
+		</div>
+		
+		<div _ngcontent-c5="" class="document-sidebar-content">
+			<!---->
+	
+			<div _ngcontent-c5="" class="hide-mobile">
+				<!----><xpl-leaderboard-ad _ngcontent-c5="" _nghost-c6=""><!----><div _ngcontent-c6="" class="Ads-leaderboard">
+	<div _ngcontent-c6="" class="row u-flex-wrap-nowrap">
+		<!---->
+	</div>
+	
+	<div _ngcontent-c6="" class="ad-leaderboard-ad-container">
+		<!----><div _ngcontent-c6="" xplgoogleadmigr=""><div id="div-gpt-ad-1531324580046-0" style="width: 300px; height: 250px; display: none; margin: 0px auto;"></div><script type="text/javascript">googletag.cmd.push(function() { googletag.display("div-gpt-ad-1531324580046-0"); });</script></div>
+		<!---->
+		<!---->
+	</div>
+</div>
+</xpl-leaderboard-ad>
+			</div>
+	
+			<!----><div _ngcontent-c5="" class="document-sidebar-rel-art">
+				<xpl-related-article-list _ngcontent-c5="" _nghost-c15=""><div _ngcontent-c15="" class="stats-document-header-relatedArticles">
+	<div _ngcontent-c15="" class="header-rel-art">
+		<div _ngcontent-c15="" class="header-rel-art-title">
+			More Like This
+		</div>
+		<div _ngcontent-c15="" class="header-rel-art-list">
+			<!----><div _ngcontent-c15="" class="header-rel-art-item">
+				<div _ngcontent-c15="" class="row">
+					<a _ngcontent-c15="" target="_self" href="https://ieeexplore.ieee.org/document/4296931/">
+						<span _ngcontent-c15="">Implementation and Performance Evaluation of Socket and RMI based Java Message Passing Systems</span>
+					</a>
+					<!---->
+				</div>
+				<!----><p _ngcontent-c15="" class="header-rel-art-pub">5th ACIS International Conference on Software Engineering Research, Management &amp; Applications (SERA 2007)</p>
+				<p _ngcontent-c15="" class="header-rel-art-pub">Published: 2007</p>
+			</div><div _ngcontent-c15="" class="header-rel-art-item">
+				<div _ngcontent-c15="" class="row">
+					<a _ngcontent-c15="" target="_self" href="https://ieeexplore.ieee.org/document/905040/">
+						<span _ngcontent-c15="">Message-passing computing with Java: performance evaluation and comparisons</span>
+					</a>
+					<!---->
+				</div>
+				<!----><p _ngcontent-c15="" class="header-rel-art-pub">Proceedings Ninth Euromicro Workshop on Parallel and Distributed Processing</p>
+				<p _ngcontent-c15="" class="header-rel-art-pub">Published: 2001</p>
+			</div>
+		</div>
+		<!----><div _ngcontent-c15="" class="header-rel-art-action">
+			
+			<!----><a _ngcontent-c15="">View More</a>
+			<!---->
+		</div>
+	</div>
+</div></xpl-related-article-list>
+			</div>
+	
+			<!----><div _ngcontent-c5="" class="document-sidebar-iq-plus">
+				<xpl-iq-plus-widget _ngcontent-c5="" _nghost-c16=""><div _ngcontent-c16="" class="iq-plus-container row">
+	<div _ngcontent-c16="" class="iq-plus-inner-container col-12 stats-iq-plus-data-count" data-tealium_data="{&quot;iqPlusData&quot;: &quot;&quot;}">
+		<div _ngcontent-c16="" class="iq-plus-header col-12">
+			Top Organizations with Patents on Technologies Mentioned in This Article
+		</div>
+
+		<div _ngcontent-c16="" class="iq-plus-graph">
+			<!----><div _ngcontent-c16="">
+				<a _ngcontent-c16="">
+					<!---->
+					<!----><img _ngcontent-c16="" class="img-responsive" src="IQP-collapsed.png">
+				</a>
+			</div>
+			<!---->
+			<!---->
+			<!---->
+			<div _ngcontent-c16="" class="iq-plus-expand-container">
+				<!----><div _ngcontent-c16="" class="arrow-down-container">
+					<!----><i _ngcontent-c16="" class="arrow-down fa fa-chevron-circle-down"></i>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div></xpl-iq-plus-widget>
+			</div>
+	
+			<div _ngcontent-c5="" class="hide-mobile">
+				<!----><xpl-leaderboard-middle-ad _ngcontent-c5="" _nghost-c11=""><!----><div _ngcontent-c11="" class="Ads-leaderboard">
+	<div _ngcontent-c11="" class="row u-flex-wrap-nowrap">
+		<!---->
+	</div>
+
+	<div _ngcontent-c11="" class="ad-leaderboard-ad-container">
+		<!----><div _ngcontent-c11="" xplgoogleadmigr=""><div id="div-gpt-ad-1531324238723-0" style="width: 300px; height: 600px; display: none; margin: 0px auto;"></div><script type="text/javascript">googletag.cmd.push(function() { googletag.display("div-gpt-ad-1531324238723-0"); });</script></div>
+		<!---->
+		<!---->
+	</div>
+</div></xpl-leaderboard-middle-ad>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!----></xpl-document-details>
+</div>
+
+<!----><xpl-footer _ngcontent-c0="" _nghost-c4="">
+
+<footer _ngcontent-c4="" class="stats-footer footer-new" id="xplore-footer">
+	<div _ngcontent-c4="" class="footer-wrapper">
+		<div _ngcontent-c4="" class="flexible-row-col">
+			<div _ngcontent-c4="" class="footer-col">
+				<h3 _ngcontent-c4="">IEEE Personal Account</h3>
+				<ul _ngcontent-c4="">
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" target="_blank" href="https://www.ieee.org/profile/changeusrpwd/showChangeUsrPwdPage.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Change username/password</a>
+					</li>
+				</ul>
+			</div>
+			<div _ngcontent-c4="" class="footer-col">
+				<h3 _ngcontent-c4="">Purchase Details</h3>
+				<ul _ngcontent-c4="">
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" target="_blank" href="https://www.ieee.org/profile/payment/showPaymentHome.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Payment Options</a>
+					</li>
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" href="https://ieeexplore.ieee.org/articleSale/purchaseHistory.jsp" target="_blank">View Purchased Documents</a>
+					</li>
+				</ul>
+			</div>
+			<div _ngcontent-c4="" class="footer-col">
+				<h3 _ngcontent-c4="">Profile Information</h3>
+				<ul _ngcontent-c4="">
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" target="_blank" href="https://www.ieee.org/profile/commprefs/showcommPrefpage.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Communications Preferences</a>
+					</li>
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" target="_blank" href="https://www.ieee.org/profile/profedu/getProfEduInformation.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Profession and Education</a>
+					</li>
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" target="_blank" href="https://www.ieee.org/profile/tips/getTipsInfo.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Technical interests</a>
+					</li>
+				</ul>
+			</div>
+			<div _ngcontent-c4="" class="footer-col need-help">
+				<h3 _ngcontent-c4="">Need Help?</h3>
+				<ul _ngcontent-c4="">
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" href="tel:+1-800-678-4333">
+							US &amp; Canada: +1 800 678 4333
+						</a>
+					</li>
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" href="tel:+1-732-981-0060">
+							Worldwide: +1 732 981 0060
+						</a>
+					</li>
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" href="https://ieeexplore.ieee.org/xpl/contact" target="_self">
+							Contact &amp; Support
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div _ngcontent-c4="" class="footer-col follow">
+				<h3 _ngcontent-c4="">Follow</h3>
+				<ul _ngcontent-c4="">
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" href="https://www.facebook.com/IEEEXploreDigitalLibrary/" target="_blank">
+							<i _ngcontent-c4="" aria-hidden="true" class="fa fa-facebook"></i>
+						</a>
+					</li>
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" href="https://www.linkedin.com/showcase/ieee-xplore" target="_blank">
+							<i _ngcontent-c4="" aria-hidden="true" class="fa fa-linkedin"></i>
+						</a>
+					</li>
+					<li _ngcontent-c4="">
+						<a _ngcontent-c4="" href="https://twitter.com/IEEEXplore?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor" target="_blank">
+							<i _ngcontent-c4="" aria-hidden="true" class="fa fa-twitter"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div _ngcontent-c4="" class="footer-bottom-section">
+			<p _ngcontent-c4="">
+				<span _ngcontent-c4=""><a _ngcontent-c4="" href="https://ieeexplore.ieee.org/Xplorehelp/about-ieee-xplore.html" target="_self">About IEEE <em _ngcontent-c4="">Xplore</em></a></span> | <span _ngcontent-c4=""><a _ngcontent-c4="" href="https://ieeexplore.ieee.org/xpl/contact" target="_self">Contact Us</a></span> | <span _ngcontent-c4=""><a _ngcontent-c4="" href="https://ieeexplore.ieee.org/Xplorehelp/Help_start.html" target="_self">Help</a></span> | <span _ngcontent-c4=""><a _ngcontent-c4="" href="https://ieeexplore.ieee.org/Xplorehelp/accessibility-statement.html" target="_self">Accessibility</a></span> | <span _ngcontent-c4=""><a _ngcontent-c4="" href="https://ieeexplore.ieee.org/Xplorehelp/Help_Terms_of_Use.html" target="_self">Terms of Use</a></span> | <span _ngcontent-c4=""><a _ngcontent-c4="" href="http://www.ieee.org/web/aboutus/whatis/policies/p9-26.html" target="_self">Nondiscrimination Policy</a></span> | <span _ngcontent-c4=""><a _ngcontent-c4="" href="https://ieeexplore.ieee.org/xpl/sitemap.jsp" target="_self">Sitemap</a></span> | <span _ngcontent-c4="" class="nowrap"><a _ngcontent-c4="" href="http://www.ieee.org/about/help/security_privacy.html" target="_self">Privacy &amp; Opting Out of Cookies</a></span>
+			</p>
+			<p _ngcontent-c4="">
+				A not-for-profit organization, IEEE is the world's largest technical
+ professional organization dedicated to advancing technology for the 
+benefit of humanity.
+			</p>
+			<p _ngcontent-c4="">
+				© Copyright 2020 IEEE - All rights reserved. Use of this web site signifies your agreement to the terms and conditions.
+			</p>
+		</div>
+	</div>
+</footer></xpl-footer>
+</xpl-root>
+	</div>
+	
+	<!-- START: Angular 2+ Migration: Due to Angualr2+ migration AngualrJs router place holder commented -->
+<!-- 	<div ng-show="stateIsLoading" class="Spinner"></div>
+	<div ui-view class="{{stateIsLoading ? 'loading': ''}}"
+		autoscroll="false"></div>
+ -->	<!-- END: Angular 2+ Migration-->
+</div>
+
+						
+
+
+
+
+<section id="xploreFooter" class="hide-desktop">
+	
+	<div class="Footer stats-footer hide-mobile">
+		<div class="pure-g Footer-sections">
+			<div class="pure-u-1-4">
+				<h3 class="Footer-header">IEEE Account</h3>
+				<ul class="Footer-list">
+					<li><a href="https://www.ieee.org/profile/changeusrpwd/showChangeUsrPwdPage.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Change Username/Password</a></li>
+					<li><a href="https://www.ieee.org/profile/address/getAddrInfoPage.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Update Address</a></li>
+				</ul>
+			</div>
+			<div class="pure-u-1-4">
+				<h3 class="Footer-header">Purchase Details</h3>
+				<ul class="Footer-list">
+					<li><a href="https://www.ieee.org/profile/payment/showPaymentHome.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Payment Options</a></li>
+					<li><a href="https://www.ieee.org/profile/vieworder/showOrderHistory.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Order History</a></li>
+					<li><a href="https://ieeexplore.ieee.org/articleSale/purchaseHistory.jsp">View Purchased Documents</a></li>
+				</ul>
+			</div>
+			<div class="pure-u-1-4">
+				<h3 class="Footer-header">Profile Information</h3>
+				<ul class="Footer-list">
+					<li><a href="https://www.ieee.org/profile/commprefs/showcommPrefpage.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Communications Preferences</a></li>
+					<li><a href="https://www.ieee.org/profile/profedu/getProfEduInformation.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Profession and Education</a></li>
+					<li><a href="https://www.ieee.org/profile/tips/getTipsInfo.html?refSite=http://ieeexplore.ieee.org&amp;refSiteName=IEEE%20Xplore">Technical Interests</a></li>
+				</ul>
+			</div>
+			<div class="pure-u-1-4">
+				<h3 class="Footer-header">Need Help?</h3>
+				<ul class="Footer-list">
+					<li><strong>US &amp; Canada:</strong> +1 800 678 4333</li>
+					<li><strong>Worldwide: </strong> +1 732 981 0060<br>
+					</li>
+					<li><a href="https://ieeexplore.ieee.org/xpl/contact">Contact &amp; Support</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 Footer-bottom">
+				<div class="Footer-bottom-inner-div row">
+					<div class="col">
+						<ul class="Menu Menu--horizontal Menu--dividers u-mb-1">
+							<li class="Menu-item"><a href="https://ieeexplore.ieee.org/Xplorehelp/about-ieee-xplore.html">About IEEE <em>Xplore</em></a></li>
+							<li class="Menu-item"><a href="https://ieeexplore.ieee.org/xpl/contact">Contact Us</a></li>
+							<li class="Menu-item"><a href="https://ieeexplore.ieee.org/Xplorehelp/Help_start.html" target="blank">Help</a></li>
+							<li class="Menu-item"><a href="https://ieeexplore.ieee.org/Xplorehelp/accessibility-statement.html" target="blank">Accessibility</a></li> 
+							<li class="Menu-item"><a href="https://ieeexplore.ieee.org/Xplorehelp/Help_Terms_of_Use.html" target="_blank">Terms of Use</a></li>
+							<li class="Menu-item"><a href="http://www.ieee.org/web/aboutus/whatis/policies/p9-26.html">Nondiscrimination Policy</a></li>
+							<li class="Menu-item"><a href="https://ieeexplore.ieee.org/xpl/sitemap.jsp">Sitemap</a></li>
+							<li class="Menu-item"><a href="http://www.ieee.org/about/help/security_privacy.html" target="blank">Privacy &amp; Opting Out of Cookies</a></li>
+						</ul>
+						<p class="Footer-bottom-terms">
+							A not-for-profit organization, IEEE is the world's largest 
+technical professional organization dedicated to advancing technology 
+for the benefit of humanity.<br>© Copyright 2020 IEEE - All rights reserved. Use of this web site signifies your agreement to the terms and conditions.
+						</p>
+					</div>
+
+					<div><i class="logo-ieee-white"></i></div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+
+	
+	
+</section>
+
+						<!-- BEGIN: tealium in v2/common/template.jsp. We need to include tealiumAnalytics.js here since Angular 2+ app load if you load after commnon.js then tealium value will not be available in angular 2+ app  -->
+						
+
+
+
+
+
+
+		<!-- BEGIN: TealiumAnalytics.jsp -->
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			
+				
+			
+			
+			
+			
+		
+		
+		
+		
+		
+		
+
+			<script type="text/javascript">
+ 				// tealium config vars
+				var TEALIUM_CONFIG_TAGGING_ENABLED = true;		
+				var TEALIUM_CONFIG_CDN_URL = '//tags.tiqcdn.com/utag/';
+				var TEALIUM_CONFIG_ACCOUNT_PROFILE_ENV = 'ieeexplore/main/prod';
+				
+				// tealium utag_data values for user 
+				var TEALIUM_userType = 'Anonymous';
+				var TEALIUM_userInstitutionId = '';
+				var TEALIUM_userId = '';
+				var TEALIUM_user_third_party = '';
+				
+				var TEALIUM_products = '';
+			</script>
+
+
+			<script type="text/javascript">
+			// asynchronously load tealium's utag.js , which declares tealium JS variables like; utag_data, utag
+			(function(a,b,c,d){
+			
+				a=TEALIUM_CONFIG_CDN_URL + TEALIUM_CONFIG_ACCOUNT_PROFILE_ENV + '/utag.js';
+				b=document;c='script';d=b.createElement(c);d.src=a;
+				d.type='text/java'+c;d.async=true;
+				a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a);
+			})();
+			</script>
+
+			<script type="text/javascript" src="tealiumTagsData.js"></script>
+			<script type="text/javascript" src="tealiumAnalytics.js"></script>
+
+
+		
+ 		
+		<!-- END: TealiumAnalytics.jsp -->
+			 
+
+						<!-- END: tealium in v2/common/template.jsp -->
+						
+
+
+
+
+
+
+
+<script type="text/javascript" src="MathJax.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="ie7Sniffer.css">
+<script type="text/javascript" src="js.js"></script>
+<script type="text/javascript" src="fingerprint2.js"></script>
+<script type="text/javascript" src="fingerprint.js"></script>
+
+<!-- Usabilla Combicode for IEEE-->
+<!-- Begin Usabilla for Websites embed code -->
+<script type="text/javascript">/*{literal}<![CDATA[*/window.lightningjs||function(c){function g(b,d){d&&(d+=(/\?/.test(d)?"&":"?")+"lv=1");c[b]||function(){var i=window,h=document,j=b,g=h.location.protocol,l="load",k=0;(function(){function b(){a.P(l);a.w=1;c[j]("_load")}c[j]=function(){function m(){m.id=e;return c[j].apply(m,arguments)}var b,e=++k;b=this&&this!=i?this.id||0:0;(a.s=a.s||[]).push([e,b,arguments]);m.then=function(b,c,h){var d=a.fh[e]=a.fh[e]||[],j=a.eh[e]=a.eh[e]||[],f=a.ph[e]=a.ph[e]||[];b&&d.push(b);c&&j.push(c);h&&f.push(h);return m};return m};var a=c[j]._={};a.fh={};a.eh={};a.ph={};a.l=d?d.replace(/^\/\//,(g=="https:"?g:"http:")+"//"):d;a.p={0:+new Date};a.P=function(b){a.p[b]=new Date-a.p[0]};a.w&&b();i.addEventListener?i.addEventListener(l,b,!1):i.attachEvent("on"+l,b);var q=function(){function b(){return["<head></head><",c,' onload="var d=',n,";d.getElementsByTagName('head')[0].",d,"(d.",g,"('script')).",i,"='",a.l,"'\"></",c,">"].join("")}var c="body",e=h[c];if(!e)return setTimeout(q,100);a.P(1);var d="appendChild",g="createElement",i="src",k=h[g]("div"),l=k[d](h[g]("div")),f=h[g]("iframe"),n="document",p;k.style.display="none";e.insertBefore(k,e.firstChild).id=o+"-"+j;f.frameBorder="0";f.id=o+"-frame-"+j;/MSIE[ ]+6/.test(navigator.userAgent)&&(f[i]="javascript:false");f.allowTransparency="true";l[d](f);try{f.contentWindow[n].open()}catch(s){a.domain=h.domain,p="javascript:var d="+n+".open();d.domain='"+h.domain+"';",f[i]=p+"void(0);"}try{var r=f.contentWindow[n];r.write(b());r.close()}catch(t) { f[i]=p+'d.write("'+b().replace(/"/g,String.fromCharCode(92)+'"')+'");d.close();'}a.P(2)}; a.l&&setTimeout(q,0)})()}();c[b].lv="1";return c[b]}var o="lightningjs",k=window[o]=g(o);k.require=g;k.modules=c}({}); if(!navigator.userAgent.match(/Android|BlackBerry|BB10|iPhone|iPad|iPod|Opera Mini|IEMobile/i)) {window.usabilla_live = lightningjs.require("usabilla_live", "//w.usabilla.com/e9930a118e08.js"); } else {window.usabilla_live = lightningjs.require("usabilla_live", "//w.usabilla.com/118ca38ae742.js"); }/*]]>{/literal}*/</script>
+<!-- end usabilla live embed code -->
+
+
+	
+
+		
+		
+		
+		
+		
+
+		
+			
+		
+		
+		
+
+		
+
+		
+		
+
+
+		
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+	
+
+
+
+
+
+
+<div style="width: 1263px;" id="popup_overlay"></div>
+
+<g:compress>
+
+
+
+
+
+
+
+
+		
+		
+			
+				
+					
+					
+								<script type="text/javascript" src="modernizr.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="vendor.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+						
+
+
+
+
+
+
+
+
+ 
+
+<script>
+	var $j = jQuery.noConflict();
+	var j$ = jQuery.noConflict();
+	var membershipIncomplete;
+    var IS_INDIVIDUAL_USER=false;
+
+	var searchPropertiesParamQueryText = 'queryText';
+	var searchPropertiesParamNewSearch = 'newsearch';
+	var searchPropertiesParamMatchBoolean = 'matchBoolean';
+	var searchPropertiesParamSearchWithin = 'searchWithin';
+	var searchInterfaceArticleIndexTermReference = 'Search_Index_Terms';
+	var searchPropertiesParamRecordsPerPage = 'rowsPerPage';
+	var searchPropertiesParamPageNumber = 'pageNumber';
+	var searchPropertiesParamRemoveRefinement = 'removeRefinement';	
+	var searchPropertiesParamSearchField = 'searchField';
+	var searchPropertiesParamArticleNumber = 'arnumber';
+	
+	var authorsGetDisplay = 'Authors';
+	var authorsFirstNameProperty = 'First Name';
+	var authorsLastNameProperty = 'Last Name';
+	var authorsMiddleNameProperty = 'Middle Name';
+	var pubTitleDispNameProperty = 'Publication Title';
+	var volumeDispNameProperty = 'Volume';
+	var issueDispNameProperty = 'Issue';
+	var startPageDispNameProperty = 'Start Page';
+	var endPageDispNameProperty = 'Start Page';
+
+	var searchIcsTermProperty = 'Standards ICS Terms';
+	var SearchMapperParamSearchField = 'searchField';
+	
+	var SearchMapperParamNewSearch = 'newsearch';
+	var SearchMapperParamArticleNumber = 'arnumber';	
+	
+	var NTPT_IMAGE_LOCATION = '';
+	var XPLORE_SSL_HOST = 'https://ieeexplore.ieee.org';	
+	
+	var SSL_YES_NO = 'yes';
+	if (SSL_YES_NO.toUpperCase() == "NO"){
+		var XPLORE_SSL_YES_NO = false;
+	}else{
+		var XPLORE_SSL_YES_NO = true;
+	}
+	var WEBSERVICES_SSL_YES_NO = 'yes';
+	if (WEBSERVICES_SSL_YES_NO.toUpperCase() == "NO"){
+		var XPLORE_WEBSERV_YES_NO = false;
+	}else{
+		var XPLORE_WEBSERV_YES_NO = true;
+	}
+	
+	var AUTHOR_PROFILE = 'ON';
+	if (AUTHOR_PROFILE.toUpperCase() == "OFF"){
+		var AUTHOR_PROFILE_ENABLED = false;
+	}else{
+		var AUTHOR_PROFILE_ENABLED = true;
+	}
+	
+	var ILN_ENABLED = true;
+	
+	
+	var IBP_MEMBEER_SIGNIN_TIME_WAIT_IN_MILLIES = '800';
+	var ASSETS_RELATIVE_PATH = '/assets'; // NOTE: AngularJS code relies on this
+	var ASSETS_RELATIVE_PATH_NO_SERVER = '/assets';
+	var ASSETS_VERSION = '20200211_000001'; // NOTE: AngularJS code relies on this
+	var IBP_WS_ASSETS='https://www.ieee.org';
+	var IBP_WS_ENABLED_FLAG = true;
+	var ENTERPRISE_CART_URL = 'https://www.ieee.org/cart/public/myCart/page.html?refSite=http://ieeexplore.ieee.org&refSiteName=IEEE%20Xplore';
+	
+	var ACC_MGMT_NEW = true;
+	if (! XPLORE_WEBSERV_YES_NO) {
+		var ACC_MGMT_NEW = 'false';
+	}
+	var ACC_MGMT_CREATE_URL = 'https://www.ieee.org/profile/public/createwebaccount/showCreateAccount.html?sourceCode=xplore&car=IEEE-Xplore&autoSignin=Y';
+	var ACC_MGMT_FORGOT_PASSWD_URL = 'https://www.ieee.org/profile/public/forgotpassword/forgotUsernamePassword.html?sourceCode=xplore';
+
+	var SPECIAL_CHARACTER_MAPS = '&:.AND.,=:.EQ.,+:.PLS.,#:.HSH.';
+	var SPECIAL_CHARACTERS = new Array();
+	var SPECIAL_CHARACTER_REPLACEMENTS = new Array();
+	var characterMaps = SPECIAL_CHARACTER_MAPS.split(",");
+	for (var i = 0; i < characterMaps.length; i++) {
+		parts = characterMaps[i].split(":");
+		SPECIAL_CHARACTERS[i] = parts[0];
+		SPECIAL_CHARACTER_REPLACEMENTS[i] = parts[1];
+	}
+
+	var ALL_SEARCH_FIELDS = 'Search_Index_Terms:Index Terms,Search_All_Text:Full Text & Metadata,Search_All:All Metadata,fullText:Full Text Only,Search_Publication_Title:Search Publication Title,Search_Related_Terms:Search Related Terms,Search_Authors:Author Name,Search_Standard_Ics_Title:ICE Terms,id:Article Number,id:ID,moduleNumber:Module Number,part_num:Part_Num,issn:ISSN,isbn:ISBN,eisbn:EISBN,issueId:IS Number,pubIssueId:Pub Issue Id,accessionNumber:Accession Number,copyrightHolder:Copyright Holder,copyrightYear:Copyright Year,license:License,documentAbstract:Abstract,publicationId:Publication Number,parentPublicationId:Parent Publication Number,parentId:Parent Id,standardArticleId:Standard Article Id,title:Document Title,parentTitle:Parent Publication Title,publicationTitle:Publication Title,publicationDisplayTitle:Publication Display Title,volume:Volume,issue:Issue,paddedIssueNumber:Padded Issue Number,part:Part,startPage:Start Page,endPage:End Page,filePath:File Path,publicationDate:Publication Date,PublicationYear:Publication Year,onlineDate:Online Date,month:Month,Author:Author Pref Names,authorNormNames:Author Norm Names,author:Authors,authorIds:Author Ids,firstName:First Name,middleName:Middle Name,lastName:Last Name,Affiliation:Author Affiliations,authorBio:Author Bio,authorImg:Author Img,referenceCount:Reference Count,citationCount:Citation Count,downloadCount:Download Count,patentCount:Patent Count,multimediaFlag:Multimedia Flag,biomedicalEngFlag:Biomedical Eng Flag,nonIeee:Non IEEE,stdsProductNumber:STDS Product Number,bmsProductNumber:Bms Product Number,status:Status,doi:DOI,articleDoi:Article DOI,publicationDoi:Publication DOI,pdfPath:Pdf Path,pdfSize:Pdf Size,contentType:Content Type,Publisher:Publisher,ControlledTerms:INSPEC Controlled Terms,freeTerms:INSPEC Non-Controlled Terms,ieeeTerms:IEEE Terms,authorTerms:Author Keywords,maiTerms:MAI Terms,meshTerms:Mesh_Terms,pacsTerms:PACS Terms,insertDate:Insert Date,ConferenceLocation:Conference Location,indexContent:Index Content,coden:CODEN,documentText:Document Text,standardNumber:Standard Number,preprintFlag:Preprint Flag,rapidPostFlag:Rapid Post Flag,lastUpdate:Last Update,newFlag:New Flag,openAccessFlag:Open Access Flag,publicationOpenAccess:Publication Open Access,promoFlag:Promo Flag,pubmedId:Pubmed Id,duration:Duration,society:Society,conference:Conference,ConferenceCountry:ConferenceCountry,societyUrl:Society URL,idSubject:Id Subject,bookNumber:Book Number,pages:Pages,editionNumber:Edition Number,sequence:Sequence,relatedInfoType:Related Info Type,relatedInfo:Related Info,formatIsbn:Format ISBN,meetingDate:Meeting Date,courseLevel:Course level,courseId:Course ID,aboutUrl:About Url,additionalUrl:Additional Url,authorsUrl:Authors Url,openAccessUrl:Open Access Url,openAccessFlag:Open Access flag,partnumVendorurlMediatype:Partnum VendorURL MediaType,brandingImageFile:Branding Image File,coverImageFile:Cover Image File,frequency:Frequency,fieldOfInterest:Field Of Interest,gParentPublicationNumber:G Parent Publication Number,msUrl:Ms Url,publicationRelationship:Relationship,societyImage:Society Image,visitUrl:Visit Url,visitWebsite:Visit Website,startYear:Start Year,endYear:End Year,publicationInactive:Publication Inactive,recordType:Record Type,epub:Epub,picCodeDescription:Pic Code Description,picCode:Pic Code,sponsors:Sponsors,issueNotes:Notes,conferenceDate:Conference Date,publicationContact:Publication Contact,isbuyable:isBuyable,standardRelationships:Standard Relationships,unavailableForSale:Unavailable for Sale,availableForSale:Available for Sale,standardFamily:Standard Family,standardGroup:Standard Group,productUrl:Product Url,isbnMediatype:ISBN MediaType,htmlFlag:Html Flag,rightslinkFlag:Rightslink Flag,pageCount:Page Count,name:Name,tableOfContents:Table of Contents,timeStamp:Time Stamp,subTitle:Sub Title,relatedItem:Related Item,referenceMaterial:Reference Material,latestIssueTime:Latest Issue Time,insertDate:Search Latest Date,pbdFlag:Pbd Flag,lmsUrl:Lms Url,currentVolume:Current Volume,graphicalFile:Graphical File,graphicalCoverImage:Graphical Cover Image,graphicalSummary:Graphical Summary,graphicalType:Graphical Type,authorNativeNames:Native Name,externalId:Article Page Number,standardBundles:Standard Bundles,standardBundleParts:Standard Bundle Parts,virtualTitle:Virtual Title,seriesName:Series Name,seriesId:Series Id,mlHtmlFlag:ML Html flag,promoDates:Promo Dates,promoStartDate:Promo Start Date,promoEndDate:Promo End Date,issueCompleteFlag:Issue Complete Flag,scope:Scope,purpose:Purpose,standardFamilyTitle:Standard Family Title,thumbnailImg:Thumbnail Img,supplementFile:Supplement File,courseFile:Course File,supplement:Supplement,courseAuthor:Course Author,pdhs:Pdhs,ceus:Ceus,courseFirstFrame:FirstFrame Img,idSubTopic:Id Sub Topic,certificateUrl:Certificate Url,standardRoot:Standard Root,icsTerms:Standards ICS Terms,impactStatement:Impact Statement,plagiarizedFlag:Plagiarized Flag,affirmedDate:Affirmed Date,sourcePdf:Source Pdf,orcid:Author ORCID,algorithmFlag:Algorithm Flag,fundingAgency:Funding Agency,pricingKey:Map Pricing Key,publicationRollup:Rollup Key,collection:Collection,previewImage:Preview Image,regularDate:Regular Date,ContentType:Content Type,ringgoldIds:Ringgold ID,Search_All:All Metadata,Search_All_Text:Full Text & Metadata,fullText:Full Text Only,TypeAheadTerms:Type Ahead Terms,IeeeTerm:IEEE Term,ContentType:Content Type,Author:Author,Affiliation:Affiliation,Topic:Topic,PublicationTitle:Publication Title,PublicationYear:Year,Publisher:Publisher,ConferenceCountry:Conference Country,ConferenceLocation:Conference Location,StandardStatus:Standard Status,ConferenceYear:Conference Year,PublicationPackage:Subscribed Content,StandardPackage:Standard Package,StandardTitle:Standard Title,StdDictionaryTerms:Standards Dictionary Terms,TitleRange:Publication Range,StandardRange:Standard Range,RecordType:Record Type,MediaType:Media Type,BookType:Book Type,CourseType:Course Type,PublicationStandardRange:Publication Standard Range,PerpetualYear:Perpetual Year,OpacTitleRange:Opac Title Range,BookSeries:Book Series,SubjectCategory:Subject Category,Sessions:Sessions,TypeAheadPublication:Type Ahead Publication,SubTopic:Sub Topic,CourseDuration:Course Duration,CourseLevel:Course Level,StandardType:Standard Type,StandardSubtype:Standard SubType,StandardTopic:Standard Topic,StandardModifier:Standard Modifier,IcsTerms1:Ics Terms 1,IcsTerms2:Ics Terms 2,IcsTerms3:Ics Terms 3,SupplementalItem:Supplemental Items,CourseDuration:Course Duration,SpecialSection:Topics,SocietySection:Society Sections,ControlledTerms:Index Terms';
+	var SEARCH_FIELD_REFERENCES = new Array();
+	var SEARCH_FIELD_DISPLAYS = new Array();
+	var searchFields = ALL_SEARCH_FIELDS.split(",");
+	for (var j = 0; j < searchFields.length; j++) {
+		parts = searchFields[j].split(":");
+		SEARCH_FIELD_REFERENCES[j] = parts[0];
+		SEARCH_FIELD_DISPLAYS[j] = parts[1];
+	}
+	
+
+	var refSite='https://ieeexplore.ieee.org';
+	var refSiteName="IEEE Xplore";
+	var applicationName = 'Xplore';
+	var MC_OPERATION_DELAY_TIMEOUT='5000';
+	var MC_ADDING_DELAY_MSG='Please wait.The selected item(s) is being added to the cart.';
+	var MC_TIMEOUT='60000';
+	var MC_OPERATION_DELAY_MSG_FLAG='true';
+
+	var MEMBER_PROFILE_CHANGE_USERNAMEPASS_LINK = 'https://www.ieee.org/profile/changeusrpwd/showChangeUsrPwdPage.html?refSite=http://ieeexplore.ieee.org&refSiteName=IEEE Xplore';
+	var MEMBER_PROFILE_ADDRESSINFO_LINK = 'https://www.ieee.org/profile/address/getAddrInfoPage.html?refSite=http://ieeexplore.ieee.org&refSiteName=IEEE Xplore';
+	var MEMBER_PROFILE_PAYMENTINFO_LINK = 'https://www.ieee.org/profile/payment/showPaymentHome.html?refSite=http://ieeexplore.ieee.org&refSiteName=IEEE Xplore';
+	var MEMBER_PROFILE_ORDER_HISTORY_LINK = 'https://www.ieee.org/profile/vieworder/showOrderHistory.html?refSite=http://ieeexplore.ieee.org&refSiteName=IEEE Xplore';
+	var MEMBER_USER_COMMUNICATION_LINK = 'https://www.ieee.org/profile/commprefs/showcommPrefpage.html?refSite=http://ieeexplore.ieee.org&refSiteName=IEEE Xplore';
+	var MEMBER_EDUCATIONAL_PROFILE_LINK = 'https://www.ieee.org/profile/profedu/getProfEduInformation.html?refSite=http://ieeexplore.ieee.org&refSiteName=IEEE Xplore';
+	var MEMBER_TECHNICAL_INTERESTS_LINK = 'https://www.ieee.org/profile/tips/getTipsInfo.html?refSite=http://ieeexplore.ieee.org&refSiteName=IEEE Xplore';
+	var HELPFILE_RELATIVE_PATH = '/Xplorehelp';
+	
+	//content types
+	var CONTENT_TYPE_PARAM = 'contentType';
+	var CONTENT_TYPE_BOOKS = 'Books';
+	var CONTENT_TYPE_COURSES = 'Courses';
+	var CONTENT_TYPE_STANDARDS = 'Standards';
+	var CONTENT_TYPE_CONFERENCES = 'Conferences';
+	var CONTENT_TYPE_JOURNALS = 'Journals';
+	var CONTENT_TYPE_EARLY_ACCESS = 'Early Access Articles';
+	
+	//User Preferences
+	var citFormat = "";
+	var dlFormat = "";
+	
+	//Google ReCaptcha public Key 
+	var RECAPTCHA_PUBLIC_KEY = '6Ld6GEUUAAAAALdaAmeGUhZyz1KFFHnd5oCaTW-t';
+</script>
+
+					
+					
+								
+			
+				
+					
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="history.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="cartScroll.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="minicart.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="core.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="xpl.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="xpl_004.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="xpl_002.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="xpl_003.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="templates.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="templates_003.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="templates_002.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="templates_004.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="inline.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="polyfills.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="vendor_002.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="main.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="ads.js" charset="utf-8"></script>
+					
+								
+			
+				
+					
+					
+								<script type="text/javascript" src="master.js" charset="utf-8"></script>
+					
+								
+			
+		
+	
+
+
+
+
+
+
+<script>
+
+j$('document').ready(function(){
+	if (Cookies.get('legacyUserName')) {
+		if (IBP_WS_ENABLED_FLAG){
+			Modal.refreshLegacyAccountTransition('/xpl/mwLegacyAccountTransition.jsp');
+		}
+	}
+});
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</g:compress>
+
+
+
+
+
+
+
+
+		
+			
+					
+			
+					
+			
+					
+			
+				
+					
+
+
+
+
+
+
+
+<script>
+	// Get/Set XPL namespace.
+	window.xpl = window.xpl || {};
+	
+	// Set constants/application properties.
+	xpl.properties = { 
+			collabratec: { 
+					url: 'https://ieee-collabratec.ieee.org/app/library'
+			}
+	};
+	
+	xpl.properties.details = {
+			oqs: ''
+	};
+</script>
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+					
+			
+		
+		
+	
+
+
+
+
+
+	<!--Begin Optional Configuration-->
+	<script type="text/javascript" src="jquery_004.js"></script>
+	<script type="text/javascript" src="postmessage-min.js"></script>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="ieee-auth-constants-min.js"></script>
+	<script type="text/javascript" src="ieee-auth-include-min.js"></script>
+	<script type="text/javascript" src="ieee-mini-cart-constants-min.js"></script>
+
+
+	<script type="text/javascript" src="ieee-mashup-util-min.js"></script>
+	<script type="text/javascript" src="jquery_003.js"></script>
+	<script type="text/javaScript" src="ieee-minicart-include-min.js"> </script>
+
+	<!--End Optional Configuration-->
+
+
+
+
+<!-- Removed due to network issues when loading in China -->
+<!-- <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-5005a435228f9245" async="async"></script>-->
+
+<!-- Load Mathjax and process the document for Mathjax characters -->
+
+
+<!-- <script type="text/javascript" src="/xploreAssets/MathJax-274/MathJax.js?config=default"></script> -->
+
+
+<script defer="defer">
+	MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.body]);
+</script>
+
+
+
+					</div>
+				</div>
+			</div>
+
+			
+				<script>
+					// set $ alias back to jQuery because noConflict mode is used in legacy pages
+					window.$ = jQuery;
+				</script>
+			
+		</div><!-- /#LayoutWrapper -->
+	
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none; max-width: none;"></div></div></body></html>
