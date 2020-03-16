@@ -1,0 +1,52 @@
+\documentclass{article}
+\usepackage{graphicx}
+
+\date{\today}
+\author{Tarik Atlaoui \\ Nicolas Peugnet \\ Kimmeng Ly \\ Max Eliet}
+
+\begin{document}
+
+
+\begin{titlepage}
+	\enlargethispage{2cm}
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+	\center
+	\textsc{\LARGE
+	Pre-rapport du PSAR 
+	} \\[1cm]
+	\HRule \\[0.4cm]
+	{ \huge \bfseries API générique pour le développement d'applications réparties \\[0.15cm] }
+	\HRule \\[4cm]
+	\large{Tarik Atlaoui \\[3mm] Nicolas Peugnet \\[3mm] Kimmeng Ly \\[3mm] Max Eliet} \\[3cm]
+	09 Mars 2020 \\[3cm]
+	\hfill \includegraphics[width=5cm]{logoSU.jpg}
+\end{titlepage}
+
+	\newpage
+	\pagenumbering{arabic}
+		\section{Introduction}
+			\subsection{Les applications réparties : qu'est-ce ?}
+			 \subsection{Les difficultés à programmer une application répartie}
+
+		\section{Méthode de développement}
+			\subsection{API réelle : avantages/inconvénients + exemple API(MPI ou autre)}
+			\subsection{API simulation à évenement discret : qu'est-ce ? + avantages/inconvénients + exemple(PeerSim ou autre)}
+			\subsection{Code des deux API faisant la même chose}
+		
+		\section{Motivation et objectif global}
+			\subsection{API générique : avantages, modèle de programmation(ici événementiel)}
+			\subsection{Code précédent en version générique}
+		
+		\section{Les étapes de réalisation}
+			\subsection{Définition API générique}
+			\subsection{Définition des primitives offertes et explication}
+			\subsection{Implantation vers MPI}
+			\subsection{Implantation vers PeerSim}
+			\subsection{API pour un scenario}
+			\subsection{Rédaction du rapport}
+
+		\section{Plan de validation}
+			\subsection{Comment montrer que cela fonctionne bien, tests unitaires, respect du cahier des charges}
+		\section{Planning des tâches}
+			\subsection{Une deadline pour chaque tâche dans un ordre chronologique}
+\end{document}
