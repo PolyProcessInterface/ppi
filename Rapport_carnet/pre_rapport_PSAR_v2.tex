@@ -30,8 +30,12 @@
 
 		\section{Méthode de développement}
 			\subsection{API réelle : avantages/inconvénients + exemple API(MPI ou autre)}
-			\subsection{API simulation à évenement discret : qu'est-ce ? + avantages/inconvénients + exemple(PeerSim ou autre)}
-			\subsection{Code des deux API faisant la même chose}
+			\subsection{API simulation à évenements discrets : qu'est-ce ? + avantages/inconvénients + exemple(PeerSim ou autre)}
+				\large{Qu'entend-on par \textit{simulation à événements discrets}? C'est une simulation dont le temps évolue seulement lorsqu'un événement survient sur un noeud, et donc de même l'état du système ne peut être modifié qu'à ces moments là.
+\newline \indent On distingue donc deux entités : les noeuds, et les événements qui sont caractérisés par une date de délivrance, un noeud destinataire, et des données.
+\newline \indent Les principaux avantages d'un tel type de simulation sont : son déterminisme et donc une capacité à reproduire des bugs, et une charge de calcul réduite aux événements qu'on décide de simuler. Toutefois, il faut savoir trouver un équilibre entre une simulation trop simpliste et une simulation trop précise ralentie par trop d'événements.
+\newline \indent Dans notre cas, nous nous sommes dirigés vers PeerSim comme simulateur à événements discrets, car il est codé en Java et possède une API relativement simple d'utilisation. }
+			\subsection{Aperçu de l'implémentation d'un anneau avec les deux API}
 		
 		\section{Motivation et objectif global}
 			\subsection{API générique : avantages, modèle de programmation(ici événementiel)}
