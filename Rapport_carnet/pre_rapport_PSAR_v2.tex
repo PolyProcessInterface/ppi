@@ -1,5 +1,27 @@
 \documentclass{article}
 \usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 \date{\today}
 \author{Tarik Atlaoui \\ Nicolas Peugnet \\ Kimmeng Ly \\ Max Eliet}
@@ -35,8 +57,56 @@
 \newline \indent On distingue donc deux entités : les noeuds, et les événements qui sont caractérisés par une date de délivrance, un noeud destinataire, et des données.
 \newline \indent Les principaux avantages d'un tel type de simulation sont : son déterminisme et donc une capacité à reproduire des bugs, et une charge de calcul réduite aux événements qu'on décide de simuler. Toutefois, il faut savoir trouver un équilibre entre une simulation trop simpliste et une simulation trop précise ralentie par trop d'événements.
 \newline \indent Dans notre cas, nous nous sommes dirigés vers PeerSim comme simulateur à événements discrets, car il est codé en Java et possède une API relativement simple d'utilisation. }
+			\newpage
 			\subsection{Aperçu de l'implémentation d'un anneau avec les deux API}
-		
+				\paragraph{Implementation en MPI}
+				\begin{lstlisting}
+public class RingMpi {
+	public static void main(String[] args) {
+			MPI.Init(args);
+			Comm comm = MPI.COMM_WORLD;
+			int size = comm.getSize();
+			int rank = comm.getRank();
+			int neighbour = (rank + 1) % size;
+			int hellotag = 1;
+			Integer msg = 0;
+			Status status;
+			if (rank == 0) {
+				comm.send(msg, 0, MPI.INT, neighbour, hellotag);
+				status = comm.recv(msg, 0, MPI.INT, MPI.ANY_SOURCE, hellotag);
+			} else {
+				status = comm.recv(msg, 0, MPI.INT, MPI.ANY_SOURCE, hellotag);
+				comm.send(msg, 0, MPI.INT, neighbour, hellotag);
+			}
+			System.out.println(rank + " Received hello from " + status.getSource());
+			MPI.Finalize();
+		}
+	}
+}
+				\end{lstlisting}
+				\paragraph{Implementation en PeerSim}
+				\begin{lstlisting}
+public class HelloProtocol implements EDProtocol {
+	//Declarations d'attributs et fonctions retirees pour la clarte du code
+	...
+	//Un noeud souhaite faire sa diffusion du message a son voisin
+	public void direVoisin(Node host) {
+		Transport tr= (Transport) host.getProtocol(pid_transport);
+		Node dest=Network.get((int) ((host.getID()+1)%Network.size()));
+		Message mess= new Message(host.getID(),(host.getID()+1)%Network.size(),my_pid, new ArrayList<>(myList));
+		tr.send(host, dest, mess, my_pid);
+
+		deja_dit_voisin=true;
+	}
+
+	//Traitement a effectuer lorsqu'on recoit un HelloMessage
+	private void receiveHelloMessage(Node host, HelloMessage mess) {
+		System.out.println("Noeud "+ host.getID() + " : a recu Hello de "+mess.getIdsrc()+ " sa liste = "+mess.getInfo());
+		if(!deja_dit_voisin) {
+			direVoisin(host);
+		}
+	}
+				\end{lstlisting}
 		\section{Motivation et objectif global}
 			\subsection{API générique : avantages, modèle de programmation(ici événementiel)}
 			\subsection{Code précédent en version générique}
