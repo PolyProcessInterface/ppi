@@ -2,6 +2,8 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{geometry}
+\geometry{hmargin=2.5cm,vmargin=3cm}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
@@ -59,7 +61,7 @@
 \newline \indent Dans notre cas, nous nous sommes dirigés vers PeerSim comme simulateur à événements discrets, car il est codé en Java et possède une API relativement simple d'utilisation. }
 			\newpage
 			\subsection{Aperçu de l'implémentation d'un anneau avec les deux API}
-				\paragraph{Implementation en MPI}
+				{\bfseries Implémentation en MPI}
 				\begin{lstlisting}
 public class RingMpi {
 	public static void main(String[] args) {
@@ -84,7 +86,7 @@ public class RingMpi {
 	}
 }
 				\end{lstlisting}
-				\paragraph{Implementation en PeerSim}
+				{\bfseries Implémentation en PeerSim}
 				\begin{lstlisting}
 public class HelloProtocol implements EDProtocol {
 	//Declarations d'attributs et fonctions retirees pour la clarte du code
@@ -109,8 +111,63 @@ public class HelloProtocol implements EDProtocol {
 				\end{lstlisting}
 		\section{Motivation et objectif global}
 			\subsection{API générique : avantages, modèle de programmation(ici événementiel)}
-			\subsection{Code précédent en version générique}
-		
+				Le but de notre projet est de produire une API générique sur un modèle de programmation événementielle afin de faciliter le développement de futures applications réparties, en permettant de s'abstraire du support d'éxécution au niveau du code métier. \par
+Pouvoir éxécuter le même code métier aussi bien sur une plateforme réelle que sur un simulateur permet au développeur d'une application répartie de passer de l'un à l'autre, sans risquer d'en  modifier son comportement en adaptant le code. \newline \indent Il peut donc profiter des avantages d'un simulateur, comme la vision globale du système et le déterminisme des séquences d'éxécution  sans crainte d'y introduire des erreurs. \par
+ 
+			\newpage
+			\subsection{Aperçu de l'implémentation d'un anneau avec l'API générique}
+				\begin{lstlisting}
+public class ExampleNodeProcess extends NodeProcess {
+
+	public static class ExampleMessage extends Message{
+	
+		private static final long serialVersionUID = 1L;
+		private String s;
+		public ExampleMessage(int src, int dest, String s) {
+			super(src, dest);
+			this.s = s;
+		}
+
+		public String getS() {
+			return s;
+		}
+
+	}
+
+	@Override
+	public void processMessage(Message message) {
+		int host = infra.getId();
+		System.out.println("" + host + " Received hello from "  + message.getIdsrc());
+		if (host != 0) {
+			int dest = (host + 1) % infra.size();
+			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+		}
+		infra.exit();
+	}
+
+	@Override
+	public void start() {
+		if (infra.getId() == 0) {
+			infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
+		}
+	}
+}
+
+public class BasicTest {
+
+	@Test
+	public void MpiExample() {
+		Ppi.main(new String[] { ExampleNodeProcess.class.getName(), MpiRunner.class.getName() });
+		assertTrue(true);
+	}
+
+	@Test
+	public void PeersimExample() {
+		Ppi.main(new String[] { ExampleNodeProcess.class.getName(), PeerSimRunner.class.getName() });
+		assertTrue(true);
+	}
+}
+				\end{lstlisting}
 		\section{Les étapes de réalisation}
 			\subsection{Définition API générique}
 			\subsection{Définition des primitives offertes et explication}
