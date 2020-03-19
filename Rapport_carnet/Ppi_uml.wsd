@@ -1,0 +1,46 @@
+@startuml Ppi_uml
+
+class Infrastructure {
+    ~ int currentNode
+    + send(Message) : void
+    + exit() : void
+    + size() : Integer
+}
+
+class MpiInfrastructure {
+
+}
+
+class PeerSimInfrastructure {
+
+}
+Infrastructure <|-- PeerSimInfrastructure
+Infrastructure <|-- MpiInfrastructure
+Infrastructure *-- NodeProcess
+Infrastructure -- NodeProcess
+class NodeProcess {
+   + processMessage(Message) : void
+   + start() : void
+   +  clone() : Object
+}
+
+interface Runner {
+   + init(String[]) : void
+   + run(NodeProcess, String[]) : void
+}
+
+class Message {
+
+}
+
+Runner <|-- MpiRunner
+Runner <|-- PeerSimRunner
+class MpiRunner {
+
+}
+
+class PeerSimRunner {
+
+}
+ 
+@enduml
