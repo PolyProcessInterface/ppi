@@ -218,7 +218,10 @@ public class BasicTest {
 			sur une application déja existante, cependant, écrire du code en PeerSim est exhaustif et peut dificilement être exploité pour une utilisation
 			autre que le debug.
 			\subsection{API pour un scenario}
-			\subsection{Rédaction du rapport}
+			L'utilisateur aura aussi accès à une API permettant de décrire un scenario où il devras spécifier en premier lieu
+			le nombre de noeuds demandé, préciser sur quelle API (MPI ou PeerSim voir les deux) le scénario devra être exécuté, les événements et leur date (en milliseconde) qui devront être appelés 
+			sachant que MPI travaille sur de vrais machine et que le temps d'arrivée des messages est inconnu on ne promet pas l'éxecution exacte du scénario demandé. 
+			%\subsection{Rédaction du rapport}
 
 		\section{Plan de validation}
 		\subsection{Tests de validation}
