@@ -15,5 +15,15 @@
 /.idea
 ppi.iml
 
+# Latex files
+.vscode-ctags
+*.aux
+*.dvi
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+Rapport_carnet/**/*.pdf
+Rapport_carnet/**/*.png
+
 # Other
 *.log
