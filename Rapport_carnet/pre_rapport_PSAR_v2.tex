@@ -6,6 +6,7 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{geometry}
+\usepackage{array}
 \geometry{hmargin=2.5cm,vmargin=3cm}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -228,4 +229,33 @@ public class BasicTest {
 			\subsection{Comment montrer que cela fonctionne bien, tests unitaires, respect du cahier des charges}
 		\section{Planning des tâches}
 			\subsection{Une deadline pour chaque tâche dans un ordre chronologique}
+			\begin{tabular}{|c|c|}
+				\hline
+				Tâche & Date d'échéance \\[1mm]
+				\hline
+				Se familiariser avec MPI et Peersim & 17/02 \\[1mm]
+				\hline
+				Proposer une API générique & 24/02 \\[1mm]
+				\hline
+				Implanter l'API pour MPI et pour PeerSim & 02/03 \\[1mm]
+				\hline
+				Créer une classe abstraite Message & 09/03 \\[1mm]
+				\hline
+				Unifier le lancement de l'application & 09/03 \\[1mm]
+				\hline
+				Rédiger le carnet de bord & 16/03 \\[1mm]
+				\hline
+				Rédiger le pre-rapport & 23/03 \\[1mm]
+				\hline 
+				Implanter l'aiguillage automatique des messages & 23/03 \\[1mm]
+				\hline
+				Ajouter la fonctionnalité de description de scenario & 30/03 \\[1mm]
+				\hline
+				Ajouter des fonctionnalités de wait/notify & 20/04 \\[1mm]
+				\hline 
+				Rédiger le rapport final & 27/04 \\[1mm]
+				\hline
+				Soutenance finale & XX/05 \\[1mm]
+				\hline
+			\end{tabular}
 \end{document}
