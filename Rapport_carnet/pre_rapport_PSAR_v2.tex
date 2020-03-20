@@ -53,7 +53,7 @@
 	\pagenumbering{arabic}
 		\section{Introduction}
 			\subsection{Les applications réparties : qu'est-ce ?}
-			\large{ Avant de commencer, il est important de définir ce qu’est une application répartie. Dans notre cas, nous pouvons voir une application répartie comme un ensemble d’entités logicielles, de composants qui peuvent être développées dans différents langages de programmation, s’exécutant sur plusieurs sites et qui sont reliés entre eux par une interface ou un réseau de communication.}
+			\large{ Avant de commencer, il est important de définir ce qu’est une application répartie. Dans notre cas, nous pouvons voir une application répartie comme un ensemble d’entités logicielles, de composants qui peuvent être développés dans différents langages de programmation, s’exécutant sur plusieurs sites et qui sont reliés entre eux par une interface ou un réseau de communication.}
 			\subsection{Les difficultés à programmer une application répartie}
 			\large { Aujourd’hui la programmation d’applications réparties est devenue une réalité du monde informatique, cette forme de programmation permet d'augmenter la disponibilité des applications et de diminuer leur temps d'exécution. Cependant, réaliser une application répartie reste une tâche délicate. En effet, nous devons prendre en compte la maintenabilité et la réutilisabilité des programmes, de plus les accès concurrents peuvent créer des erreurs et des sources d'incohérence. C’est pourquoi il est très important de montrer que ces programmes fonctionnent bien avec des tests unitaires tout en respectant le cahier des charges.}
 		\section{Méthode de développement}
@@ -187,24 +187,22 @@ public class BasicTest {
 			\begin{lstlisting}
 				public  void start();
 			\end{lstlisting}
-			La primitive start  doit etre redéfinie par l'utilisateur et permet de définire le code a éxecuter par le processus lors de sont lancement
+			La primitive start  doit etre redéfinie par l'utilisateur et permet de définir le code à éxécuter par le processus lors de son lancement.
 			\begin{lstlisting}
 			public  void processMessage(Message message);
 			\end{lstlisting}
-			processMessage elle aussi doit etre redéfinie par l'utilisateur et permet  de définire le comportement du processus lors de la réception 
-			d'un message
+			De même pour processMessage qui permet  de définir le comportement du processus lors de la réception d'un message.
 			\begin{lstlisting}
 			abstract class Message implements Serializable
 			\end{lstlisting}
-			Message est la class définie afin de permettre une abstraction du traitement des messages et doit etre redéfinie et doit etre étandue par 
-			l'utilisateur
+			Message est la classe définie afin de permettre une abstraction du traitement des messages et doit etre étendue par l'utilisateur.
 			\newpage
 			\begin{lstlisting}
 				public class Ppi
 				//utilisation
 				Ppi.main(new String[] {NodeProcess.class.getName(),Runner.class.getName()});
 			\end{lstlisting}
-			La class Ppi est le main de notre application elle permet d'executer le code utilisateur en Mpi ou PeerSim.
+			La class Ppi est le main de notre application, elle permet d'executer le code utilisateur en Mpi ou en PeerSim.
 
 			\subsection{Implantation vers MPI}
 			L'Api MPI (Message Passing Interface) est avant tout une norme pour le passage de message entre différents ordinateurs ou sur le même ordinateur.
@@ -226,7 +224,7 @@ public class BasicTest {
 		Pour chaque fonctionnalité ajoutée nous ajoutons un test et nous nous assurons que les tests précédents fonctionnent toujours.
 		\newline
 		La class BasicTest est la toute première classe de tests que nous avons implémenté elle s'assure que les fonctionnalités de base de notre Api
-		send recive et le format de description de scénario restent fonctionnels malgré les nouveaux ajouts.
+		send/receive et le format de description de scénario restent fonctionnels malgré les nouveaux ajouts.
 			\subsection{Comment montrer que cela fonctionne bien, tests unitaires, respect du cahier des charges}
 		\section{Planning des tâches}
 			\subsection{Une deadline pour chaque tâche dans un ordre chronologique}
