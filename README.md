@@ -66,3 +66,10 @@ If you installed the libraries in a different location you can use the options
 ## Run tests
 
     mvn test
+
+## Docs
+
+### Install latex
+
+    sudo apt install texlive latexmk texlive-lang-french cm-super
+
