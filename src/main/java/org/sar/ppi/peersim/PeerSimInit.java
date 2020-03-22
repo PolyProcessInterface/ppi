@@ -21,10 +21,6 @@ public class PeerSimInit implements Control {
 			Node node=Network.get(i);
 			PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infrapid);
 			pInfra.initialization(node);
-			//NodeProcess np= (NodeProcess) node.getProtocol(infrapid);
-			//np.infra
-			//prot.initialisation(node);
-			//prot.startNode((org.sar.ppi.Node) node);
 		}
 		return false;
 	}

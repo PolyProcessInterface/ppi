@@ -32,7 +32,7 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.process=np; // TO DO  à changer pour donner la classe précisée par PAR_NP dans le fichier de config
+		this.process=np;
 		String tmp[]=prefix.split("\\.");
 		my_pid=Configuration.lookupPid(tmp[tmp.length-1]);
 		pid_transport=Configuration.getPid(prefix+"."+PAR_TRANSPORT);

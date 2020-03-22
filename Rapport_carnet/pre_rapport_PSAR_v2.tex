@@ -59,11 +59,20 @@
 			\large { Aujourd’hui la programmation d’applications réparties est devenue une réalité du monde informatique, cette forme de programmation permet d'augmenter la disponibilité des applications et de diminuer leur temps d'exécution. Cependant, réaliser une application répartie reste une tâche délicate. En effet, nous devons prendre en compte la maintenabilité et la réutilisabilité des programmes, de plus les accès concurrents peuvent créer des erreurs et des sources d'incohérence. C’est pourquoi il est très important de montrer que ces programmes fonctionnent bien avec des tests unitaires tout en respectant le cahier des charges.}
 		\section{Méthode de développement}
 			\subsection{API réelle : avantages/inconvénients + exemple API(MPI ou autre)}
+			%RESTE A COMPLETER ICI
+			L'API de MPI est avant tout une norme pour le passage de messages entre différents ordinateurs ou au sein d'un même ordinateur.
+			Elle est énormément utilisée pour la cmomunication sur des architectures distribuées.
+			Dans notre cas, elle s'est révélée extrêmement intéressante car MPI a été implémentée sur presque toutes les architectures de mémoire ainsi elle 
+			a été adaptée pour chacune de la façon la plus optimale possible cependant les tests et le debug sur celle-ci restent difficiles dû a l'impossibilité 
+			d'avoir un contrôle sur les évenements qui apparaissent contrairement à PeerSim.
+			\newpage
 			\subsection{API simulation à évenements discrets : qu'est-ce ? + avantages/inconvénients + exemple(PeerSim ou autre)}
-				\large{Qu'entend-on par \textit{simulation à événements discrets}? C'est une simulation dont le temps évolue seulement lorsqu'un événement survient sur un noeud, et donc de même l'état du système ne peut être modifié qu'à ces moments là.
+				Qu'entend-on par \textit{simulation à événements discrets}? C'est une simulation dont le temps évolue seulement lorsqu'un événement survient sur un noeud, et donc de même l'état du système ne peut être modifié qu'à ces moments là.
 \newline \indent On distingue donc deux entités : les noeuds, et les événements qui sont caractérisés par une date de délivrance, un noeud destinataire, et des données.
 \newline \indent Les principaux avantages d'un tel type de simulation sont : son déterminisme et donc une capacité à reproduire des bugs, et une charge de calcul réduite aux événements qu'on décide de simuler. Toutefois, il faut savoir trouver un équilibre entre une simulation trop simpliste et une simulation trop précise ralentie par trop d'événements.
-\newline \indent Dans notre cas, nous nous sommes dirigés vers PeerSim comme simulateur à événements discrets, car il est codé en Java et possède une API relativement simple d'utilisation. }
+\newline \indent Dans notre cas, nous nous sommes dirigés vers PeerSim comme simulateur à événements discrets, car il est codé en Java et possède une API relativement simple d'utilisation.
+\newline \indent PeerSim est utilisé pour créer des nœuds et simuler une architecture pair-à-pair en générant des protocoles et des événements qui sont définis par l'utilisateur. Une éxécution est toujours ce qui permet d'accélérer le débug d'une application répartie avant son déploiement ou de reproduire une séquence d'événements qui a provoqué un bug sur une application déja existante.
+
 			\newpage
 			\subsection{Aperçu de l'implémentation d'un anneau avec les deux API}
 				{\bfseries Implémentation en MPI}
@@ -176,14 +185,12 @@ public class BasicTest {
 		\section{Les étapes de réalisation}
 			\subsection{Définition API générique}
 			\hspace*{-2cm} \includegraphics[width=19cm]{Ppi_uml.png}
-			Nous avons commencé notre réalisation par définire une class Infrastructure abrstraite qui contient tous les éléments qui doivent être demandé pour les deux Api
-			puis nous avons crée deux sous-classes (MpiInfrastructure et PeerSimInfrastructure) qui ont adapté les interactions avec les deux API.
+			Nous avons commencé par définir une classe abstraite Infrastructure  qui contient tous les éléments qui doivent être implantés par les deux API.
 			\newline
-			Sachant que le lancement des deux applications est radicalement différent 
-			, nous avons réalisé qu'il était primordial que les deux 
-			lancements soient unifiés pour permettre un développement plus rapide et sûr, pour y remédier nous avons crée l'interface Runner qui nous permet 
-			d'instancier des exécutions des deux Api avec les mêmes arguments, ainsi il suffit d'instancier MpiRunner ou PeerSimRunner avec en argument
-			le nom de la class qui implante NodeProcess, le nom du runner et le nombre de processus.
+			Sachant que le lancement des deux applications est radicalement différent , nous avons réalisé qu'il était primordial que les deux 
+			lancements soient unifiés pour permettre un développement plus rapide et sûr, pour y remédier nous avons créé l'interface Runner qui nous permet 
+			d'instancier des exécutions des deux API avec les mêmes arguments, ainsi il suffit d'instancier MPIRunner ou PeerSimRunner avec en argument
+			le nom de la classe qui implante NodeProcess, le nom du runner et le nombre de processus.
 			\subsection{Définitions des primitives offertes et explication}
 			\begin{lstlisting}
 				public  void start();
@@ -206,16 +213,9 @@ public class BasicTest {
 			La class Ppi est le main de notre application, elle permet d'executer le code utilisateur en MPI ou en PeerSim.
 
 			\subsection{Implantation vers MPI}
-			L'API de MPI est avant tout une norme pour le passage de messages entre différents ordinateurs ou au sein d'un même ordinateur.
-			Elle est énormément utilisée pour la cmomunication sur des architectures distribuées.
-			Dans notre cas, elle s'est révélée extrêmement intéressante car MPI a été implémentée sur presque toutes les architectures de mémoire ainsi elle 
-			a été adaptée pour chacune de la façon la plus optimale possible cependant les tests et le debug sur celle-ci restent difficiles dû a l'impossibilité 
-			d'avoir un contrôle sur les évenements qui apparaissent contrairement à PeerSim.
+			
 			\subsection{Implantation vers PeerSim}
-			PeerSim est utilisé pour créer des nœuds et simuler une architecture pair-à-pair en générant des protocoles et des événements qui sont définis par l'utilisateur. L'exécution et la suite d'événements est toujours la même ce qui permet d'accélérer 
-			le débug d'une application répartie avant son déploiement ou de reproduire une séquence d'événements qui a provoqué un bug
-			sur une application déja existante, cependant, écrire du code en PeerSim est exhaustif et peut dificilement être exploité pour une utilisation
-			autre que le debug.
+			Dans le cas de PeerSim, l'implantation de notre API consistait principalement à effectuer un Adapter avec l'API déjà existante de PeerSim, et donc la part la plus importante du travail était de comprendre le fonctionnement des quelques classes de PeerSim nécessaires pour faire le lien entre les deux API. Il a aussi fallu adapter certaines de nos classes pour PeerSim, par exemple rendre notre NodeProcess clonable. 
 			\subsection{API pour un scenario}
 			L'utilisateur aura aussi accès à une API permettant de décrire un scenario où il devra spécifier en premier lieu
 			le nombre de noeuds demandé,puis préciser sur quelle API le scénario devra être exécuté,et enfin les événements et leur date qui devront être appelés.
@@ -226,12 +226,12 @@ public class BasicTest {
 		\subsection{Tests de validation}
 		Pour chaque fonctionnalité ajoutée nous ajoutons un test et nous nous assurons que les tests précédents fonctionnent toujours.
 		\newline
-		La class BasicTest est la toute première classe de tests que nous avons implémenté elle s'assure que les fonctionnalités de base de notre Api
+		La classe BasicTest est la toute première classe de tests que nous avons implémenté, elle s'assure que les fonctionnalités de base de notre API
 		send/receive et le format de description de scénario restent fonctionnels malgré les nouveaux ajouts.
 		%Comment montrer que cela fonctionne bien, tests unitaires, respect du cahier des charges
 		\subsection{Démonstration}
-		L'hors de la soutenance nous avons décidé de faire jouer une partition aux ordinateurs où chacun devra jouer une partie puis attendre qu'
-		un autre ait joué avant de continuer sous MPI et une exécution déterministe sur PeerSim.
+		%Lors de la soutenance nous avons décidé de faire jouer une partition aux ordinateurs où chacun devra jouer une partie puis attendre qu'
+		%un autre ait joué avant de continuer sous MPI et une exécution déterministe sur PeerSim. 
 		\section{Planning des tâches}
 			\subsection{Une deadline pour chaque tâche dans un ordre chronologique}
 			\begin{tabular}{|c|c|}
