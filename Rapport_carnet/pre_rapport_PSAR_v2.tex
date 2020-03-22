@@ -213,7 +213,10 @@ public class BasicTest {
 			La class Ppi est le main de notre application, elle permet d'executer le code utilisateur en MPI ou en PeerSim.
 
 			\subsection{Implantation vers MPI}
-			
+			Pour l'implantation de l'adapteur permettant d'utiliser MPI nous avons commencé par implanter un algorithme simple en utilisant cette dernière.
+			Une fois que nous avons compis comment mpi fonctionnait nous avans étandu la class Infranstructure qui représente l'abstraction des deux adapteurs 
+			que nous avons implanté, pour MPI la class MpiInfrastructure nous permet de communiquer avec MPI en ajoutant  une couche sur les primitives de MPI.
+			Nous avons, cependant, dû ajouter une boucle  afin d'adapter le fonctionnement de MPI à celui de application et unifier avec PeerSim.
 			\subsection{Implantation vers PeerSim}
 			Dans le cas de PeerSim, l'implantation de notre API consistait principalement à effectuer un Adapter avec l'API déjà existante de PeerSim, et donc la part la plus importante du travail était de comprendre le fonctionnement des quelques classes de PeerSim nécessaires pour faire le lien entre les deux API. Il a aussi fallu adapter certaines de nos classes pour PeerSim, par exemple rendre notre NodeProcess clonable. 
 			\subsection{API pour un scenario}
