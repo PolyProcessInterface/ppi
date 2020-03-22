@@ -203,24 +203,23 @@ public class BasicTest {
 				//utilisation
 				Ppi.main(new String[] {NodeProcess.class.getName(),Runner.class.getName()});
 			\end{lstlisting}
-			La class Ppi est le main de notre application, elle permet d'executer le code utilisateur en Mpi ou en PeerSim.
+			La class Ppi est le main de notre application, elle permet d'executer le code utilisateur en MPI ou en PeerSim.
 
 			\subsection{Implantation vers MPI}
-			L'Api MPI (Message Passing Interface) est avant tout une norme pour le passage de message entre différents ordinateurs ou sur le même ordinateur.
-			elle est énormement utilisée pour la comunication sur des architectures distribuées.
+			L'API de MPI est avant tout une norme pour le passage de messages entre différents ordinateurs ou au sein d'un même ordinateur.
+			Elle est énormément utilisée pour la cmomunication sur des architectures distribuées.
 			Dans notre cas, elle s'est révélée extrêmement intéressante car MPI a été implémentée sur presque toutes les architectures de mémoire ainsi elle 
-			a été adaptée pour chaqu'une de la façon la plus optimale possible cependant les testes et le debug sur celle-ci reste difficile dû a l'impossibilité 
+			a été adaptée pour chacune de la façon la plus optimale possible cependant les tests et le debug sur celle-ci restent difficiles dû a l'impossibilité 
 			d'avoir un contrôle sur les évenements qui apparaissent contrairement à PeerSim.
 			\subsection{Implantation vers PeerSim}
-			PeerSim est utilisé pour créer des nœuds et simuler une architecture pair-à-paire en générant des protocoles et des événements 
-			qui sont définis par l'utilisateur, l'exécution et la suite d'événements est toujours la même ce qui permet d'accélérer 
+			PeerSim est utilisé pour créer des nœuds et simuler une architecture pair-à-pair en générant des protocoles et des événements qui sont définis par l'utilisateur. L'exécution et la suite d'événements est toujours la même ce qui permet d'accélérer 
 			le débug d'une application répartie avant son déploiement ou de reproduire une séquence d'événements qui a provoqué un bug
 			sur une application déja existante, cependant, écrire du code en PeerSim est exhaustif et peut dificilement être exploité pour une utilisation
 			autre que le debug.
 			\subsection{API pour un scenario}
-			L'utilisateur aura aussi accès à une API permettant de décrire un scenario où il devras spécifier en premier lieu
-			le nombre de noeuds demandé, préciser sur quelle API (MPI ou PeerSim voir les deux) le scénario devra être exécuté, les événements et leur date (en milliseconde) qui devront être appelés 
-			sachant que MPI travaille sur de vrais machine et que le temps d'arrivée des messages est inconnu on ne promet pas l'éxecution exacte du scénario demandé. 
+			L'utilisateur aura aussi accès à une API permettant de décrire un scenario où il devra spécifier en premier lieu
+			le nombre de noeuds demandé,puis préciser sur quelle API le scénario devra être exécuté,et enfin les événements et leur date qui devront être appelés.
+			Sachant que MPI travaille sur de vraies machine et que le temps d'arrivée des messages est inconnu, on ne promet pas l'éxécution exacte du scénario demandé. 
 			%\subsection{Rédaction du rapport}
 
 		\section{Plan de validation}
