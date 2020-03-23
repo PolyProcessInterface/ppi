@@ -209,7 +209,7 @@ public class BasicTest {
 			abstract class Message implements Serializable
 			\end{lstlisting}
 			Message est la classe définie afin de permettre une abstraction du traitement des messages et doit etre étendue par l'utilisateur.
-			\newpage
+
 			\begin{lstlisting}
 				public class Ppi
 				//utilisation
@@ -239,11 +239,10 @@ public class BasicTest {
 		Plusieurs algorithmes distribués seront implantés et testé unitairement dont celui de l'anneau et au moins une exclusion mutuelle.
 		%Comment montrer que cela fonctionne bien, tests unitaires, respect du cahier des charges
 		\subsection{Démonstration}
-		%Lors de la soutenance nous avons décidé de faire jouer une partition aux ordinateurs où chacun devra jouer une partie puis attendre qu'
-		%un autre ait joué avant de continuer sous MPI et une exécution déterministe sur PeerSim.
 		Lors de la soutenance, une démonstration sera lancée pour montrer de façon évidente que notre interface fonctionne.
 		Le même code applicatif sera executé sur plusieurs machines (potentiellement virtuelles) une première fois via l'infrastructure MPI puis sur celle de Peersim.
-		L'algorithme et la preuve de fonctionnement qui seront utilisés lors de cette démonstration n'ont cependant pas encore été définis.
+		pour prouver le bon fonctionnement de notre application nous avons décidé de faire jouer une note musicale aux ordinateurs où chacun devra attendre un certain délai 
+		avant de jouer sa note tout en s'assurant qu'il est le seul à jouer à ce moments pour mpi et pour PeerSim nous allons nous assurer que l'exécution est déterministe
 		\section{Planning des tâches}
 			\subsection{Une deadline pour chaque tâche dans un ordre chronologique}
 			\begin{tabular}{|c|c|}
