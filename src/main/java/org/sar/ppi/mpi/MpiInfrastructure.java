@@ -8,6 +8,7 @@ import org.sar.ppi.PpiException;
 import mpi.Comm;
 import mpi.MPI;
 import mpi.MPIException;
+import mpi.Status;
 
 import java.io.*;
 
@@ -18,15 +19,9 @@ public class MpiInfrastructure extends Infrastructure {
 
 	protected boolean running = true;
 	protected Comm comm;
-	public final int MaxSize;
+
 	public MpiInfrastructure(NodeProcess process) {
 		super(process);
-		MaxSize = 1024;
-	}
-
-	public MpiInfrastructure(NodeProcess process,int max_message_lenth) {
-		super(process);
-		MaxSize = max_message_lenth;
 	}
 
 	public void run(String[] args) throws PpiException {
@@ -36,10 +31,12 @@ public class MpiInfrastructure extends Infrastructure {
 			currentNode = comm.getRank();
 			process.start();
 			while (running) {
-				byte [] tab = new byte[MaxSize];
-				comm.recv(tab, MaxSize, MPI.BYTE, MPI.ANY_SOURCE, MPI.ANY_TAG);
-				//System.out.println("tableau recus= ");
-				//printByteArray(tab);
+				int[] sizeMsgTab = new int[1];
+				Status s = comm.recv(sizeMsgTab, 1, MPI.INT, MPI.ANY_SOURCE, MPI.ANY_TAG);
+				int sizeMsg = sizeMsgTab[0];
+				byte [] tab = new byte[sizeMsg];
+				comm.recv(tab, sizeMsg, MPI.BYTE, s.getSource(), MPI.ANY_TAG);
+				// printByteArray(tab);
 				Message msg = RetriveMessage(tab);
 				process.processMessage(msg);
 			}
@@ -53,7 +50,7 @@ public class MpiInfrastructure extends Infrastructure {
 	public void send(Message message) throws PpiException{
 		try {
 			byte[] tab = ParseMessage(message);
-			//System.out.println("Object envoyer= "+message);
+			comm.send(new int[] {tab.length}, 1, MPI.INT, message.getIddest(), 1);
 			comm.send(tab, tab.length, MPI.BYTE, message.getIddest(), 1);
 		} catch (MPIException e) {
 			throw new PpiException("Send to" + message.getIddest() + "failed", e);
@@ -75,7 +72,7 @@ public class MpiInfrastructure extends Infrastructure {
 	}
 
 
-	private  byte[] ParseMessage(Message message) {
+	private byte[] ParseMessage(Message message) {
 		try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			 ObjectOutputStream out = new ObjectOutputStream(bos);) {
 			out.writeObject(message);
@@ -99,7 +96,7 @@ public class MpiInfrastructure extends Infrastructure {
 
 
 
-	private void printByteArray(byte[] tab){
+	protected void printByteArray(byte[] tab){
 		System.out.print("[");
 		for (int i =0,len=tab.length;i<len;i++){
 			System.out.print(tab[i]+" ,");
