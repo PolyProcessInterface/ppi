@@ -1,9 +1,12 @@
 package org.sar.ppi;
 
-/**
- * ExampleNodeProces
- */
-public class ExampleNodeProcess extends NodeProcess {
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.sar.ppi.mpi.MpiRunner;
+import org.sar.ppi.peersim.PeerSimRunner;
+
+public class NodeProcessTest extends NodeProcess {
 
 	public static class ExampleMessage extends Message{
 	
@@ -39,5 +42,17 @@ public class ExampleNodeProcess extends NodeProcess {
 		}else {
 			//System.err.println("NOT SENDING FIRST MESSAGE BECAUSE ID ==   "+infra.getId());
 		}
+	}
+
+	@Test
+	public void MpiExample() {
+		Ppi.main(new String[] { NodeProcessTest.class.getName(), MpiRunner.class.getName() });
+		assertTrue(true);
+	}
+
+	@Test
+	public void PeersimExample() {
+		Ppi.main(new String[] { NodeProcessTest.class.getName(), PeerSimRunner.class.getName() });
+		assertTrue(true);
 	}
 }

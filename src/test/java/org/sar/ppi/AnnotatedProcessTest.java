@@ -1,9 +1,15 @@
 package org.sar.ppi;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.sar.ppi.mpi.MpiRunner;
+import org.sar.ppi.peersim.PeerSimRunner;
+
 /**
  * ExampleNodeProces
  */
-public class AnnotatedProcess extends NodeProcess {
+public class AnnotatedProcessTest extends NodeProcess {
 
 	public static class ExampleMessage extends Message{
 	
@@ -36,5 +42,17 @@ public class AnnotatedProcess extends NodeProcess {
 		if (infra.getId() == 0) {
 			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
 		}
+	}
+
+	@Test
+	public void MpiAnnotatedProcessTest() {
+		Ppi.main(new String[] { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName() });
+		assertTrue(true);
+	}
+
+	@Test
+	public void PeersimAnnotatedProcessTest() {
+		Ppi.main(new String[] { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName() });
+		assertTrue(true);
 	}
 }
