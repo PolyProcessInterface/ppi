@@ -1,8 +1,12 @@
 package org.sar.ppi;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProtocolTools {
 
@@ -51,4 +55,41 @@ public class ProtocolTools {
         return object_func;
     }
 
+    public static JSONObject ProtocolToJSON(String funcName , int node,long delay, List<Object> args){
+        JSONObject jo = new JSONObject();
+        JSONArray ja = new JSONArray();
+        jo.put("FunctionName",funcName);
+        jo.put("Node",node);
+        jo.put("Delay",delay);
+        Map m = new LinkedHashMap(args.size());
+        for(Object o :args)
+            m.put(getType(o),o);
+        ja.add(m);
+        jo.put("args",ja);
+        return jo;
+    }
+
+    private static String getType(Object o ){
+        if(o instanceof Integer)
+            return "Integer";
+        if(o instanceof String)
+            return "String";
+        if(o instanceof Byte)
+            return "Byte";
+        throw new PpiException("ERROR : Type not Alowed");
+    }
+
+  /*  public static void main(String[] args) {
+        try(FileWriter file = new FileWriter(new File("/home/adrien/output.json"));) {
+            List<Object> array = new ArrayList<>();
+            array.add("arg_1");
+            array.add(1);
+            file.write(ProtocolToJSON("App",5,4,array).toJSONString());
+            file.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+
+        }
+    }*/
 }

@@ -86,7 +86,7 @@ public class MpiInfrastructure extends Infrastructure {
 		throw new PpiException("ERROR OF PARSING");
 	}
 
-	private static Message RetriveMessage(byte[] message) {
+	private Message RetriveMessage(byte[] message) {
 		try (ByteArrayInputStream bis = new ByteArrayInputStream(message);
 			 ObjectInput in = new ObjectInputStream(bis);) {
 			return (Message) in.readObject();
