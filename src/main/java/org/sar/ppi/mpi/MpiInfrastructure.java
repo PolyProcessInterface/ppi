@@ -9,6 +9,8 @@ import mpi.Comm;
 import mpi.MPI;
 import mpi.MPIException;
 
+import java.io.*;
+
 /**
  * MpiInfrastructure
  */
@@ -37,8 +39,8 @@ public class MpiInfrastructure extends Infrastructure {
 				byte [] tab = new byte[MaxSize];
 				comm.recv(tab, MaxSize, MPI.BYTE, MPI.ANY_SOURCE, MPI.ANY_TAG);
 				//System.out.println("tableau recus= ");
-				printByteArray(tab);
-				Message msg = ContentHandler.RetriveMessage(tab);
+				//printByteArray(tab);
+				Message msg = RetriveMessage(tab);
 				process.processMessage(msg);
 			}
 			MPI.Finalize();
@@ -50,7 +52,7 @@ public class MpiInfrastructure extends Infrastructure {
 	@Override
 	public void send(Message message) throws PpiException{
 		try {
-			byte[] tab = ContentHandler.ParseMessage(message);
+			byte[] tab = ParseMessage(message);
 			//System.out.println("Object envoyer= "+message);
 			comm.send(tab, tab.length, MPI.BYTE, message.getIddest(), 1);
 		} catch (MPIException e) {
@@ -71,6 +73,31 @@ public class MpiInfrastructure extends Infrastructure {
 			throw new PpiException("Fail to get size.", e);
 		}
 	}
+
+
+	private  byte[] ParseMessage(Message message) {
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			 ObjectOutputStream out = new ObjectOutputStream(bos);) {
+			out.writeObject(message);
+			return bos.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		throw new PpiException("ERROR OF PARSING");
+	}
+
+	private static Message RetriveMessage(byte[] message) {
+		try (ByteArrayInputStream bis = new ByteArrayInputStream(message);
+			 ObjectInput in = new ObjectInputStream(bis);) {
+			return (Message) in.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		throw new PpiException("ERROR OF PARSING");
+	}
+
+
+
 
 	private void printByteArray(byte[] tab){
 		System.out.print("[");

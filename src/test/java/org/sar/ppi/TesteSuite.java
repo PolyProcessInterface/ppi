@@ -9,6 +9,7 @@ import org.junit.runners.Suite;
         org.sar.ppi.RingMpiTest.class,
         //org.sar.ppi.NodeProcessTest.class,
         org.sar.ppi.AnnotatedProcessTest.class,
+        //org.sar.ppi.ProtocolTools.class,
 })
 
 

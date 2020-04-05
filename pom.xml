@@ -50,7 +50,12 @@
       <scope>system</scope>
       <systemPath>${peersim.path}/peersim-1.0.5.jar</systemPath>
     </dependency>
-
+    <!-- Description API -->
+    <dependency>
+      <groupId>com.googlecode.json-simple</groupId>
+      <artifactId>json-simple</artifactId>
+      <version>1.1.1</version>
+    </dependency>
     <!-- Test Dependencies -->
     <dependency>
       <groupId>junit</groupId>
