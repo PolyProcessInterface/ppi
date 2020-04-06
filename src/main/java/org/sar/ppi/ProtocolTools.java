@@ -1,12 +1,18 @@
 package org.sar.ppi;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.io.*;
-import java.util.ArrayList;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 
 public class ProtocolTools {
 
@@ -25,7 +31,7 @@ public class ProtocolTools {
      * @throws IOException
      *
      */
-    public static void writeTimeFuncCall(String funcName , int node,long delay, List<Object> args ,ObjectOutputStream str) throws IOException {
+    public static void writeTimeFuncCall(String funcName , int node, long delay, List<Object> args , ObjectOutputStream str) throws IOException {
         str.writeUTF(funcName);
         str.writeInt(node);
         str.writeInt(args.size());
@@ -68,6 +74,17 @@ public class ProtocolTools {
         jo.put("args",ja);
         return jo;
     }
+    //a finir aprés les time out
+    public static void ProtocolFromJSON(String path){
+        JSONParser parser = new JSONParser();
+        try (FileReader f = new FileReader(path)){
+            JSONArray funcList = (JSONArray) parser.parse(f);
+
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     private static String getType(Object o ){
         if(o instanceof Integer)
@@ -76,8 +93,16 @@ public class ProtocolTools {
             return "String";
         if(o instanceof Byte)
             return "Byte";
+        if(o instanceof Boolean)
+            return "Boolean";
+        if(o instanceof Double)
+            return "Double";
         throw new PpiException("ERROR : Type not Alowed");
     }
+
+
+
+
 
   /*  public static void main(String[] args) {
         try(FileWriter file = new FileWriter(new File("/home/adrien/output.json"));) {
