@@ -1,16 +1,21 @@
 package org.sar.ppi.simulator;
 
-import netscape.javascript.JSObject;
+
 import org.sar.ppi.Infrastructure;
 
-public class Simulator {
+public class ProtocolExecutor {
     private Infrastructure infra;
 
-    public Simulator(Infrastructure infra_user){
+    public ProtocolExecutor(Infrastructure infra_user){
         infra=infra_user;
     }
 
-    public void simulate(JSObject protocol){
+    /**
+     *
+     * @param path
+     * path to the JSON file with list of function to be called.
+     */
+    public void simulate(String path){
 
     }
 
