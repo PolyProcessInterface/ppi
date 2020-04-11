@@ -1,5 +1,7 @@
 package org.sar.ppi;
 
+import java.util.List;
+
 public abstract class Infrastructure {
 
 	protected NodeProcess process;
@@ -10,18 +12,22 @@ public abstract class Infrastructure {
 	}
 
 	/**
+	 * Send a message to node.
+	 *
+	 * @param message the message to send.
+	 */
+	public abstract void send(Message message);
+
+
+	public abstract void addTimeOutFunction(String funcName , int node,long delay, List<Object> args);
+
+	/**
 	 * @return the currentNode
 	 */
 	public int getId() {
 		return currentNode;
 	}
 
-	/**
-	 * Send a message to node.
-	 *
-	 * @param message the message to send.
-	 */
-	public abstract void send(Message message);
 
 	/**
 	 * Stop the execution of the infrastructure for th current node.

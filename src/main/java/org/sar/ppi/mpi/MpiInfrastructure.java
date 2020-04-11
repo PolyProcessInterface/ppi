@@ -11,6 +11,7 @@ import mpi.MPIException;
 import mpi.Status;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * MpiInfrastructure
@@ -36,7 +37,6 @@ public class MpiInfrastructure extends Infrastructure {
 				int sizeMsg = sizeMsgTab[0];
 				byte [] tab = new byte[sizeMsg];
 				comm.recv(tab, sizeMsg, MPI.BYTE, s.getSource(), MPI.ANY_TAG);
-				// printByteArray(tab);
 				Message msg = RetriveMessage(tab);
 				process.processMessage(msg);
 			}
@@ -55,6 +55,11 @@ public class MpiInfrastructure extends Infrastructure {
 		} catch (MPIException e) {
 			throw new PpiException("Send to" + message.getIddest() + "failed", e);
 		}
+	}
+
+	@Override
+	public void addTimeOutFunction(String funcName, int node, long delay, List<Object> args) {
+
 	}
 
 	@Override
@@ -93,14 +98,4 @@ public class MpiInfrastructure extends Infrastructure {
 		throw new PpiException("ERROR OF PARSING");
 	}
 
-
-
-
-	protected void printByteArray(byte[] tab){
-		System.out.print("[");
-		for (int i =0,len=tab.length;i<len;i++){
-			System.out.print(tab[i]+" ,");
-		}
-		System.out.println("]");
-	}
 }

@@ -1,6 +1,7 @@
 package org.sar.ppi.peersim;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.sar.ppi.*;
 import peersim.config.Configuration;
@@ -70,6 +71,12 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 			tr.send(nodeHost, nodeDest, message, my_pid);
 		}
 	}
+
+	@Override
+	public void addTimeOutFunction(String funcName, int node, long delay, List<Object> args) {
+
+	}
+
 	@Override
 	public void exit() {
 

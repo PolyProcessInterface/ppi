@@ -58,8 +58,7 @@ public class ProtocolTools {
         try (FileReader f = new FileReader(path)){
             JSONObject jsonObject = (JSONObject) parser.parse(f);
             //nb call protocole
-
-            int nb_call = (Integer) jsonObject.size();
+            int nb_call = jsonObject.size();
             for (int i = 0;i<nb_call;i++){
                 func_list.add(ProtocolFromJSON((JSONObject) jsonObject.get("Call_"+(i+1))));
             }
@@ -85,19 +84,19 @@ public class ProtocolTools {
     }
 
 
-
+       /*  
   public static void main(String[] args) {
         //FileWriter file = new FileWriter(new File("/home/adrien/output.json"));
         try(
             FileReader filer = new FileReader("/home/adrien/output.json");) {
-          /*   List<Object> array = new ArrayList<>();
+         List<Object> array = new ArrayList<>();
             array.add("arg_1");
             array.add(1);
             JSONObject jo = new JSONObject();
                  protocolToJSON("App",5,4,array);
             jo.put("call1",1);
           file.write(protocolToJSON("App",4,3,array).toString());
-*/
+
 
             JSONParser parser = new JSONParser();
             JSONObject ob = (JSONObject) parser.parse(filer);
@@ -116,7 +115,7 @@ public class ProtocolTools {
 
         }
     }
-
+*/
 
 
 

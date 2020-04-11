@@ -2,8 +2,6 @@ package org.sar.ppi;
 
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.junit.Test;
 import org.sar.ppi.simulator.ProtocolTools;
 
@@ -14,7 +12,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.List;
 
 public class ProtocolDefinitionTest {
@@ -44,8 +42,7 @@ public class ProtocolDefinitionTest {
     @Test
     public void JsonDescriptionTeste(){
         String fileName = "testeJson.json";
-        try(FileWriter filew = new FileWriter(fileName);
-            FileReader filer = new FileReader(fileName)){
+        try(FileWriter filew = new FileWriter(fileName)){
             //in
             JSONObject toWrite = new JSONObject();
             List<Object> array = new ArrayList<>();
@@ -61,7 +58,7 @@ public class ProtocolDefinitionTest {
             filew.close();
 
             //Out
-             List<Object[]> array_obj = ProtocolTools.readProtocolJSON(fileName);
+            List<Object[]> array_obj = ProtocolTools.readProtocolJSON(fileName);
             assertEquals(2,array_obj.size());
             Object[] res_call1 = array_obj.get(0);
             Object[] res_call2 = array_obj.get(1);
