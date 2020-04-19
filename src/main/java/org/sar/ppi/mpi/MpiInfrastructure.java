@@ -1,16 +1,16 @@
 package org.sar.ppi.mpi;
 
-import org.sar.ppi.Infrastructure;
-import org.sar.ppi.Message;
-import org.sar.ppi.NodeProcess;
-import org.sar.ppi.PpiException;
+import org.sar.ppi.*;
 
 import mpi.Comm;
 import mpi.MPI;
 import mpi.MPIException;
 import mpi.Status;
+import org.sar.ppi.simulator.ProtocolTools;
+
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,7 +38,12 @@ public class MpiInfrastructure extends Infrastructure {
 				byte [] tab = new byte[sizeMsg];
 				comm.recv(tab, sizeMsg, MPI.BYTE, s.getSource(), MPI.ANY_TAG);
 				Message msg = RetriveMessage(tab);
-				process.processMessage(msg);
+				if(msg instanceof  SchedMessage) {
+					SchedMessage shed = (SchedMessage) msg;
+					timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),process),shed.getDelay());
+				}
+				else
+					process.processMessage(msg);
 			}
 			MPI.Finalize();
 		} catch (MPIException e) {
@@ -57,13 +62,24 @@ public class MpiInfrastructure extends Infrastructure {
 		}
 	}
 
-	@Override
-	public void addTimeOutFunction(String funcName, int node, long delay, List<Object> args) {
-
+    @Override
+	public final void launchSimulation(String path){
+		List<Object[]> l_call = ProtocolTools.readProtocolJSON(path);
+		int num_node;
+		for(Object[] func : l_call){
+			num_node=(int)func[1];
+			if(num_node==currentNode)
+				timer.schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length-1),process),(long)func[2]);
+			else
+			send(new SchedMessage(currentNode,num_node,(String) func[0],(long)func[2],Arrays.copyOfRange(func,3,func.length-1)));
+		}
 	}
 
-	@Override
+
+    @Override
 	public void exit() {
+    	if(timer!=null)
+    		timer.cancel();
 		running = false;
 	}
 
@@ -79,7 +95,7 @@ public class MpiInfrastructure extends Infrastructure {
 
 	private byte[] ParseMessage(Message message) {
 		try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			 ObjectOutputStream out = new ObjectOutputStream(bos);) {
+             ObjectOutputStream out = new ObjectOutputStream(bos);) {
 			out.writeObject(message);
 			return bos.toByteArray();
 		} catch (IOException e) {
@@ -90,7 +106,7 @@ public class MpiInfrastructure extends Infrastructure {
 
 	private Message RetriveMessage(byte[] message) {
 		try (ByteArrayInputStream bis = new ByteArrayInputStream(message);
-			 ObjectInput in = new ObjectInputStream(bis);) {
+             ObjectInput in = new ObjectInputStream(bis);) {
 			return (Message) in.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();

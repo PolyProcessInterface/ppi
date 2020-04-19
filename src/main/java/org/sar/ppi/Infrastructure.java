@@ -1,12 +1,13 @@
 package org.sar.ppi;
 
-import java.util.List;
+
+import java.util.Timer;
 
 public abstract class Infrastructure {
 
 	protected NodeProcess process;
 	protected int currentNode;
-
+	protected Timer timer = new Timer();
 	public Infrastructure(NodeProcess process) {
 		this.process = process;
 	}
@@ -18,8 +19,16 @@ public abstract class Infrastructure {
 	 */
 	public abstract void send(Message message);
 
+	public abstract void launchSimulation(String path);
 
-	public abstract void addTimeOutFunction(String funcName , int node,long delay, List<Object> args);
+	public final void StopSimulation(){
+		if(timer!=null)
+			timer.cancel();
+	}
+
+	public final void setTimer(){
+		timer = new Timer();
+	}
 
 	/**
 	 * @return the currentNode

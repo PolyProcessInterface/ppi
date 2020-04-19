@@ -73,9 +73,10 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	}
 
 	@Override
-	public void addTimeOutFunction(String funcName, int node, long delay, List<Object> args) {
+	public void launchSimulation(String path) {
 
 	}
+
 
 	@Override
 	public void exit() {
