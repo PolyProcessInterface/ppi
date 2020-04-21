@@ -54,4 +54,9 @@ public abstract class NodeProcess {
 			throw new CloneNotSupportedException();
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "NodeProcess{" + "infra=" + infra.getId() + '}';
+	}
 }

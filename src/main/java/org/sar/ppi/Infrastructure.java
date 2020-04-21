@@ -21,14 +21,6 @@ public abstract class Infrastructure {
 
 	public abstract void launchSimulation(String path);
 
-	public final void StopSimulation(){
-		if(timer!=null)
-			timer.cancel();
-	}
-
-	public final void setTimer(){
-		timer = new Timer();
-	}
 
 	/**
 	 * @return the currentNode

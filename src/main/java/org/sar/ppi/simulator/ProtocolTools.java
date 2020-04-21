@@ -30,7 +30,6 @@ public class ProtocolTools {
         return jo;
     }
 
-
     public static Object[] ProtocolFromJSON(JSONObject o){
         JSONArray ja = (JSONArray) o.get("args");
         int len=ja.size()+3;
@@ -49,23 +48,34 @@ public class ProtocolTools {
                 default:
                     object_func[i] = jo.get("val");
             }
+
         }
         return object_func;
     }
 
     public static List<Object[]> readProtocolJSON(String path){
         JSONParser parser = new JSONParser();
+        System.out.println("je suis passer par la fun2");
         List<Object[]> func_list = new ArrayList<>();
+        System.out.println("je suis passer par la fun22");
         try (FileReader f = new FileReader(path)){
+
             JSONObject jsonObject = (JSONObject) parser.parse(f);
             //nb call protocole
             int nb_call = jsonObject.size();
             for (int i = 0;i<nb_call;i++){
-                func_list.add(ProtocolFromJSON((JSONObject) jsonObject.get("Call_"+(i+1))));
+                System.out.println("i="+i);
+                Object[] recip =ProtocolFromJSON((JSONObject) jsonObject.get("Call_"+(i+1)));
+                System.out.println(Arrays.toString(recip));
+                func_list.add(recip);
+
             }
+            System.out.println("je suis passer par la fun23 + "+nb_call);
         } catch (IOException | ParseException e) {
+            System.out.println("error");
             e.printStackTrace();
         }
+
         return func_list;
     }
 

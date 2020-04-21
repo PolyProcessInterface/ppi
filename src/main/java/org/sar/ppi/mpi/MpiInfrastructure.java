@@ -40,7 +40,10 @@ public class MpiInfrastructure extends Infrastructure {
 				Message msg = RetriveMessage(tab);
 				if(msg instanceof  SchedMessage) {
 					SchedMessage shed = (SchedMessage) msg;
-					timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),process),shed.getDelay());
+					System.out.println("je schedual ");
+				super.timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),process),shed.getDelay());
+
+
 				}
 				else
 					process.processMessage(msg);
@@ -63,15 +66,20 @@ public class MpiInfrastructure extends Infrastructure {
 	}
 
     @Override
-	public final void launchSimulation(String path){
+	public  void launchSimulation(String path){
+		//System.out.println("je suis passer par la func");
 		List<Object[]> l_call = ProtocolTools.readProtocolJSON(path);
+
+		//System.out.println("je suis passer par la func");
 		int num_node;
 		for(Object[] func : l_call){
 			num_node=(int)func[1];
 			if(num_node==currentNode)
 				timer.schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length-1),process),(long)func[2]);
 			else
-			send(new SchedMessage(currentNode,num_node,(String) func[0],(long)func[2],Arrays.copyOfRange(func,3,func.length-1)));
+			send(new SchedMessage(currentNode,num_node,(String) func[0],(long)func[2],Arrays.copyOfRange(func,3,func.length)));
+
+			System.out.println("je suis a la fin lanuch simulation");
 		}
 	}
 
