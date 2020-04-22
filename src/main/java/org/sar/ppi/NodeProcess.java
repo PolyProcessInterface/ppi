@@ -2,6 +2,8 @@ package org.sar.ppi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Process
@@ -9,7 +11,12 @@ import java.lang.reflect.Method;
 public abstract class NodeProcess {
 
 	protected Infrastructure infra;
-
+	protected static Lock lock = new ReentrantLock();
+ 
+	public static Lock getLock() {
+		return lock;
+	}
+	
 	public void setInfra(Infrastructure infra) {
 		this.infra = infra;
 	}
