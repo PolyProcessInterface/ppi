@@ -26,7 +26,7 @@ public class MpiInfrastructure extends Infrastructure {
 
 	public void run(String[] args) throws PpiException {
 		try {
-			MPI.Init(args);
+			MPI.InitThread(args, MPI.THREAD_SERIALIZED);
 			comm = MPI.COMM_WORLD;
 			currentNode = comm.getRank();
 			process.start();
