@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.sar.ppi.mpi.MpiRunner;
+import org.sar.ppi.peersim.PeerSimRunner;
 
 public class BigObjectTest extends NodeProcess {
 
@@ -55,6 +56,12 @@ public class BigObjectTest extends NodeProcess {
 	@Test
 	public void MpiBigObjectTest() {
 		Ppi.main(new String[] { BigObjectTest.class.getName(), MpiRunner.class.getName(), "3" });
+		assertTrue(true);
+	}
+
+	@Test
+	public void PeersimBigObjectTest() {
+		Ppi.main(new String[] { BigObjectTest.class.getName(), PeerSimRunner.class.getName(), "3" });
 		assertTrue(true);
 	}
 }
