@@ -55,13 +55,15 @@ public class BigObjectTest extends NodeProcess {
 
 	@Test
 	public void MpiBigObjectTest() {
-		Ppi.main(new String[] { BigObjectTest.class.getName(), MpiRunner.class.getName(), "3" });
+		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName(), "3" };
+		Ppi.main(args);
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimBigObjectTest() {
-		Ppi.main(new String[] { BigObjectTest.class.getName(), PeerSimRunner.class.getName(), "3" });
+		String[] args = { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName(), "3" };
+		Ppi.main(args);
 		assertTrue(true);
 	}
 }
