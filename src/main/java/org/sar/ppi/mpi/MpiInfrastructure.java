@@ -77,7 +77,8 @@ public class MpiInfrastructure extends Infrastructure {
 	protected void sendMpi(Message message) throws PpiException {
 		try {
 			byte[] tab = ParseMessage(message);
-			comm.send(new int[] {tab.length}, 1, MPI.INT, message.getIddest(), 1);
+			int[] sizes = {tab.length};
+			comm.send(sizes, 1, MPI.INT, message.getIddest(), 1);
 			comm.send(tab, tab.length, MPI.BYTE, message.getIddest(), 1);
 		} catch (MPIException e) {
 			throw new PpiException("Send to" + message.getIddest() + "failed", e);
