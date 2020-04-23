@@ -86,33 +86,14 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 	@Override
 	public void processEvent(Node host, int pid, Object event) {
-		synchronized (process.getLock()) {
-			
 		if(pid!=my_pid) throw new IllegalArgumentException("Inconsistency on protocol id");
 
 		if (event instanceof Message) {
 			System.out.println("Thread" + Thread.currentThread().getId());
-			Thread th = new Thread( () -> process.processMessage((Message) event) );
-			th.start();
-			
-			try {
-				process.getLock().wait();
-				process.getLock().notify();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
-		
-			//process.processMessage((Message) event);
-			/*try {
-				th.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}*/
+			process.processMessage((Message) event);
 			
 		} else {
 			throw new IllegalArgumentException("Unknown event for this protocol");
-		}
 		}
 	}
 

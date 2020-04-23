@@ -25,26 +25,13 @@ public class NodeProcessTest extends NodeProcess {
 
 	@Override
 	public void processMessage(Message message) {
-		synchronized (lock) {
-			
-			int host = infra.getId();
-			System.out.println("Thread"+ Thread.currentThread().getId() +" "+ host + " Received hello from "  + message.getIdsrc());
-			if (host != 0) {
-				int dest = (host + 1) % infra.size();
-				infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
-			}
-			infra.exit();
-			
-			try {
-				lock.notify();
-				lock.wait();
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+		int host = infra.getId();
+		System.out.println("Thread"+ Thread.currentThread().getId() +" "+ host + " Received hello from "  + message.getIdsrc());
+		if (host != 0) {
+			int dest = (host + 1) % infra.size();
+			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
 		}
+		infra.exit();
 	}
 
 	@Override
@@ -56,13 +43,13 @@ public class NodeProcessTest extends NodeProcess {
 			//System.err.println("NOT SENDING FIRST MESSAGE BECAUSE ID ==   "+infra.getId());
 		}
 	}
-/*
+
 	@Test
 	public void MpiExample() {
 		Ppi.main(new String[] { NodeProcessTest.class.getName(), MpiRunner.class.getName() });
 		assertTrue(true);
 	}
-*/
+
 	@Test
 	public void PeersimExample() {
 		Ppi.main(new String[] { NodeProcessTest.class.getName(), PeerSimRunner.class.getName() });

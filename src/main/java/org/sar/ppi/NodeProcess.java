@@ -12,10 +12,6 @@ public abstract class NodeProcess {
 
 	protected Infrastructure infra;
 	protected static Lock lock = new ReentrantLock();
- 
-	public static Lock getLock() {
-		return lock;
-	}
 	
 	public void setInfra(Infrastructure infra) {
 		this.infra = infra;
@@ -38,11 +34,28 @@ public abstract class NodeProcess {
 				throw new MessageHandlerException(method.getName() + ": first param must extend Message");
 			if (!params[0].equals(message.getClass()))
 				continue;
-			try {
-				method.invoke(this, message);
-			} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
-				e.printStackTrace();
+			Thread t = new Thread(() -> threadMessageHandler(method, message));
+			synchronized (lock) {
+				t.start();
+				try {
+					lock.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+		}
+	}
+
+	protected void threadMessageHandler(Method method, Message message)
+	{
+		try {
+			synchronized (lock) {
+				method.invoke(this, message);
+				lock.notify();
+			}
+		} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
+			e.printStackTrace();
 		}
 	}
 
