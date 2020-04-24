@@ -40,10 +40,7 @@ public class MpiInfrastructure extends Infrastructure {
 				Message msg = RetriveMessage(tab);
 				if(msg instanceof  SchedMessage) {
 					SchedMessage shed = (SchedMessage) msg;
-					System.out.println("je schedual ");
-				super.timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),process),shed.getDelay());
-
-
+					super.timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),process),shed.getDelay());
 				}
 				else
 					process.processMessage(msg);

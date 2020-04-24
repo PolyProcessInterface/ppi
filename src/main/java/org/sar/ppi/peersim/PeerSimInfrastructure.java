@@ -80,7 +80,8 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 	@Override
 	public void exit() {
-
+		if(timer!=null)
+			timer.cancel();
 		running=false;
 	}
 
