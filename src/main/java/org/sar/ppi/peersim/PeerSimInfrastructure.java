@@ -8,6 +8,7 @@ import peersim.config.Configuration;
 import peersim.core.Network;
 import peersim.core.Node;
 import peersim.edsim.EDProtocol;
+import peersim.edsim.EDSimulator;
 import peersim.transport.Transport;
 public class PeerSimInfrastructure extends Infrastructure implements EDProtocol {
 
@@ -74,7 +75,7 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 	@Override
 	public void launchSimulation(String path) {
-
+		
 	}
 
 
