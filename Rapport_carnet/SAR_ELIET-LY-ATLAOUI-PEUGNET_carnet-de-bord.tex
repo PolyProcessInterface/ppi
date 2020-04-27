@@ -26,7 +26,14 @@
 	\pagenumbering{arabic}
 		\section{Introduction}
 			\large{
-			\indent Notre projet a pour but d'implémenter un intergiciel permettant l'execution d'applications réparties, aussi bien sur une infrastructure réelle que sur un simulateur, sans avoir à en modifier le code, afin de simplifier le développement de futures applications réparties.
+			\indent Aujourd'hui la vaste majorité des applications en fonctionnement sont des applications qui sont déployées dans un contexte distribué, c'est a dire qu'elles
+			ne sont pas juste hébergées sur un serveur et n'ont besoin que de ce dernier afin de fonctionner. Au contraire, elles sont déployées sur une multitude de serveurs, de base de données et autres 
+			qui eux même sont dupliqués afin de s'assurer que même en cas de panne l'application ne cessera pas de fonctionner.
+			Cependant, ce type d'applications est extrêmement dur à développer car on ne peut pas les tester dans des conditions réelles et souvent le code écrit pour un simulateur 
+			n'est pas le même que celui ecrit pour le déploiement.
+			Elles sont aussi difficiles à maintenire car entre autres les mises à jour doivent être propagées à toutes les machines. Enfin, leur débogage est complexe car même lorsque l'application
+			fonctionne normalement, elle n'a pas un comportement déterministe dû à son fonctionnement réparti.
+			\indent C'est dans ce contexte que notre projet prend place et a pour but d'implémenter un intergiciel permettant l'execution d'applications réparties, aussi bien sur une infrastructure réelle que sur un simulateur, sans avoir à en modifier le code, afin de simplifier le développement de futures applications réparties.
 \\[2mm]
 			 \indent Dans notre cas, nous avons choisi d'implémenter cet intergiciel pour MPI (Message Passing Interface) en tant qu'API d'infrastructure réelle, et PeerSim en tant que simulateur à événements discrets.}
 		
@@ -85,9 +92,9 @@ Nous avons aussi utilisé google scholar pour comprendre comment la communauté 
 		\section{Evaluation des sources}
 
 		\\[2mm]
-		[2] Documentation MPI : En tant qu’étudiants en Master Informatique nous avons eu l’occasion d’utiliser une multitude d’outils et de langages de programmation mais nous avions pas encore eu l’occasion de manipuler l’API Mpi. Et la documentation est un outil important pour pouvoir comprendre son fonctionnement et son utilisation. C’est la documentation officielle en anglais, il n’y a donc aucun doute à avoir sur son contenu.
+		[2] Documentation MPI : En tant qu’étudiants en Master Informatique nous avons eu l’occasion d’utiliser une multitude d’outils et de langages de programmation mais nous avions pas encore eu l’occasion de manipuler l’API Mpi. Et la documentation est un outil important pour pouvoir comprendre son fonctionnement et son utilisation. C’est la documentation officielle ecrite par les hauters de l'api, il n’y a donc aucun doute à avoir sur son contenu.
 		\\[2mm]
-		[4] S. Morin, I. Koren, et C. M. Krishna, « JMPI: Implementing the message passing standard in Java », Dans le cadre de notre projet, nous devons utiliser le langage Java pour faire le lien entre l’API Mpi et celui de PeerSim. Ce guide en anglais correspond exactement à ce dont nous avons besoin, en effet il permet d’en apprendre plus sur le déploiement des services offerts par l’API Mpi et ainsi de les utiliser dans le langage Java.
+		[4] S. Morin, I. Koren, et C. M. Krishna, « JMPI: Implementing the message passing standard in Java », Dans le cadre de notre projet, nous devons utiliser le langage Java pour faire le lien entre l’API Mpi et celui de PeerSim. Ce guide  correspond exactement à ce dont nous avons besoin, en effet il permet d’en apprendre plus sur le déploiement des services offerts par l’API Mpi et ainsi de les utiliser dans le langage Java.
 		\\[2mm]
 		 [3] J. Lejeune, « TME ARA PeerSim : Prise en main »,  Ce TME, qui nous a été fourni par notre encadrant, nous a permis à comprendre comment fonctionne Peersim. Nous avons, grâce à ce tuto, pu se “familiariser avec l’API de l’outil PeerSim en implémentant un protocole simple” qui consistait à envoyer un message contenant des données simples d’un noeud vers un autre.
 
