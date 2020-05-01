@@ -6,6 +6,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sar.ppi.mpi.MpiRunner;
+import org.sar.ppi.peersim.PeerSimRunSimulation;
 import org.sar.ppi.peersim.PeerSimRunner;
 import org.sar.ppi.simulator.ProtocolTools;
 
@@ -99,8 +100,8 @@ public class PredefinedScenarioTest extends NodeProcess{
 
     @Test
     public void PeersimScenario() {
-//            Ppi.main(new String[] { org.sar.ppi.NodeProcessTest.class.getName(), PeerSimRunner.class.getName() });
-        //          assertTrue(true);
+          Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), PeerSimRunSimulation.class.getName() });
+                 assertTrue(true);
     }
     @AfterClass
     public static void  after(){

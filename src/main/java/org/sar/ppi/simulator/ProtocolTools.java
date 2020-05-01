@@ -94,42 +94,6 @@ public class ProtocolTools {
         throw new PpiException("ERROR : Type not Alowed");
     }
 
-
-       /*  
-  public static void main(String[] args) {
-        //FileWriter file = new FileWriter(new File("/home/adrien/output.json"));
-        try(
-            FileReader filer = new FileReader("/home/adrien/output.json");) {
-         List<Object> array = new ArrayList<>();
-            array.add("arg_1");
-            array.add(1);
-            JSONObject jo = new JSONObject();
-                 protocolToJSON("App",5,4,array);
-            jo.put("call1",1);
-          file.write(protocolToJSON("App",4,3,array).toString());
-
-
-            JSONParser parser = new JSONParser();
-            JSONObject ob = (JSONObject) parser.parse(filer);
-
-            Object[] array = ProtocolFromJSON (ob);
-            System.out.println(Arrays.toString(array));
-            //Integer i =  Integer.parseInt(o.get("call1").toString());
-            //Object ob = i;
-
-
-
-            //System.out.println(o.get("call1").toString());
-        } catch (IOException | ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-
-        }
-    }
-*/
-
-
-
     /**
      *
      * @param funcName

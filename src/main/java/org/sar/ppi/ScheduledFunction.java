@@ -23,7 +23,6 @@ public class ScheduledFunction extends TimerTask implements Serializable {
             if(m.getName().equals(name))
                 try {
                     System.out.println("j invoque "+name +" args = "+ Arrays.toString(args)+"n= "+node);
-
                     m.invoke(node,args);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();

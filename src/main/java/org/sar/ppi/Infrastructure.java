@@ -7,7 +7,6 @@ public abstract class Infrastructure {
 
 	protected NodeProcess process;
 	protected int currentNode;
-	protected Timer timer = new Timer();
 	public Infrastructure(NodeProcess process) {
 		this.process = process;
 	}
