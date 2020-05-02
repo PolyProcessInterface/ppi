@@ -42,13 +42,14 @@ public class BroadcastOrderTest extends NodeProcess {
 		}
 	}
 
+	/*
 	@Test
 	public void MpiAnnotatedProcessTest() {
 		String[] args = { BroadcastOrderTest.class.getName(), MpiRunner.class.getName() };
 		Ppi.main(args);
 		assertTrue(true);
 	}
-
+*/
 	@Test
 	public void PeersimAnnotatedProcessTest() {
 		String[] args = { BroadcastOrderTest.class.getName(), PeerSimRunner.class.getName() };
