@@ -23,6 +23,7 @@ public abstract class NodeProcess {
 	 * @param message the message received.
 	 */
 	public void processMessage(Message message) {
+		//System.err.println("Starting to process a message from " + message.getIdsrc() + " to " + message.getIddest());
 		Method[] methods = this.getClass().getMethods();
 		for (Method method : methods) {
 			Class<?>[] params = method.getParameterTypes();
