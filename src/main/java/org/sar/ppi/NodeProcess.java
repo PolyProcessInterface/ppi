@@ -2,6 +2,8 @@ package org.sar.ppi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Process
@@ -9,7 +11,8 @@ import java.lang.reflect.Method;
 public abstract class NodeProcess {
 
 	protected Infrastructure infra;
-
+	protected static Lock lock = new ReentrantLock();
+	
 	public void setInfra(Infrastructure infra) {
 		this.infra = infra;
 	}
@@ -20,6 +23,7 @@ public abstract class NodeProcess {
 	 * @param message the message received.
 	 */
 	public void processMessage(Message message) {
+		//System.err.println("Starting to process a message from " + message.getIdsrc() + " to " + message.getIddest());
 		Method[] methods = this.getClass().getMethods();
 		for (Method method : methods) {
 			Class<?>[] params = method.getParameterTypes();
@@ -31,11 +35,28 @@ public abstract class NodeProcess {
 				throw new MessageHandlerException(method.getName() + ": first param must extend Message");
 			if (!params[0].equals(message.getClass()))
 				continue;
-			try {
-				method.invoke(this, message);
-			} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
-				e.printStackTrace();
+			Thread t = new Thread(() -> threadMessageHandler(method, message));
+			synchronized (lock) {
+				t.start();
+				try {
+					lock.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+		}
+	}
+
+	protected void threadMessageHandler(Method method, Message message)
+	{
+		try {
+			synchronized (lock) {
+				method.invoke(this, message);
+				lock.notify();
+			}
+		} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
+			e.printStackTrace();
 		}
 	}
 

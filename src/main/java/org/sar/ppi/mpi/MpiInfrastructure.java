@@ -11,34 +11,45 @@ import mpi.MPIException;
 import mpi.Status;
 
 import java.io.*;
+import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * MpiInfrastructure
  */
 public class MpiInfrastructure extends Infrastructure {
 
-	protected boolean running = true;
+	AtomicBoolean running = new AtomicBoolean(true);
 	protected Comm comm;
+	protected Queue<Message> sendQueue;
+	protected BlockingQueue<Message> recvQueue;
+	protected Thread executor;
 
 	public MpiInfrastructure(NodeProcess process) {
 		super(process);
+		sendQueue = new ConcurrentLinkedQueue<>();
+		recvQueue = new LinkedBlockingQueue<>();
+		executor = new Thread(new MpiProcess(process, this));
 	}
 
 	public void run(String[] args) throws PpiException {
 		try {
-			MPI.Init(args);
+			MPI.InitThread(args, MPI.THREAD_FUNNELED);
 			comm = MPI.COMM_WORLD;
 			currentNode = comm.getRank();
-			process.start();
-			while (running) {
-				int[] sizeMsgTab = new int[1];
-				Status s = comm.recv(sizeMsgTab, 1, MPI.INT, MPI.ANY_SOURCE, MPI.ANY_TAG);
-				int sizeMsg = sizeMsgTab[0];
-				byte [] tab = new byte[sizeMsg];
-				comm.recv(tab, sizeMsg, MPI.BYTE, s.getSource(), MPI.ANY_TAG);
-				// printByteArray(tab);
-				Message msg = RetriveMessage(tab);
-				process.processMessage(msg);
+			executor.start();
+			while (running.get() || !sendQueue.isEmpty()) {
+				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
+				if (s != null) {
+					recvMpi(s.getSource(), s.getTag());
+				}
+				Message m = sendQueue.poll();
+				if (m != null) {
+					sendMpi(m);
+				}
 			}
 			MPI.Finalize();
 		} catch (MPIException e) {
@@ -46,20 +57,43 @@ public class MpiInfrastructure extends Infrastructure {
 		}
 	}
 
-	@Override
-	public void send(Message message) throws PpiException{
+	protected void recvMpi(int source, int tag) throws PpiException {
+		try {
+			int[] sizeMsgTab = new int[1];
+			comm.recv(sizeMsgTab, 1, MPI.INT, source, tag);
+			int sizeMsg = sizeMsgTab[0];
+			byte [] tab = new byte[sizeMsg];
+			comm.recv(tab, sizeMsg, MPI.BYTE, source, tag);
+			// printByteArray(tab);
+			recvQueue.add(RetriveMessage(tab));
+		} catch (MPIException e) {
+			throw new PpiException("Receive from" + source + "failed", e);
+		}
+	}
+
+	protected void sendMpi(Message message) throws PpiException {
 		try {
 			byte[] tab = ParseMessage(message);
-			comm.send(new int[] {tab.length}, 1, MPI.INT, message.getIddest(), 1);
+			int[] sizes = {tab.length};
+			comm.send(sizes, 1, MPI.INT, message.getIddest(), 1);
 			comm.send(tab, tab.length, MPI.BYTE, message.getIddest(), 1);
 		} catch (MPIException e) {
 			throw new PpiException("Send to" + message.getIddest() + "failed", e);
 		}
 	}
 
+	public Message recv() throws InterruptedException {
+		return recvQueue.take();
+	}
+
+	@Override
+	public void send(Message message) {
+		sendQueue.add(message);
+	}
+
 	@Override
 	public void exit() {
-		running = false;
+		running.set(false);
 	}
 
 	@Override

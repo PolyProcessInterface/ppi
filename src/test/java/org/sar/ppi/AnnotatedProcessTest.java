@@ -46,13 +46,15 @@ public class AnnotatedProcessTest extends NodeProcess {
 
 	@Test
 	public void MpiAnnotatedProcessTest() {
-		Ppi.main(new String[] { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName() });
+		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName() };
+		Ppi.main(args);
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimAnnotatedProcessTest() {
-		Ppi.main(new String[] { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName() });
+		String[] args = { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName() };
+		Ppi.main(args);
 		assertTrue(true);
 	}
 }

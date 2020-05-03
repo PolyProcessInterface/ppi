@@ -26,7 +26,7 @@ public class NodeProcessTest extends NodeProcess {
 	@Override
 	public void processMessage(Message message) {
 		int host = infra.getId();
-		System.out.println("" + host + " Received hello from "  + message.getIdsrc());
+		System.out.println("Thread"+ Thread.currentThread().getId() +" "+ host + " Received hello from "  + message.getIdsrc());
 		if (host != 0) {
 			int dest = (host + 1) % infra.size();
 			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
@@ -46,13 +46,15 @@ public class NodeProcessTest extends NodeProcess {
 
 	@Test
 	public void MpiExample() {
-		Ppi.main(new String[] { NodeProcessTest.class.getName(), MpiRunner.class.getName() });
+		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName() };
+		Ppi.main(args);
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimExample() {
-		Ppi.main(new String[] { NodeProcessTest.class.getName(), PeerSimRunner.class.getName() });
+		String[] args = { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName() };
+		Ppi.main(args);
 		assertTrue(true);
 	}
 }
