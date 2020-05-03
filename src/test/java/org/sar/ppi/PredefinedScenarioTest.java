@@ -5,10 +5,8 @@ import org.json.simple.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.sar.ppi.mpi.MpiRunner;
-import org.sar.ppi.peersim.PeerSimRunSimulation;
-import org.sar.ppi.peersim.PeerSimRunner;
-import org.sar.ppi.simulator.ProtocolTools;
+import org.sar.ppi.simulator.peersim.PeerSimRunSimulation;
+import org.sar.ppi.simulator.peersim.ProtocolTools;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -46,11 +44,6 @@ public class PredefinedScenarioTest extends NodeProcess{
     public void callMe (String arg1, Integer arg2){
         System.out.println(infra.getId() + "arg1 = " + arg1 + " arg2 = " + arg2);
     }
-
-
-
-
-
 
 
     @BeforeClass
@@ -93,7 +86,7 @@ public class PredefinedScenarioTest extends NodeProcess{
 
     @Test
     public void MpiScenario() {
-              Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), MpiRunner.class.getName() ,"4" });
+      //        Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), MpiRunSimulation.class.getName() ,"4" , fileName});
               assertTrue(true);
               System.out.println("Teste Sceneario from Json mpi ok");
     }

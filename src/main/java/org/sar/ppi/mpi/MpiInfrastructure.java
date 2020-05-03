@@ -6,7 +6,7 @@ import mpi.Comm;
 import mpi.MPI;
 import mpi.MPIException;
 import mpi.Status;
-import org.sar.ppi.simulator.ProtocolTools;
+import org.sar.ppi.simulator.peersim.ProtocolTools;
 
 
 import java.io.*;
@@ -23,6 +23,10 @@ public class MpiInfrastructure extends Infrastructure {
 	protected Comm comm;
 	protected Timer timer = new Timer();
 	public MpiInfrastructure(NodeProcess process) {
+		super(process);
+	}
+
+	public MpiInfrastructure(NodeProcess process , String FilePath){
 		super(process);
 	}
 
@@ -66,7 +70,6 @@ public class MpiInfrastructure extends Infrastructure {
     @Override
 	public  void launchSimulation(String path){
 		List<Object[]> l_call = ProtocolTools.readProtocolJSON(path);
-
 		int num_node;
 		for(Object[] func : l_call){
 			num_node=(int)func[1];
@@ -82,6 +85,7 @@ public class MpiInfrastructure extends Infrastructure {
 
     @Override
 	public void exit() {
+		System.out.println("EXIT DE la par de "+super.getId());
     	if(timer!=null)
     		timer.cancel();
 		running = false;

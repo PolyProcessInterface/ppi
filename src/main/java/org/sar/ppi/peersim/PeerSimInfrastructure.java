@@ -3,16 +3,14 @@ package org.sar.ppi.peersim;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
 
 import org.sar.ppi.*;
-import org.sar.ppi.simulator.ProtocolTools;
+import org.sar.ppi.simulator.peersim.SchedEvent;
 import peersim.config.Configuration;
 import peersim.core.Network;
 import peersim.core.Node;
 import peersim.dynamics.NodeInitializer;
 import peersim.edsim.EDProtocol;
-import peersim.edsim.EDSimulator;
 import peersim.transport.Transport;
 
 

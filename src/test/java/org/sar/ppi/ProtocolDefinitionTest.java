@@ -3,7 +3,7 @@ package org.sar.ppi;
 
 import org.json.simple.JSONObject;
 import org.junit.Test;
-import org.sar.ppi.simulator.ProtocolTools;
+import org.sar.ppi.simulator.peersim.ProtocolTools;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

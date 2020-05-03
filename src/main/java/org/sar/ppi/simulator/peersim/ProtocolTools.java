@@ -1,4 +1,4 @@
-package org.sar.ppi.simulator;
+package org.sar.ppi.simulator.peersim;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,7 +13,19 @@ import java.util.*;
 
 public class ProtocolTools {
 
-
+    /**
+     * Write a call to a function to a Json Object
+     * @param funcName
+     *     The name of the function that gone be called
+     * @param node
+     *      The node on which she is gonne bee called
+     * @param delay
+     *       The delay to wait before the call
+     * @param args
+     *       The args
+     * @return
+     *       Json Object
+     */
     public static JSONObject protocolToJSON(String funcName , int node,long delay, List<Object> args){
         JSONObject jo = new JSONObject();
         JSONArray ja = new JSONArray();
@@ -79,7 +91,7 @@ public class ProtocolTools {
         return func_list;
     }
 
-
+    /** Json object joins some types (Integer/long)  */
     private static String getType(Object o ){
         if(o instanceof Integer)
             return "Integer";

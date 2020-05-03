@@ -1,13 +1,12 @@
-package org.sar.ppi.peersim;
+package org.sar.ppi.simulator.peersim;
 
 import org.sar.ppi.PpiException;
-import org.sar.ppi.simulator.ProtocolTools;
+import org.sar.ppi.peersim.PeerSimInfrastructure;
 import peersim.config.Configuration;
 import peersim.core.Control;
 import peersim.core.Network;
 import peersim.core.Node;
 import peersim.edsim.EDSimulator;
-import peersim.transport.Transport;
 
 
 import java.util.Arrays;

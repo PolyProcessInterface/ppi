@@ -1,8 +1,4 @@
-package org.sar.ppi.peersim;
-
-import peersim.core.Node;
-import peersim.edsim.EDProtocol;
-import peersim.transport.Transport;
+package org.sar.ppi.simulator.peersim;
 
 public class SchedEvent {
     private Object[] args;

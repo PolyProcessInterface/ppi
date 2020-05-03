@@ -1,4 +1,4 @@
-package org.sar.ppi.peersim;
+package org.sar.ppi.simulator.peersim;
 
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Runner;
