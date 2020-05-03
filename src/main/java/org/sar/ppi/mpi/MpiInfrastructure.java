@@ -41,16 +41,13 @@ public class MpiInfrastructure extends Infrastructure {
 			comm = MPI.COMM_WORLD;
 			currentNode = comm.getRank();
 			executor.start();
-			// System.out.printf("P%d> Entering main loop\n", getId());
-			while (running.get()) {
+			while (running.get() || !sendQueue.isEmpty()) {
 				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
 				if (s != null) {
-					// System.out.printf("P%d> Receiving message\n", getId());
 					recvMpi(s.getSource(), s.getTag());
 				}
 				Message m = sendQueue.poll();
 				if (m != null) {
-					// System.out.printf("P%d> Sending message %s\n", getId(), m.toString());
 					sendMpi(m);
 				}
 			}
