@@ -45,7 +45,7 @@ public class PeerSimInitSimulation implements Control {
         for(Object[] func : l_call){
             num_node=(int)func[1];
             delay=(long)func[2];
-            EDSimulator.add(delay,new SchedEvent((String) func[0], Arrays.copyOfRange(func,3,func.length)),Network.get(num_node),pid_trans);
+            EDSimulator.add(delay,new SchedEvent((String) func[0], Arrays.copyOfRange(func,3,func.length)),Network.get(num_node),infrapid);
         }
     }
 
