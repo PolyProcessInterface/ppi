@@ -12,8 +12,7 @@ import java.nio.file.Paths;
 
 public class PeerSimRunSimulation implements Runner {
     @Override
-    public void run(Class<? extends NodeProcess> processClass, String[] args)
-            throws ReflectiveOperationException {
+    public void run(Class<? extends NodeProcess> processClass, String[] args) {
         String tmpdir = System.getProperty("java.io.tmpdir");
         String tmpfile = Paths.get(tmpdir, "ppi-peersim.config").toString();
         try (OutputStream os = new FileOutputStream(tmpfile);

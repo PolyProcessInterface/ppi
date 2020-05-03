@@ -101,14 +101,17 @@ public class PredefinedScenarioTest extends NodeProcess{
     @Test
     public void PeersimScenario() {
           Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), PeerSimRunSimulation.class.getName() });
-                 assertTrue(true);
+          assertTrue(true);
+          System.out.println("Teste Sceneario from Json Peersim ok");
     }
     @AfterClass
     public static void  after(){
-
-            //Files.deleteIfExists(Paths.get(fileName));
-          //  System.out.println("End Scenario Test");
-
+        try {
+            Files.deleteIfExists(Paths.get(fileName));
+            System.out.println("End Scenario Test");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -7,6 +7,7 @@ import peersim.core.Control;
 import peersim.core.Network;
 import peersim.core.Node;
 import peersim.edsim.EDSimulator;
+import peersim.transport.Transport;
 
 
 import java.util.Arrays;
@@ -15,24 +16,24 @@ import java.util.List;
 public class PeerSimInitSimulation implements Control {
     private static final String PAR_PROTO="infrapid";
     private final int infrapid;
-
+    private static final String TRANSPORT_SIMULATION="transport";
+    private final int pid_trans;
     private String FileName=System.getProperty("user.dir")+"/testeJson.json";;
     public PeerSimInitSimulation(String prefix) {
         infrapid=Configuration.getPid(prefix+"."+PAR_PROTO);
+        pid_trans=Configuration.getPid(prefix+"."+TRANSPORT_SIMULATION);
     }
 
     @Override
     public boolean execute() {
         if(FileName==null)
             throw new PpiException("File name not set");
-
-        launchSimulation(FileName);
         for(int i = 0; i < Network.size(); i++) {
             Node node=Network.get(i);
             PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infrapid);
             pInfra.initialize(node);
         }
-        System.out.println("Node Init for Node =");
+        launchSimulation(FileName);
 
         return false;
     }
@@ -44,7 +45,7 @@ public class PeerSimInitSimulation implements Control {
         for(Object[] func : l_call){
             num_node=(int)func[1];
             delay=(long)func[2];
-            EDSimulator.add(delay,new SchedEvent((String) func[0], Arrays.copyOfRange(func,3,func.length)),Network.get(num_node),num_node);
+            EDSimulator.add(delay,new SchedEvent((String) func[0], Arrays.copyOfRange(func,3,func.length)),Network.get(num_node),pid_trans);
         }
     }
 

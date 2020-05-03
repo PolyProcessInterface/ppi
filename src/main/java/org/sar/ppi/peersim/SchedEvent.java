@@ -2,8 +2,9 @@ package org.sar.ppi.peersim;
 
 import peersim.core.Node;
 import peersim.edsim.EDProtocol;
+import peersim.transport.Transport;
 
-public class SchedEvent implements EDProtocol {
+public class SchedEvent {
     private Object[] args;
     private String Funcname ;
     public SchedEvent(String name , Object[] args) {
@@ -19,12 +20,9 @@ public class SchedEvent implements EDProtocol {
     }
 
     @Override
-    public void processEvent(Node node, int i, Object o) {
-        System.out.println("IZAAAAAAAA");
+    public Object clone() {
+        return new SchedEvent(Funcname,args.clone());
     }
 
-    @Override
-    public Object clone() {
-        return null;
-    }
+
 }
