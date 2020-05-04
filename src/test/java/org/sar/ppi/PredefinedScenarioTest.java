@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.sar.ppi.simulator.mpi.MpiRunSimulation;
 import org.sar.ppi.simulator.peersim.PeerSimRunSimulation;
 import org.sar.ppi.simulator.peersim.ProtocolTools;
 
@@ -24,17 +25,21 @@ public class PredefinedScenarioTest extends NodeProcess{
 
         super.processMessage(message);
         System.out.println(" I am not called ");
+
     }
 
     @Override
     public void start () {
         System.out.println("my id "+infra.getId());
-        if (infra.getId() == 0)
+        if (infra.getId() == 0) {
             infra.launchSimulation(fileName);
+            infra.exit();
+        }
         else
           try {
-              Thread.sleep(20);
+              Thread.sleep(200);
               System.out.println("j'ai attendu 20 secon");
+              infra.exit();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -43,6 +48,14 @@ public class PredefinedScenarioTest extends NodeProcess{
 
     public void callMe (String arg1, Integer arg2){
         System.out.println(infra.getId() + "arg1 = " + arg1 + " arg2 = " + arg2);
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }finally {
+            infra.exit();
+        }
+
     }
 
 
@@ -86,7 +99,7 @@ public class PredefinedScenarioTest extends NodeProcess{
 
     @Test
     public void MpiScenario() {
-      //        Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), MpiRunSimulation.class.getName() ,"4" , fileName});
+             Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), MpiRunSimulation.class.getName() ,"3" });
               assertTrue(true);
               System.out.println("Teste Sceneario from Json mpi ok");
     }
