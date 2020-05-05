@@ -89,7 +89,7 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		if(pid!=my_pid) throw new IllegalArgumentException("Inconsistency on protocol id");
 
 		if (event instanceof Message) {
-			System.out.println("Thread" + Thread.currentThread().getId());
+			//System.err.println("Thread" + Thread.currentThread().getId());
 			process.processMessage((Message) event);
 			
 		} else {
