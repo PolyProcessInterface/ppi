@@ -44,11 +44,18 @@ public class BroadcastOrderTest extends NodeProcess {
 
 	@Override
 	public void start() {
-		if (infra.getId() == 0) {
-			for(int i=1;i<infra.size();i++) {
-				infra.send(new ExampleMessage(0,i, "OrderTest"));
+		
+		if ((infra.getId()%infra.size()) == 0) {
+			
+			//System.err.println("Im the broadcaster, getID+size = "+ (infra.getId()+infra.size()));
+			for(int i=infra.getId()+1;i<infra.getId()+infra.size();i++) {
+				//System.err.println("MESSAGE FROM " + infra.getId() + " TO " + i);
+				infra.send(new ExampleMessage(infra.getId(),i, "OrderTest"));
+				//System.err.println("message sent");
 			}
 			infra.exit();
+		}else {
+			//System.err.println("NOT BROADCASTING : "+infra.getId());
 		}
 	}
 

@@ -61,12 +61,13 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 		if(running) {
 
-			
-			Node nodeHost = Network.get(this.getId());
+			Node nodeHost = Network.get(this.getId()%Network.size());
 			Transport tr = (Transport) nodeHost.getProtocol(pid_transport);
-			Node nodeDest = Network.get(message.getIddest());
+			Node nodeDest = Network.get(message.getIddest()%Network.size());
 			//System.err.println(message.getIdsrc() + " SENDING TO "+message.getIddest());
 			tr.send(nodeHost, nodeDest, message, my_pid);
+		}else {
+			System.err.println("Not running : won't send the message from "+message.getIdsrc() +" to " +message.getIddest());
 		}
 	}
 	@Override
