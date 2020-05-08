@@ -20,11 +20,7 @@ public class Ppi {
 	public static void main(String[] args) throws PpiException {
 		try {
 			Class<? extends Runner> rClass = Class.forName(args[1]).asSubclass(Runner.class);
-			if(args.length > 3)
-				args = Arrays.copyOf(args, 4);
-			else
-				args = Arrays.copyOf(args, 3);
-
+			args = Arrays.copyOf(args, 4);
 			if (args[2] == null) {
 				args[2] = "5";
 			}
