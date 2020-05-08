@@ -98,13 +98,11 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 			for(Method m : process.getClass().getMethods()){
 				if(m.getName().equals(name))
 					try {
-						System.out.println("j invoque "+name +" args = "+ Arrays.toString(shed.getArgs())+"n= "+my_pid);
 						m.invoke(process,shed.getArgs());
 					} catch (IllegalAccessException | InvocationTargetException e) {
 						e.printStackTrace();
 					}
 			}
-			System.out.println("OULALALALALALA");
 			return;
 		}
 
