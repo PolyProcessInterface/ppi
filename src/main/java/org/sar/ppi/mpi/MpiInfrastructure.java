@@ -67,7 +67,7 @@ public class MpiInfrastructure extends Infrastructure {
 		}
 	}
 
-    @Override
+
 	public  void launchSimulation(String path){
 		List<Object[]> l_call = ProtocolTools.readProtocolJSON(path);
 		int num_node;
@@ -77,16 +77,13 @@ public class MpiInfrastructure extends Infrastructure {
 				timer.schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process),(long)func[2]);
 			else
 			send(new SchedMessage(currentNode,num_node,(String) func[0],(long)func[2],Arrays.copyOfRange(func,3,func.length)));
-
-			System.out.println("je suis a la fin lanuch simulation");
 		}
 	}
 
 
     @Override
 	public void exit() {
-		System.out.println("EXIT DE la par de "+super.getId());
-    	if(timer!=null)
+		if(timer!=null)
     		timer.cancel();
 		running = false;
 	}

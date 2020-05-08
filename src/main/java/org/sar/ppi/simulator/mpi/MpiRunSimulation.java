@@ -10,19 +10,23 @@ import org.sar.ppi.mpi.MpiRunner;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class MpiRunSimulation implements Runner {
     public static void main(String[] args) {
-        Ppi.run(args, new MpiRunner());
+        Ppi.run(args, new MpiRunSimulation());
+
     }
 
     @Override
     public void init(String[] args) throws PpiException {
+        System.out.println("la : "+ Arrays.toString(args));
         String s = null;
         boolean err = false;
+        String nb_process=Integer.toString((Integer.parseInt(args[2])));//ici a modifier des que en peux ajouter un process
         String cmd = String.format(
                 "mpirun --oversubscribe --np %s java -cp %s %s %s",
-                args[2], System.getProperty("java.class.path"), this.getClass().getName(), args[0]);
+                nb_process, System.getProperty("java.class.path"), this.getClass().getName(), args[0]);
         try {
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -52,10 +56,7 @@ public class MpiRunSimulation implements Runner {
                 throws ReflectiveOperationException {
         NodeProcess process = processClass.newInstance();
         MpiInfrastructure infra;
-        if(options.length>1)
-            infra= new MpiInfrastructure(process,options[1]);
-        else
-            infra = new MpiInfrastructure(process);
+        infra = new MpiInfrastructure(process);
         process.setInfra(infra);
         infra.run(options);
         infra.exit();

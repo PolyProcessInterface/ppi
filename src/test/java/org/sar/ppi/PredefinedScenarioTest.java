@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.sar.ppi.mpi.MpiInfrastructure;
 import org.sar.ppi.simulator.mpi.MpiRunSimulation;
 import org.sar.ppi.simulator.peersim.PeerSimRunSimulation;
 import org.sar.ppi.simulator.peersim.ProtocolTools;
@@ -22,7 +23,6 @@ public class PredefinedScenarioTest extends NodeProcess{
     static String  fileName = System.getProperty("user.dir")+"/testeJson.json";
     @Override
     public void processMessage (Message message){
-
         super.processMessage(message);
         System.out.println(" I am not called ");
 
@@ -32,7 +32,10 @@ public class PredefinedScenarioTest extends NodeProcess{
     public void start () {
         System.out.println("my id "+infra.getId());
         if (infra.getId() == 0) {
-            infra.launchSimulation(fileName);
+            if(infra instanceof MpiInfrastructure) {
+                MpiInfrastructure mp= (MpiInfrastructure)    infra;
+                mp.launchSimulation(fileName);
+            }
             infra.exit();
         }
         else
@@ -99,14 +102,14 @@ public class PredefinedScenarioTest extends NodeProcess{
 
     @Test
     public void MpiScenario() {
-             Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), MpiRunSimulation.class.getName() ,"3" });
+             Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), MpiRunSimulation.class.getName() ,"3" , fileName});
               assertTrue(true);
               System.out.println("Teste Sceneario from Json mpi ok");
     }
 
     @Test
     public void PeersimScenario() {
-          Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), PeerSimRunSimulation.class.getName() });
+          Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), PeerSimRunSimulation.class.getName() ,"3" , fileName});
           assertTrue(true);
           System.out.println("Teste Sceneario from Json Peersim ok");
     }

@@ -1,7 +1,6 @@
 package org.sar.ppi;
 
 
-import java.util.Timer;
 
 public abstract class Infrastructure {
 
@@ -18,16 +17,12 @@ public abstract class Infrastructure {
 	 */
 	public abstract void send(Message message);
 
-	public abstract void launchSimulation(String path);
-
-
 	/**
 	 * @return the currentNode
 	 */
 	public int getId() {
 		return currentNode;
 	}
-
 
 	/**
 	 * Stop the execution of the infrastructure for th current node.

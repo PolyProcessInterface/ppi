@@ -73,19 +73,6 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 			tr.send(nodeHost, nodeDest, message, my_pid);
 		}
 	}
-	//usless ici
-	@Override
-	public void launchSimulation(String path) {
-	/*	List<Object[]> l_call = ProtocolTools.readProtocolJSON(path);
-		int num_node;
-		long delay;
-		for(Object[] func : l_call){
-			num_node=(int)func[1];
-			delay=(long)func[2];
-			EDSimulator.add(delay,new SchedEvent((String) func[0], Arrays.copyOfRange(func,3,func.length)),Network.get(num_node),num_node);
-		}*/
-	}
-
 
 	@Override
 	public void exit() {

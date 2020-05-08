@@ -17,10 +17,11 @@ public class PeerSimInitSimulation implements Control {
     private final int infrapid;
     private static final String TRANSPORT_SIMULATION="transport";
     private final int pid_trans;
-    private String FileName=System.getProperty("user.dir")+"/testeJson.json";;
+    private String FileName;
     public PeerSimInitSimulation(String prefix) {
         infrapid=Configuration.getPid(prefix+"."+PAR_PROTO);
         pid_trans=Configuration.getPid(prefix+"."+TRANSPORT_SIMULATION);
+        FileName=Configuration.getString("path");
     }
 
     @Override
