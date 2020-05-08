@@ -35,7 +35,6 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 			np.setInfra(this);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.process=np;
@@ -69,7 +68,7 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 			Node nodeHost = Network.get(this.getId());
 			Transport tr = (Transport) nodeHost.getProtocol(pid_transport);
 			Node nodeDest = Network.get(message.getIddest());
-			//System.err.println(Network.get(this.getId()) + " SENDING TO \n"+Network.get(dest));
+			//System.err.println(message.getIdsrc() + " SENDING TO "+message.getIddest());
 			tr.send(nodeHost, nodeDest, message, my_pid);
 		}
 	}
@@ -110,7 +109,9 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		}
 
 		if (event instanceof Message) {
+			System.out.println("Thread" + Thread.currentThread().getId());
 			process.processMessage((Message) event);
+			
 		} else {
 			throw new IllegalArgumentException("Unknown event for this protocol");
 		}
