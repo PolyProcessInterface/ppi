@@ -4,6 +4,7 @@ import peersim.config.Configuration;
 import peersim.core.Control;
 import peersim.core.Network;
 import peersim.core.Node;
+import peersim.dynamics.NodeInitializer;
 
 public class PeerSimInit implements Control {
 
@@ -20,7 +21,7 @@ public class PeerSimInit implements Control {
 		for(int i=0;i < Network.size();i++) {
 			Node node=Network.get(i);
 			PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infrapid);
-			pInfra.initialization(node);
+			pInfra.initialize(node);
 		}
 		return false;
 	}
