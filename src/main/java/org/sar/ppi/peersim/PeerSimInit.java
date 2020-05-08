@@ -23,7 +23,6 @@ public class PeerSimInit implements Control {
 			PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infrapid);
 			pInfra.initialize(node);
 		}
-		System.out.println("Node Init for Node =");
 		return false;
 	}
 

@@ -28,7 +28,6 @@ public class Ppi {
 			if (args[2] == null) {
 				args[2] = "5";
 			}
-			System.out.println(Arrays.toString(args));
 			rClass.newInstance().init(args);
 		} catch (ReflectiveOperationException e) {
 			throw new PpiException("Failed to init the process", e);
