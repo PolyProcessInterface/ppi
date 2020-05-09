@@ -29,7 +29,6 @@ public class MpiInfrastructure extends Infrastructure {
 	protected Queue<Message> sendQueue;
 	protected BlockingQueue<Message> recvQueue;
 	protected Thread executor;
-	protected Timer timer = new Timer();
 	public MpiInfrastructure(NodeProcess process) {
 		super(process);
 		sendQueue = new ConcurrentLinkedQueue<>();
@@ -67,12 +66,7 @@ public class MpiInfrastructure extends Infrastructure {
 			byte [] tab = new byte[sizeMsg];
 			comm.recv(tab, sizeMsg, MPI.BYTE, source, tag);
 			// printByteArray(tab);
-			Message msg =RetriveMessage(tab);
-			if(msg instanceof  SchedMessage) {
-				SchedMessage shed = (SchedMessage) msg;
-				timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),process),shed.getDelay());
-			}else
-				recvQueue.add(msg);
+			recvQueue.add(RetriveMessage(tab));
 		} catch (MPIException e) {
 			throw new PpiException("Receive from" + source + "failed", e);
 		}
@@ -100,10 +94,7 @@ public class MpiInfrastructure extends Infrastructure {
 
 	@Override
 	public void exit() {
-		if(timer!=null) {
-			timer.cancel();
-			timer=null;
-		}
+		process.stopSched();
 		running.set(false);
 	}
 	public  void launchSimulation(String path){
@@ -112,7 +103,7 @@ public class MpiInfrastructure extends Infrastructure {
 		for(Object[] func : l_call){
 			num_node=(int)func[1];
 			if(num_node==currentNode)
-				timer.schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process),(long)func[2]);
+				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process),(long)func[2]);
 			else
 				send(new SchedMessage(currentNode,num_node,(String) func[0],(long)func[2],Arrays.copyOfRange(func,3,func.length)));
 		}
