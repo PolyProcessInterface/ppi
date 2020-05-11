@@ -30,15 +30,11 @@ public class WaitNotifyTest extends NodeProcess {
 	private static int cpt = 0;
 	
 	public void display() {
-		System.out.println("\n###########################");
-		System.out.println("Thread "+Thread.currentThread().getId()+" : Going to wait");
-		System.out.println("###########################\n");
+		System.out.println("#####Thread "+Thread.currentThread().getId()+" : Going to wait#####");
 		cpt++;
 		infra.waiting(msgSended >= N);
 		
-		System.out.println("\n###########################");
-		System.out.println("Thread "+Thread.currentThread().getId()+" : No more waiting");
-		System.out.println("###########################\n");
+		System.out.println("#####Thread "+Thread.currentThread().getId()+" : No more waiting#####");
 		/*cpt--;
 		if(cpt>0) infra.notifyingAll();*/
 	}
@@ -66,8 +62,9 @@ public class WaitNotifyTest extends NodeProcess {
 			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
 			//new Thread (()->{display();}).start();
 		}
-		if((infra.getId()%2)==0) {
-			new Thread (()->{display();}).start();
+		if((infra.getId()%2)==1) {
+			// display something after N messages
+			new Thread (()->{display();}).start(); 
 		}
 	}
 
