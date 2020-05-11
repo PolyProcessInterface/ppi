@@ -2,6 +2,9 @@ package org.sar.ppi;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.sar.ppi.peersim.PeerSimRunner;
 
@@ -26,17 +29,25 @@ public class WaitNotifyTest extends NodeProcess {
 	}
 	
 	private final int N = 10;
-	private static int msgSended = 0;
+	private static int msgReceived = 0;
 	private static int waiting = 0;
+	private static List<Long> threads = new ArrayList<>();
 			
 	public void displayAfterNMessages() {
 		System.out.println("## Thread "+Thread.currentThread().getId()+" : Going to wait ##");
 		
 		waiting++;
-		infra.waiting(msgSended >= N);
+		
+		threads.add(Thread.currentThread().getId());
+		infra.waiting(msgReceived >= N);
+		
+		
+		while(threads.get(0) != Thread.currentThread().getId()) {
+			infra.waiting(false);
+		}
+		threads.remove(Thread.currentThread().getId());
 		
 		System.out.println("## Thread "+Thread.currentThread().getId()+" : No more waiting ##");
-		
 		waiting--;
 		if(waiting>0) infra.notifyingAll();
 
@@ -56,8 +67,8 @@ public class WaitNotifyTest extends NodeProcess {
 			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));
 		}
 		
-		msgSended++;
-		if(msgSended >= N && waiting > 0) {
+		msgReceived++;
+		if(msgReceived >= N && waiting > 0) {
 			synchronized (lock) {
 				infra.notifyingAll();
 				try {
@@ -74,14 +85,15 @@ public class WaitNotifyTest extends NodeProcess {
 
 	@Override
 	public void start() {
-		if (infra.getId() == 0) {
-			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
-		}
-		
 		if((infra.getId()%2)==0) {
 			// display something after N messages
 			new Thread (()->{displayAfterNMessages();}).start(); 
 		}
+		if (infra.getId() == 0) {
+			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
+		}
+		
+		
 	}
 
 	/*
