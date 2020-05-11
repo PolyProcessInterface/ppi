@@ -25,32 +25,48 @@ public class WaitNotifyTest extends NodeProcess {
 
 	}
 	
-	private final int N = 3;
+	private final int N = 10;
 	private static int msgSended = 0;
-	private static int cpt = 0;
-	
-	public void display() {
-		System.out.println("#####Thread "+Thread.currentThread().getId()+" : Going to wait#####");
-		cpt++;
+	private static int waiting = 0;
+			
+	public void displayAfterNMessages() {
+		System.out.println("## Thread "+Thread.currentThread().getId()+" : Going to wait ##");
+		
+		waiting++;
 		infra.waiting(msgSended >= N);
 		
-		System.out.println("#####Thread "+Thread.currentThread().getId()+" : No more waiting#####");
-		/*cpt--;
-		if(cpt>0) infra.notifyingAll();*/
+		System.out.println("## Thread "+Thread.currentThread().getId()+" : No more waiting ##");
+		
+		waiting--;
+		if(waiting>0) infra.notifyingAll();
+
+		if(waiting==0) {
+			synchronized (lock) {
+				lock.notifyAll();
+			}
+		}
 	}
 
 	@MessageHandler
 	public void processExampleMessage(ExampleMessage message) {
 		int host = infra.getId();
-		System.out.printf("Thread " + Thread.currentThread().getId() +" %d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
+		System.out.printf("Thread" + Thread.currentThread().getId() +" : %d Received '%s' from %d.\n", host, message.getS(), message.getIdsrc());
 		if (host != 0) {
 			int dest = (host + 1) % infra.size();
 			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));
 		}
 		
 		msgSended++;
-		if(msgSended >= N) {
-			infra.notifyingAll();
+		if(msgSended >= N && waiting > 0) {
+			synchronized (lock) {
+				infra.notifyingAll();
+				try {
+					lock.wait(); // wait until displayed
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
 		}
 		
 		infra.exit();
@@ -60,11 +76,11 @@ public class WaitNotifyTest extends NodeProcess {
 	public void start() {
 		if (infra.getId() == 0) {
 			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
-			//new Thread (()->{display();}).start();
 		}
-		if((infra.getId()%2)==1) {
+		
+		if((infra.getId()%2)==0) {
 			// display something after N messages
-			new Thread (()->{display();}).start(); 
+			new Thread (()->{displayAfterNMessages();}).start(); 
 		}
 	}
 
