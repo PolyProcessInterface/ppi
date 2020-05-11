@@ -110,7 +110,7 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		}
 
 		if (event instanceof Message) {
-			//System.out.println("Thread" + Thread.currentThread().getId());
+			System.out.println("Thread" + Thread.currentThread().getId());
 			process.processMessage((Message) event);
 			
 		} else {
