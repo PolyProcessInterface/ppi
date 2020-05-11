@@ -37,11 +37,12 @@ public class WaitNotifyTest extends NodeProcess {
 		System.out.println("## Thread "+Thread.currentThread().getId()+" : Going to wait ##");
 		
 		waiting++;
-		
+		/* Add to the queue */
 		threads.add(Thread.currentThread().getId());
+		
 		infra.waiting(msgReceived >= N);
 		
-		
+		/* Guarantee order (FIFO) */
 		while(threads.get(0) != Thread.currentThread().getId()) {
 			infra.waiting(false);
 		}
