@@ -88,7 +88,7 @@ public class BroadcastOrderTest extends NodeProcess {
 	}
 */
 	@Test
-	public void PeersimAnnotatedProcessTest() {
+	public void PeersimBroadcastOrderTest() {
 		String[] args = { BroadcastOrderTest.class.getName(), PeerSimRunner.class.getName() };
 		Ppi.main(args);
 		//first=outContent.toString();
