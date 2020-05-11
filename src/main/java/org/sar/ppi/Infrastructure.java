@@ -35,4 +35,15 @@ public abstract class Infrastructure {
 	 * @return number of nodes.
 	 */
 	public abstract int size();
+	
+	/**
+	 * wait until the predicate becomes true.
+	 * @param predicate
+	 */
+	public abstract void waiting(boolean predicate);
+	
+	/**
+	 * notify all pending threads
+	 */
+	public abstract void notifyingAll();
 }
