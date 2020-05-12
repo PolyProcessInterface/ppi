@@ -1,21 +1,17 @@
 package org.sar.ppi;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Scanner;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 
 import peersim.config.Configuration;
-import peersim.core.CommonState;
 
 /**
  * ExampleNodeProces
@@ -109,7 +105,5 @@ public class BroadcastOrderTest extends NodeProcess {
 		i++;
 		}
 		scanner.close();
-		originalOut.println(outputPeersim);
-		assertTrue(true);
 	}
 }
