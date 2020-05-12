@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Scanner;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 
+import peersim.config.Configuration;
 import peersim.core.CommonState;
 
 /**
@@ -38,7 +40,7 @@ public class BroadcastOrderTest extends NodeProcess {
 	@MessageHandler
 	public void processExampleMessage(ExampleMessage message) {
 		int host = infra.getId();
-		System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
+		System.out.printf("%d Received '%s' from %d\n", host%infra.size(), message.getS(), message.getIdsrc()%infra.size());
 		infra.exit();
 	}
 
@@ -47,15 +49,12 @@ public class BroadcastOrderTest extends NodeProcess {
 		
 		if ((infra.getId()%infra.size()) == 0) {
 			
-			//System.err.println("Im the broadcaster, getID+size = "+ (infra.getId()+infra.size()));
+
 			for(int i=infra.getId()+1;i<infra.getId()+infra.size();i++) {
-				//System.err.println("MESSAGE FROM " + infra.getId() + " TO " + i);
+
 				infra.send(new ExampleMessage(infra.getId(),i, "OrderTest"));
-				//System.err.println("message sent");
 			}
 			infra.exit();
-		}else {
-			//System.err.println("NOT BROADCASTING : "+infra.getId());
 		}
 	}
 
@@ -63,44 +62,54 @@ public class BroadcastOrderTest extends NodeProcess {
 	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 	private final PrintStream originalOut = System.out;
 	private final PrintStream originalErr = System.err;
-
-
+	private static final Integer NETWORKSIZE = 10 ;
+	private static final String PAR_SIZE = "network.size";
+	
 	@Before
 	public void setUpStreams() {
-		//System.setOut(new PrintStream(outContent));
-		//System.setErr(new PrintStream(errContent));
+		System.setOut(new PrintStream(outContent));
+		System.setErr(new PrintStream(errContent));
 	}
 
 	@After
 	public void restoreStreams() {
-		//System.setOut(originalOut);
-		//System.setErr(originalErr);
+		System.setOut(originalOut);
+		System.setErr(originalErr);
 	}
 
-	/*
-	String first;
-	@Test
-	public void MpiAnnotatedProcessTest() {
-		String[] args = { BroadcastOrderTest.class.getName(), MpiRunner.class.getName() };
-		Ppi.main(args);
-		assertEquals(120, outContent.size());
-		assertEquals("", errContent.toString());
-	}
-*/
+	String outputPeersim;
 	@Test
 	public void PeersimBroadcastOrderTest() {
-		String[] args = { BroadcastOrderTest.class.getName(), PeerSimRunner.class.getName() };
+		String[] args = { BroadcastOrderTest.class.getName(), PeerSimRunner.class.getName(),NETWORKSIZE.toString()};
 		Ppi.main(args);
-		//first=outContent.toString();
+		
+		int networkSize=Configuration.getInt(PAR_SIZE);
+		int i=0;
+		
+		outputPeersim=outContent.toString();
+		Scanner scanner = new Scanner(outputPeersim);
+		String[] expected=new String[networkSize];
+		
+		while (scanner.hasNextLine()) {
+		  String line = scanner.nextLine();
+		  if(line.isEmpty()) {	//Skipping empty output lines
+			  continue;
+		  }else {
+			  String[] results=line.split(" ");
+			  
+			  if(i<networkSize-1) { // Initialisation des output expected pour chaque ligne lors du premier experiment
+				  
+				  expected[i]=results[0]+","+results[2]+","+results[4];
+			  
+			  }else{	// Comparaison des outputs pour chaque experiment au-delà du premier
+				  
+				  assertEquals(expected[i%(networkSize-1)],results[0]+","+results[2]+","+results[4]);
+			  }
+		  }
+		i++;
+		}
+		scanner.close();
+		originalOut.println(outputPeersim);
 		assertTrue(true);
 	}
-	/*
-	@Test
-	public void PeersimBroadcastOrderTest() {
-		String[] args = { BroadcastOrderTest.class.getName(), PeerSimRunner.class.getName() };
-		Ppi.main(args);
-		//String expected = "\n\n\nThread1\n2 Received 'OrderTest' from 0\nThread1\n3 Received 'OrderTest' from 0\nThread1\n1 Received 'OrderTest' from 0\nThread1\n4 Received 'OrderTest' from 0\n";
-		assertEquals(first, outContent.toString());
-	}
-	*/
 }
