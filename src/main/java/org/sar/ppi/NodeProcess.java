@@ -1,7 +1,10 @@
 package org.sar.ppi;
 
+import org.sar.ppi.mpi.SchedMessage;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Timer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -12,7 +15,8 @@ public abstract class NodeProcess {
 
 	protected Infrastructure infra;
 	protected static Lock lock = new ReentrantLock();
-	
+
+	protected Timer timer = new Timer();
 	public void setInfra(Infrastructure infra) {
 		this.infra = infra;
 	}
@@ -24,6 +28,11 @@ public abstract class NodeProcess {
 	 */
 	public void processMessage(Message message) {
 		//System.err.println("Starting to process a message from " + message.getIdsrc() + " to " + message.getIddest());
+		if(message instanceof SchedMessage) {
+			SchedMessage shed = (SchedMessage) message;
+			timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),this),shed.getDelay());
+			return;
+		}
 		Method[] methods = this.getClass().getMethods();
 		for (Method method : methods) {
 			Class<?>[] params = method.getParameterTypes();
@@ -74,5 +83,21 @@ public abstract class NodeProcess {
 		} catch (ReflectiveOperationException e) {
 			throw new CloneNotSupportedException();
 		}
+	}
+
+	public void stopSched(){
+		if(timer!=null) {
+			timer.cancel();
+			timer=null;
+		}
+	}
+
+	public Timer getTimer() {
+		return timer;
+	}
+
+	@Override
+	public String toString() {
+		return "NodeProcess{" + "infra=" + infra.getId() + '}';
 	}
 }

@@ -1,14 +1,20 @@
 package org.sar.ppi.peersim;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.sar.ppi.*;
+import org.sar.ppi.simulator.peersim.SchedEvent;
 import peersim.config.Configuration;
 import peersim.core.Network;
 import peersim.core.Node;
+import peersim.dynamics.NodeInitializer;
 import peersim.edsim.EDProtocol;
 import peersim.transport.Transport;
-public class PeerSimInfrastructure extends Infrastructure implements EDProtocol {
+
+
+public class PeerSimInfrastructure extends Infrastructure implements EDProtocol , NodeInitializer {
 
 	private static final String PAR_TRANSPORT="transport";
 
@@ -58,10 +64,10 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 	@Override
 	public void send(Message message) {
-
 		if(running) {
 
 			Node nodeHost = Network.get(this.getId()%Network.size());
+
 			Transport tr = (Transport) nodeHost.getProtocol(pid_transport);
 			Node nodeDest = Network.get(message.getIddest()%Network.size());
 			//System.err.println(message.getIdsrc() + " SENDING TO "+message.getIddest());
@@ -70,9 +76,9 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 			System.err.println("Not running : won't send the message from "+message.getIdsrc() +" to " +message.getIddest());
 		}
 	}
+
 	@Override
 	public void exit() {
-
 		running=false;
 	}
 
@@ -81,13 +87,28 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		return Network.size();
 	}
 
-	public void initialization(Node host) {
+	@Override
+	public void initialize(Node node) {
 		this.process.start();
 	}
 
 	@Override
 	public void processEvent(Node host, int pid, Object event) {
 		if(pid!=my_pid) throw new IllegalArgumentException("Inconsistency on protocol id");
+		//a mettre dans process message ici juste pour les teste
+		if(event instanceof SchedEvent){
+			SchedEvent shed = (SchedEvent) event;
+			String name = shed.getFuncName();
+			for(Method m : process.getClass().getMethods()){
+				if(m.getName().equals(name))
+					try {
+						m.invoke(process,shed.getArgs());
+					} catch (IllegalAccessException | InvocationTargetException e) {
+						e.printStackTrace();
+					}
+			}
+			return;
+		}
 
 		if (event instanceof Message) {
 			//System.err.println("Thread" + Thread.currentThread().getId());
@@ -97,5 +118,7 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 			throw new IllegalArgumentException("Unknown event for this protocol");
 		}
 	}
+
+
 
 }

@@ -1,19 +1,13 @@
 package org.sar.ppi;
 
+
+
 public abstract class Infrastructure {
 
 	protected NodeProcess process;
 	protected int currentNode;
-
 	public Infrastructure(NodeProcess process) {
 		this.process = process;
-	}
-
-	/**
-	 * @return the currentNode
-	 */
-	public int getId() {
-		return currentNode;
 	}
 
 	/**
@@ -22,6 +16,13 @@ public abstract class Infrastructure {
 	 * @param message the message to send.
 	 */
 	public abstract void send(Message message);
+
+	/**
+	 * @return the currentNode
+	 */
+	public int getId() {
+		return currentNode;
+	}
 
 	/**
 	 * Stop the execution of the infrastructure for th current node.

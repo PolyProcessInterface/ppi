@@ -39,6 +39,8 @@ public class MpiRunner implements Runner {
 				System.err.println(s);
 				err = true;
 			}
+			stdInput.close();
+			stdError.close();
 		} catch (IOException e) {
 			throw new PpiException("Could not run MPI", e);
 		}

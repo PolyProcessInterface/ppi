@@ -1,27 +1,3 @@
-package org.sar.ppi.mpi;
-
-import org.sar.ppi.*;
-
-import mpi.Comm;
-import mpi.MPI;
-import mpi.MPIException;
-import mpi.Status;
-import org.sar.ppi.simulator.peersim.ProtocolTools;
-
-
-import java.io.*;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Timer;
-import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-/**
- * MpiInfrastructure
- */
 public class MpiInfrastructure extends Infrastructure {
 
 	AtomicBoolean running = new AtomicBoolean(true);
@@ -29,6 +5,7 @@ public class MpiInfrastructure extends Infrastructure {
 	protected Queue<Message> sendQueue;
 	protected BlockingQueue<Message> recvQueue;
 	protected Thread executor;
+    protected Timer timer = new Timer();
 	public MpiInfrastructure(NodeProcess process) {
 		super(process);
 		sendQueue = new ConcurrentLinkedQueue<>();
@@ -66,7 +43,12 @@ public class MpiInfrastructure extends Infrastructure {
 			byte [] tab = new byte[sizeMsg];
 			comm.recv(tab, sizeMsg, MPI.BYTE, source, tag);
 			// printByteArray(tab);
-			recvQueue.add(RetriveMessage(tab));
+            Message msg =RetriveMessage(tab);
+            if(msg instanceof  SchedMessage) {
+					SchedMessage shed = (SchedMessage) msg;
+					timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),process),shed.getDelay());
+			}else
+			    recvQueue.add(msg);
 		} catch (MPIException e) {
 			throw new PpiException("Receive from" + source + "failed", e);
 		}
@@ -94,18 +76,19 @@ public class MpiInfrastructure extends Infrastructure {
 
 	@Override
 	public void exit() {
-		process.stopSched();
+        if(timer!=null)
+    		timer.cancel();
 		running.set(false);
 	}
-	public  void launchSimulation(String path){
+    public  void launchSimulation(String path){
 		List<Object[]> l_call = ProtocolTools.readProtocolJSON(path);
 		int num_node;
 		for(Object[] func : l_call){
 			num_node=(int)func[1];
 			if(num_node==currentNode)
-				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process),(long)func[2]);
+				timer.schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process),(long)func[2]);
 			else
-				send(new SchedMessage(currentNode,num_node,(String) func[0],(long)func[2],Arrays.copyOfRange(func,3,func.length)));
+			send(new SchedMessage(currentNode,num_node,(String) func[0],(long)func[2],Arrays.copyOfRange(func,3,func.length)));
 		}
 	}
 
