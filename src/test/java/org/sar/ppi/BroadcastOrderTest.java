@@ -35,8 +35,7 @@ public class BroadcastOrderTest extends NodeProcess {
 
 	@MessageHandler
 	public void processExampleMessage(ExampleMessage message) {
-		int host = infra.getId();
-		System.out.printf("%d Received '%s' from %d\n", host%infra.size(), message.getS(), message.getIdsrc()%infra.size());
+		System.out.printf("%d Received '%s' from %d\n", message.getIddest()%infra.size(), message.getS(), message.getIdsrc()%infra.size());
 		infra.exit();
 	}
 
@@ -104,6 +103,6 @@ public class BroadcastOrderTest extends NodeProcess {
 		i++;
 		}
 		scanner.close();
-
+		//originalErr.println(outputPeersim);
 	}
 }

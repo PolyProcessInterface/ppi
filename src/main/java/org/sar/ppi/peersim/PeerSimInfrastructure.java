@@ -63,11 +63,15 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	}
 
 	@Override
+	public int getId() {
+		// TODO Auto-generated method stub
+		return super.getId()%Network.size();
+	}
+	@Override
 	public void send(Message message) {
 		if(running) {
 
-			Node nodeHost = Network.get(this.getId()%Network.size());
-
+			Node nodeHost = Network.get(getId());
 			Transport tr = (Transport) nodeHost.getProtocol(pid_transport);
 			Node nodeDest = Network.get(message.getIddest()%Network.size());
 			//System.err.println(message.getIdsrc() + " SENDING TO "+message.getIddest());
