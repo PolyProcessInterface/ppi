@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Predicate;
 
 /**
  * Process
@@ -66,6 +67,15 @@ public abstract class NodeProcess {
 			}
 		} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
 			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <T extends NodeProcess> void wait(Predicate<T> prediacte) throws InterruptedException {
+		synchronized(lock) {
+			while (!prediacte.test((T) this)) {
+				lock.wait();
+			}
 		}
 	}
 
