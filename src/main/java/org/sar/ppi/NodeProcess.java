@@ -4,6 +4,8 @@ import org.sar.ppi.mpi.SchedMessage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -16,8 +18,9 @@ public abstract class NodeProcess {
 
 	protected Infrastructure infra;
 	protected static Lock lock = new ReentrantLock();
-	protected static Lock lock2 = new ReentrantLock();
-
+	protected static Lock lock_pre = new ReentrantLock();
+	private static List<Predicate<NodeProcess>> predicates = new ArrayList<>();
+	
 	protected Timer timer = new Timer();
 	public void setInfra(Infrastructure infra) {
 		this.infra = infra;
@@ -52,10 +55,18 @@ public abstract class NodeProcess {
 				try {
 					lock.wait();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+			
+			synchronized (lock_pre) {
+				for (Predicate<NodeProcess> predicate : predicates) {
+					if (predicate.test(this)) {
+						lock_pre.notifyAll();
+					}
+				}
+			}
+			
 		}
 	}
 
@@ -121,27 +132,17 @@ public abstract class NodeProcess {
 	 * @param predicate
 	 */
 	
-	@SuppressWarnings("unchecked")
-	public <T> void waiting(Predicate<T> predicate) {
-		synchronized (lock2) {
-			while(! predicate.test((T) this)) {
+	public void waiting(Predicate<NodeProcess> predicate) {
+		synchronized (lock_pre) {
+			predicates.add(predicate);
+			while(! predicate.test(this)) {
 				try {
-					System.out.println("J'attends...");
-					lock2.wait();
+					lock_pre.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-			System.out.println("Réveillé !");
-		}
-	}
-	
-	/**
-	 * notify all pending threads
-	 */
-	public void notifyingAll() {
-		synchronized (lock2) {
-			lock2.notifyAll();
+			predicates.remove(predicate);
 		}
 	}
 

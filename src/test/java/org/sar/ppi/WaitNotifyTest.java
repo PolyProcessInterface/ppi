@@ -56,11 +56,10 @@ public class WaitNotifyTest extends NodeProcess {
 	}*/
 	
 	public void affiche(){
-		//synchronized (lock) {
-			waiting((x) -> msgReceived >= N );
-		     System.out.println("Bonjour !");
-		   //  lock.notifyAll();
-		//}
+		System.out.println("## Thread "+Thread.currentThread().getId()+" : Going to wait ##");
+		waiting( (NodeProcess) -> msgReceived >= N );
+		//System.out.println("Bonjour !");
+		System.out.println("## Thread "+Thread.currentThread().getId()+" : No more waiting ##");
 	}
 	
 
@@ -74,28 +73,17 @@ public class WaitNotifyTest extends NodeProcess {
 			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));
 		}
 		msgReceived++;
-		if(msgReceived >= N ) {
-			//synchronized (lock) {
-				notifyingAll();
-				/*try {
-					lock.wait(); // wait until displayed
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}*/
-			}
-			
-		//}
-		
 		infra.exit();
 	}
 
 	@Override
 	public void start() {
+		if((infra.getId()%2)==0) {
+			new Thread (()->{affiche();}).start();
+		}
+		
 		if (infra.getId() == 0) {
 			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
-			
-			new Thread (()->{affiche();}).start();
-			//affiche();
 		}
 	}
 
