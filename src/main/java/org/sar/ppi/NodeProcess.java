@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Predicate;
+import java.util.function.BooleanSupplier;
 
 /**
  * Process
@@ -19,7 +19,7 @@ public abstract class NodeProcess {
 	protected Infrastructure infra;
 	protected static Lock lock = new ReentrantLock();
 	protected static Lock lock_pre = new ReentrantLock();
-	private static List<Predicate<NodeProcess>> predicates = new ArrayList<>();
+	private static List<BooleanSupplier> conditions = new ArrayList<>();
 	
 	protected Timer timer = new Timer();
 	public void setInfra(Infrastructure infra) {
@@ -60,8 +60,8 @@ public abstract class NodeProcess {
 			}
 			
 			synchronized (lock_pre) {
-				for (Predicate<NodeProcess> predicate : predicates) {
-					if (predicate.test(this)) {
+				for (BooleanSupplier condition : conditions) {
+					if (condition.getAsBoolean()) {
 						lock_pre.notifyAll();
 					}
 				}
@@ -128,21 +128,20 @@ public abstract class NodeProcess {
 	}*/
 
 	/**
-	 * wait until the predicate becomes true.
-	 * @param predicate
+	 * wait until the condition becomes true.
+	 * @param condition
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends NodeProcess> void waiting(Predicate<T> predicate) {
+	public <T extends NodeProcess> void waiting(BooleanSupplier condition) {
 		synchronized (lock_pre) {
-			predicates.add((Predicate<NodeProcess>) predicate);
-			while(! predicate.test((T) this)) {
+			conditions.add(condition);
+			while(! condition.getAsBoolean()) {
 				try {
 					lock_pre.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-			predicates.remove(predicate);
+			conditions.remove(condition);
 		}
 	}
 

@@ -58,7 +58,7 @@ public class WaitNotifyTest extends NodeProcess {
 	
 	public void affiche(){
 		System.out.println("## Thread "+Thread.currentThread().getId()+" : Going to wait ##");
-		waiting( (WaitNotifyTest p) -> p.msgReceived == 1 );
+		waiting( () -> msgReceived == 1 );
 		//System.out.println("Bonjour !");
 		System.out.println("## Thread "+Thread.currentThread().getId()+" : No more waiting ##");
 	}
