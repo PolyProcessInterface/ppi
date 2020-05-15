@@ -2,9 +2,6 @@ package org.sar.ppi;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 import org.sar.ppi.peersim.PeerSimRunner;
 
@@ -28,21 +25,20 @@ public class WaitNotifyTest extends NodeProcess {
 
 	}
 	
+	
 	private final int N = 10;
 	private static int msgReceived = 0;
-	private static int waiting = 0;
-	private static List<Long> threads = new ArrayList<>();
 			
-	public void displayAfterNMessages() {
+	/*public void displayAfterNMessages() {
 		System.out.println("## Thread "+Thread.currentThread().getId()+" : Going to wait ##");
 		
 		waiting++;
-		/* Add to the queue */
+		
 		threads.add(Thread.currentThread().getId());
 		
 		infra.waiting(msgReceived >= N);
 		
-		/* Guarantee order (FIFO) */
+		
 		while(threads.get(0) != Thread.currentThread().getId()) {
 			infra.waiting(false);
 		}
@@ -57,7 +53,17 @@ public class WaitNotifyTest extends NodeProcess {
 				lock.notifyAll();
 			}
 		}
+	}*/
+	
+	public void affiche(){
+		//synchronized (lock) {
+			waiting((x) -> msgReceived >= N );
+		     System.out.println("Bonjour !");
+		   //  lock.notifyAll();
+		//}
 	}
+	
+
 
 	@MessageHandler
 	public void processExampleMessage(ExampleMessage message) {
@@ -67,34 +73,30 @@ public class WaitNotifyTest extends NodeProcess {
 			int dest = (host + 1) % infra.size();
 			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));
 		}
-		
 		msgReceived++;
-		if(msgReceived >= N && waiting > 0) {
-			synchronized (lock) {
-				infra.notifyingAll();
-				try {
+		if(msgReceived >= N ) {
+			//synchronized (lock) {
+				notifyingAll();
+				/*try {
 					lock.wait(); // wait until displayed
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				}
+				}*/
 			}
 			
-		}
+		//}
 		
 		infra.exit();
 	}
 
 	@Override
 	public void start() {
-		if((infra.getId()%2)==0) {
-			// display something after N messages
-			new Thread (()->{displayAfterNMessages();}).start(); 
-		}
 		if (infra.getId() == 0) {
 			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
+			
+			new Thread (()->{affiche();}).start();
+			//affiche();
 		}
-		
-		
 	}
 
 	/*

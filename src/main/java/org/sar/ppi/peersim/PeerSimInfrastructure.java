@@ -2,11 +2,6 @@ package org.sar.ppi.peersim;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.sar.ppi.*;
 import org.sar.ppi.simulator.peersim.SchedEvent;
@@ -30,7 +25,6 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 	private boolean running; // true while exit() hasnt been executed
 	private static int cptID=0;
-	private static Lock lock = new ReentrantLock();
 
 
 	public PeerSimInfrastructure(String prefix) {
@@ -118,27 +112,6 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 			
 		} else {
 			throw new IllegalArgumentException("Unknown event for this protocol");
-		}
-	}
-
-	
-	@Override
-	public void waiting(boolean predicate) {
-		synchronized (lock) {
-			if(predicate == false) {
-				try {
-					lock.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	@Override
-	public void notifyingAll() {
-		synchronized (lock) {
-			lock.notifyAll();
 		}
 	}
 

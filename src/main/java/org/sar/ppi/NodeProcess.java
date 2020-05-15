@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Predicate;
 
 /**
  * Process
@@ -15,6 +16,7 @@ public abstract class NodeProcess {
 
 	protected Infrastructure infra;
 	protected static Lock lock = new ReentrantLock();
+	protected static Lock lock2 = new ReentrantLock();
 
 	protected Timer timer = new Timer();
 	public void setInfra(Infrastructure infra) {
@@ -100,4 +102,47 @@ public abstract class NodeProcess {
 	public String toString() {
 		return "NodeProcess{" + "infra=" + infra.getId() + '}';
 	}
+	
+	
+	/*public <T extends NodeProcess> void waiting(Predicate<T> predicate) { // Predicate<? extends NodeProcess>
+		synchronized (lock) {
+			while(!predicate.test((T) this)) {
+				try {
+					lock.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}*/
+
+	/**
+	 * wait until the predicate becomes true.
+	 * @param predicate
+	 */
+	
+	@SuppressWarnings("unchecked")
+	public <T> void waiting(Predicate<T> predicate) {
+		synchronized (lock2) {
+			while(! predicate.test((T) this)) {
+				try {
+					System.out.println("J'attends...");
+					lock2.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			System.out.println("Réveillé !");
+		}
+	}
+	
+	/**
+	 * notify all pending threads
+	 */
+	public void notifyingAll() {
+		synchronized (lock2) {
+			lock2.notifyAll();
+		}
+	}
+
 }
