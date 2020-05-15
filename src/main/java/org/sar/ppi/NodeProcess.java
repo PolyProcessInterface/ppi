@@ -131,11 +131,11 @@ public abstract class NodeProcess {
 	 * wait until the predicate becomes true.
 	 * @param predicate
 	 */
-	
-	public void waiting(Predicate<NodeProcess> predicate) {
+	@SuppressWarnings("unchecked")
+	public <T extends NodeProcess> void waiting(Predicate<T> predicate) {
 		synchronized (lock_pre) {
-			predicates.add(predicate);
-			while(! predicate.test(this)) {
+			predicates.add((Predicate<NodeProcess>) predicate);
+			while(! predicate.test((T) this)) {
 				try {
 					lock_pre.wait();
 				} catch (InterruptedException e) {

@@ -3,6 +3,7 @@ package org.sar.ppi;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 
 /**
@@ -27,7 +28,7 @@ public class WaitNotifyTest extends NodeProcess {
 	
 	
 	private final int N = 10;
-	private static int msgReceived = 0;
+	private int msgReceived = 0;
 			
 	/*public void displayAfterNMessages() {
 		System.out.println("## Thread "+Thread.currentThread().getId()+" : Going to wait ##");
@@ -57,7 +58,7 @@ public class WaitNotifyTest extends NodeProcess {
 	
 	public void affiche(){
 		System.out.println("## Thread "+Thread.currentThread().getId()+" : Going to wait ##");
-		waiting( (NodeProcess) -> msgReceived >= N );
+		waiting( (WaitNotifyTest p) -> p.msgReceived == 1 );
 		//System.out.println("Bonjour !");
 		System.out.println("## Thread "+Thread.currentThread().getId()+" : No more waiting ##");
 	}
@@ -87,14 +88,12 @@ public class WaitNotifyTest extends NodeProcess {
 		}
 	}
 
-	/*
 	@Test
 	public void MpiAnnotatedProcessTest() {
 		String[] args = { WaitNotifyTest.class.getName(), MpiRunner.class.getName() };
 		Ppi.main(args);
 		assertTrue(true);
 	}
-	*/
 
 	@Test
 	public void PeersimAnnotatedProcessTest() {
