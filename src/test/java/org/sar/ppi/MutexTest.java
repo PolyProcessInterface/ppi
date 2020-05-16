@@ -3,8 +3,8 @@ package org.sar.ppi;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.sar.ppi.mpi.MpiRunner;
-import org.sar.ppi.peersim.PeerSimRunner;
+import org.sar.ppi.simulator.mpi.MpiRunSimulation;
+import org.sar.ppi.simulator.peersim.PeerSimRunSimulation;
 
 public class MutexTest extends NodeProcess {
 
@@ -20,15 +20,17 @@ public class MutexTest extends NodeProcess {
 			father = null;
 			token = true;
 		}
+	}
+
+	public void doSomething() {
 		try {
-			while (nbReq < 5) {
-				request();
-				wait((MutexTest process) -> process.token == true);
-				cs();
-				release();
-			}
+			infra.wait(() -> requesting == false);
+			request();
+			infra.wait(() -> token == true);
+			cs();
+			release();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			System.out.printf("%d Was interrupted while waiting\n", infra.getId());
 		}
 	}
 
@@ -38,20 +40,22 @@ public class MutexTest extends NodeProcess {
 			infra.send(new Request(infra.getId(), father));
 			father = null;
 		}
-		System.out.printf("%d entered critical section\n", infra.getId());
+		System.out.printf("%d Requested critical section\n", infra.getId());
 	}
 
 	public void cs() {
+		System.out.printf("%d Entered critical section\n", infra.getId());
 	}
 
 	public void release() {
 		requesting = false;
+		System.out.printf("%d left critical section\n", infra.getId());
 		if (next != null) {
+			System.out.printf("%d Send token to %d\n", infra.getId(), next);
 			infra.send(new Token(infra.getId(), next));
 			token = false;
 			next = null;
 		}
-		System.out.printf("%d left critical section\n", infra.getId());
 	}
 
 	@MessageHandler
@@ -60,8 +64,10 @@ public class MutexTest extends NodeProcess {
 		System.out.printf("%d Received request from %d\n", host, request.getIdsrc());
 		if (father == null) {
 			if (requesting == true) {
+				System.out.printf("%d Set %d as next\n", host, request.getIdsrc());
 				next = request.getIdsrc();
 			} else {
+				System.out.printf("%d Send token to %d\n", host, request.getIdsrc());
 				infra.send(new Token(host, request.getIdsrc()));
 				token = false;
 			}
@@ -97,15 +103,15 @@ public class MutexTest extends NodeProcess {
 	}
 
 	@Test
-	public void MpiAnnotatedProcessTest() {
-		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName() };
+	public void MpiMutexTest() {
+		String[] args = { this.getClass().getName(), MpiRunSimulation.class.getName(), "6", "src/test/resources/MutexTest.json" };
 		Ppi.main(args);
 		assertTrue(true);
 	}
 
 	@Test
-	public void PeersimAnnotatedProcessTest() {
-		String[] args = { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName() };
+	public void PeersimMutexTest() {
+		String[] args = { this.getClass().getName(), PeerSimRunSimulation.class.getName(), "6", "src/test/resources/MutexTest.json" };
 		Ppi.main(args);
 		assertTrue(true);
 	}

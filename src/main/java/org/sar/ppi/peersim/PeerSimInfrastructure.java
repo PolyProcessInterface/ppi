@@ -96,19 +96,22 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 			SchedEvent shed = (SchedEvent) event;
 			String name = shed.getFuncName();
 			for(Method m : process.getClass().getMethods()){
-				if(m.getName().equals(name))
-					try {
-						m.invoke(process,shed.getArgs());
-					} catch (IllegalAccessException | InvocationTargetException e) {
-						e.printStackTrace();
-					}
+				if(m.getName().equals(name)) {
+					serialThreadRun(() -> {
+						try {
+							m.invoke(process,shed.getArgs());
+						} catch (IllegalAccessException | InvocationTargetException e) {
+							e.printStackTrace();
+						}
+					});
+				}
 			}
 			return;
 		}
 
 		if (event instanceof Message) {
 			System.out.println("Thread" + Thread.currentThread().getId());
-			process.processMessage((Message) event);
+			serialThreadRun(() -> process.processMessage((Message) event));
 			
 		} else {
 			throw new IllegalArgumentException("Unknown event for this protocol");

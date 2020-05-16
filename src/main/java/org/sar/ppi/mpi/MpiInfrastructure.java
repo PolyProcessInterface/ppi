@@ -140,6 +140,13 @@ public class MpiInfrastructure extends Infrastructure {
 		throw new PpiException("ERROR OF PARSING");
 	}
 
+	/**
+	 * Make this function visible for MpiInfrastructure.
+	 */
+	@Override
+	public void serialThreadRun(Runnable method) {
+		super.serialThreadRun(method);
+	}
 
 
 

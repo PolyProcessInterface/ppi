@@ -17,11 +17,13 @@ public class MpiProcess implements Runnable {
 	public void run() {
 		process.start();
 		while (infra.running.get()) {
-			try {
-				process.processMessage(infra.recv());
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			infra.serialThreadRun(() -> {
+				try {
+					process.processMessage(infra.recv());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			});
 		}
 	}
 }
