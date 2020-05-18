@@ -27,40 +27,14 @@ public class WaitNotifyTest extends NodeProcess {
 	}
 	
 	
-	private final int N = 10;
+	private final int N = 2;
 	private int msgReceived = 0;
 			
-	/*public void displayAfterNMessages() {
-		System.out.println("## Thread "+Thread.currentThread().getId()+" : Going to wait ##");
-		
-		waiting++;
-		
-		threads.add(Thread.currentThread().getId());
-		
-		infra.waiting(msgReceived >= N);
-		
-		
-		while(threads.get(0) != Thread.currentThread().getId()) {
-			infra.waiting(false);
-		}
-		threads.remove(Thread.currentThread().getId());
-		
-		System.out.println("## Thread "+Thread.currentThread().getId()+" : No more waiting ##");
-		waiting--;
-		if(waiting>0) infra.notifyingAll();
 
-		if(waiting==0) {
-			synchronized (lock) {
-				lock.notifyAll();
-			}
-		}
-	}*/
 	
 	public void affiche(){
-		System.out.println("## Thread "+Thread.currentThread().getId()+" : Going to wait ##");
-		waiting( () -> msgReceived == 1 );
-		//System.out.println("Bonjour !");
-		System.out.println("## Thread "+Thread.currentThread().getId()+" : No more waiting ##");
+		waiting( () -> msgReceived >=N );
+		System.out.println("Noeud "+infra.getId()+": Bonjour !");
 	}
 	
 
@@ -68,27 +42,33 @@ public class WaitNotifyTest extends NodeProcess {
 	@MessageHandler
 	public void processExampleMessage(ExampleMessage message) {
 		int host = infra.getId();
+		if(host==2) {
+			affiche();
+		}
 		System.out.printf("Thread" + Thread.currentThread().getId() +" : %d Received '%s' from %d.\n", host, message.getS(), message.getIdsrc());
+		msgReceived++;
+		System.out.println("Noeud "+host+" Messages recus : "+msgReceived);
 		if (host != 0) {
 			int dest = (host + 1) % infra.size();
 			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));
+			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));
 		}
-		msgReceived++;
+		
 		infra.exit();
+		
 	}
 
 	@Override
 	public void start() {
-		if((infra.getId()%2)==0) {
-			new Thread (()->{affiche();}).start();
-		}
 		
 		if (infra.getId() == 0) {
 			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
+			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
+			//new Thread (()->{affiche();}).start();
 		}
 	}
 
-	@Test
+	//@Test
 	public void MpiAnnotatedProcessTest() {
 		String[] args = { WaitNotifyTest.class.getName(), MpiRunner.class.getName() };
 		Ppi.main(args);
@@ -96,7 +76,7 @@ public class WaitNotifyTest extends NodeProcess {
 	}
 
 	@Test
-	public void PeersimAnnotatedProcessTest() {
+	public void PeersimWaitNotifyTest() {
 		String[] args = { WaitNotifyTest.class.getName(), PeerSimRunner.class.getName() };
 		Ppi.main(args);
 		assertTrue(true);

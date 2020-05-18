@@ -75,7 +75,7 @@ public abstract class NodeProcess {
 		try {
 			synchronized (lock) {
 				method.invoke(this, message);
-				lock.notify();
+				lock.notifyAll();
 			}
 		} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
 			e.printStackTrace();
@@ -126,16 +126,22 @@ public abstract class NodeProcess {
 			}
 		}
 	}*/
+	
+	
 
 	/**
 	 * wait until the condition becomes true.
 	 * @param condition
 	 */
-	public <T extends NodeProcess> void waiting(BooleanSupplier condition) {
+	public void waiting(BooleanSupplier condition) {
 		synchronized (lock_pre) {
 			conditions.add(condition);
 			while(! condition.getAsBoolean()) {
 				try {
+					synchronized (lock) {
+						lock.notifyAll();
+					}
+					
 					lock_pre.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();

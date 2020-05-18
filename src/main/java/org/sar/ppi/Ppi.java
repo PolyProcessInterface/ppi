@@ -22,7 +22,7 @@ public class Ppi {
 			Class<? extends Runner> rClass = Class.forName(args[1]).asSubclass(Runner.class);
 			args = Arrays.copyOf(args, 4);
 			if (args[2] == null) {
-				args[2] = "15";
+				args[2] = "5";
 			}
 			rClass.newInstance().init(args);
 		} catch (ReflectiveOperationException e) {
