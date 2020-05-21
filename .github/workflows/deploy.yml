@@ -18,8 +18,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Download Peersim
+      run: |
+        wget http://downloads.sourceforge.net/project/peersim/peersim-1.0.5.zip
+        unzip peersim-1.0.5.zip
+        cp peersim-1.0.5/*.jar lib
     - name: Build Javadoc
-      run: mvn javadoc:javadoc
+      run: mvn javadoc:javadoc -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
