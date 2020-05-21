@@ -6,12 +6,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
 
-
 public abstract class Infrastructure {
 
 	protected NodeProcess process;
 	protected int currentNode;
 	protected static final Lock lock = new ReentrantLock();
+	Thread mainThread;
 	Thread nextThread;
 	Map<BooleanSupplier, Thread> threads = new ConcurrentHashMap<>();
 
@@ -49,18 +49,22 @@ public abstract class Infrastructure {
 		Thread t = new Thread(() -> {
 			synchronized (lock) {
 				method.run();
+				nextThread = mainThread;
 				lock.notifyAll();
 			}
 		});
 		synchronized (lock) {
-			nextThread = Thread.currentThread();
+			mainThread = Thread.currentThread();
+			nextThread = t;
 			t.start();
-			try {
-				lock.wait();
-				serialThreadScheduler();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			while (Thread.currentThread() != nextThread) {
+				try {
+					lock.wait();
+					serialThreadScheduler();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -71,11 +75,13 @@ public abstract class Infrastructure {
 				if (condition.getAsBoolean()) {
 					nextThread = threads.get(condition);
 					lock.notifyAll();
-					try {
-						lock.wait();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					while (Thread.currentThread() != nextThread) {
+						try {
+							lock.wait();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -83,10 +89,11 @@ public abstract class Infrastructure {
 	}
 
 	public void wait(BooleanSupplier condition) throws InterruptedException {
-		synchronized(lock) {
+		synchronized (lock) {
 			if (!condition.getAsBoolean()) {
 				threads.put(condition, Thread.currentThread());
 				System.out.printf("%d Start waiting on %s\n", this.getId(), condition.toString());
+				nextThread = mainThread;
 				while (Thread.currentThread() != nextThread) {
 					lock.notifyAll();
 					lock.wait();
