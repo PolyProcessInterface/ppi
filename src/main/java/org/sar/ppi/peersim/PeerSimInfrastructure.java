@@ -2,6 +2,7 @@ package org.sar.ppi.peersim;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.sar.ppi.*;
 import org.sar.ppi.simulator.peersim.SchedEvent;
@@ -25,7 +26,6 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 	private boolean running; // true while exit() hasnt been executed
 	private static int cptID=0;
-
 
 	public PeerSimInfrastructure(String prefix) {
 		super(null);
@@ -96,23 +96,27 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 			SchedEvent shed = (SchedEvent) event;
 			String name = shed.getFuncName();
 			for(Method m : process.getClass().getMethods()){
-				if(m.getName().equals(name))
-					try {
-						m.invoke(process,shed.getArgs());
-					} catch (IllegalAccessException | InvocationTargetException e) {
-						e.printStackTrace();
-					}
+				if(m.getName().equals(name)) {
+					serialThreadRun(() -> {
+						try {
+							m.invoke(process,shed.getArgs());
+						} catch (IllegalAccessException | InvocationTargetException e) {
+							e.printStackTrace();
+						}
+					});
+				}
 			}
 			return;
 		}
 
 		if (event instanceof Message) {
-			//System.out.println("Thread" + Thread.currentThread().getId()+" : main thread : ");
-			process.processMessage((Message) event);
+			serialThreadRun(() -> process.processMessage((Message) event));
 			
 		} else {
 			throw new IllegalArgumentException("Unknown event for this protocol");
 		}
 	}
+
+
 
 }

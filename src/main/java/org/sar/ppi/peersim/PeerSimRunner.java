@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.sar.ppi.NodeProcess;
@@ -24,7 +25,9 @@ public class PeerSimRunner implements Runner {
 		try (OutputStream os = new FileOutputStream(tmpfile);
 			 PrintStream ps = new PrintStream(os))
 		{
-			Files.copy(Paths.get("peersim.base.conf"), os);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			Path base = Paths.get(loader.getResource("peersim.base.conf").toURI());
+			Files.copy(base, os);
 			ps.println();
 			ps.println("protocol.infra.nodeprocess " + processClass.getName());
 			ps.println("network.size " + args[2]);

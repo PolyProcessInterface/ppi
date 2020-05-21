@@ -13,6 +13,7 @@ import java.io.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -139,6 +140,13 @@ public class MpiInfrastructure extends Infrastructure {
 		throw new PpiException("ERROR OF PARSING");
 	}
 
+	/**
+	 * Make this function visible for MpiInfrastructure.
+	 */
+	@Override
+	public void serialThreadRun(Runnable method) {
+		super.serialThreadRun(method);
+	}
 
 
 
@@ -149,5 +157,4 @@ public class MpiInfrastructure extends Infrastructure {
 		}
 		System.out.println("]");
 	}
-
 }

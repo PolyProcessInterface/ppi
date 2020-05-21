@@ -33,6 +33,7 @@ public class AnnotatedProcessTest extends NodeProcess {
 		if (host != 0) {
 			int dest = (host + 1) % infra.size();
 			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));
+			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));
 		}
 		infra.exit();
 	}
@@ -40,6 +41,7 @@ public class AnnotatedProcessTest extends NodeProcess {
 	@Override
 	public void start() {
 		if (infra.getId() == 0) {
+			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
 			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
 		}
 	}
