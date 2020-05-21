@@ -6,7 +6,6 @@ import peersim.core.Control;
 import peersim.core.Network;
 import peersim.core.Node;
 import peersim.util.ExtendedRandom;
-import peersim.dynamics.NodeInitializer;
 
 
 public class PeerSimInit implements Control {

@@ -2,7 +2,6 @@ package org.sar.ppi.peersim;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 import org.sar.ppi.*;
 import org.sar.ppi.simulator.peersim.SchedEvent;
