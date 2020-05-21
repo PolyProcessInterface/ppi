@@ -11,9 +11,9 @@ public abstract class Infrastructure {
 	protected NodeProcess process;
 	protected int currentNode;
 	protected static final Lock lock = new ReentrantLock();
-	Thread mainThread;
-	Thread nextThread;
-	Map<BooleanSupplier, Thread> threads = new ConcurrentHashMap<>();
+	protected Thread mainThread;
+	protected Thread nextThread;
+	protected Map<BooleanSupplier, Thread> threads = new ConcurrentHashMap<>();
 
 	public Infrastructure(NodeProcess process) {
 		this.process = process;
