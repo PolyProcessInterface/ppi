@@ -67,6 +67,17 @@
 
   <build>
     <plugins>
+      <!-- Compiler plugin options -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <showWarnings>true</showWarnings>
+          <showDeprecation>true</showDeprecation>
+          <compilerArgument>-Xlint:all</compilerArgument>
+        </configuration>
+      </plugin>
       <!-- Unit tests runner -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
