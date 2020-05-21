@@ -23,6 +23,13 @@ jobs:
         wget http://downloads.sourceforge.net/project/peersim/peersim-1.0.5.zip
         unzip peersim-1.0.5.zip
         cp peersim-1.0.5/*.jar lib
+    - name: Restore Maven cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
     - name: Build Javadoc
       run: mvn javadoc:javadoc -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib
     - name: Deploy 🚀
