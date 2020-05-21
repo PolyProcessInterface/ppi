@@ -2,19 +2,45 @@
 
 A high level Java interface to develop distributed protocols.
 
-## Example
+## Usage
+
+### Exammple
+
+Create a class that extends `NodeProcess` and at least one class that extends
+`Message`. The function `start` is the first one to be run by PPI. It must be
+overriden with the initialisation of the process.
+
+Inside of `NodeProces` there is an instance on `Infrastructure` name `infra`.
+This is the entry point of the API.
 
 ```java
-import org.sar.ppi.Protocol;
+// ExampleNodeProcess.java
+
+import org.sar.ppi.Message;
+import org.sar.ppi.MessageHandler;
+import org.sar.ppi.NodeProcess;
 
 public class ExampleNodeProcess extends NodeProcess {
 
-	@Override
-	public void processMessage(int src, Object message) {
+	public static class ExampleMessage extends Message{
+		private static final long serialVersionUID = 1L;
+		public String content;
+		public ExampleMessage(int src, int dest, String content) {
+			super(src, dest);
+			this.content = content;
+		}
+	}
+
+	@MessageHandler
+	public void processExampleMessage(ExampleMessage message) {
 		int host = infra.getId();
-		System.out.println("" + host + " Received hello from "  + src);
+		System.out.printf(
+			"%d Received '%s' from %d\n",
+			host, message.content, message.getIdsrc()
+		);
 		if (host != 0) {
-			infra.send((host + 1) % infra.size(), 0);
+			int dest = (host + 1) % infra.size();
+			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
 		}
 		infra.exit();
 	}
@@ -22,7 +48,7 @@ public class ExampleNodeProcess extends NodeProcess {
 	@Override
 	public void start() {
 		if (infra.getId() == 0) {
-			infra.send(1, 0);
+			infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
 		}
 	}
 }
