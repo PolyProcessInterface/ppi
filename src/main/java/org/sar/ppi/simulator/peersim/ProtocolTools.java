@@ -118,7 +118,7 @@ public class ProtocolTools {
      *       The args
      * @param str
      *      The OutputStream of the file where to write
-     * @throws IOException
+     * @throws IOException on io failure
      *
      */
     public static void writeTimeFuncCall(String funcName , int node, long delay, List<Object> args , ObjectOutputStream str) throws IOException {
@@ -133,10 +133,10 @@ public class ProtocolTools {
 
     /**
      *
-     * @param b
+     * @param b input stream
      * @return Object[]
-     * @throws IOException
-     * @throws ClassNotFoundException
+     * @throws IOException on io failure
+     * @throws ClassNotFoundException if readObject fails
      */
     public static Object[] readTimeFuncCall(ObjectInputStream b) throws IOException, ClassNotFoundException {
         String name = b.readUTF();

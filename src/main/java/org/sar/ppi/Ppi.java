@@ -9,13 +9,13 @@ public class Ppi {
 
 	/**
 	 * The main to call to run the app.
-	 * Usage: java org.sar.Ppi <process-class-name> <runner-class-name> [<nb-proc>]
+	 * Usage: {@code java org.sar.Ppi <process-class-name> <runner-class-name> [<nb-proc>]}
 	 *
 	 * This function sets the defaults values, then call the Runner's init method
 	 * which should then call Ppi.main().
 	 *
 	 * @param args cli args.
-	 * @throws PpiException
+	 * @throws PpiException on every internal error (TODO more Exceptions)
 	 */
 	public static void main(String[] args) throws PpiException {
 		try {
