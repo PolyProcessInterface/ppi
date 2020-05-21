@@ -63,13 +63,21 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	}
 
 	@Override
+	public int getId() {
+		// TODO Auto-generated method stub
+		return super.getId()%Network.size();
+	}
+	@Override
 	public void send(Message message) {
 		if(running) {
-			Node nodeHost = Network.get(this.getId());
+
+			Node nodeHost = Network.get(getId());
 			Transport tr = (Transport) nodeHost.getProtocol(pid_transport);
-			Node nodeDest = Network.get(message.getIddest());
+			Node nodeDest = Network.get(message.getIddest()%Network.size());
 			//System.err.println(message.getIdsrc() + " SENDING TO "+message.getIddest());
 			tr.send(nodeHost, nodeDest, message, my_pid);
+		}else {
+			System.err.println("Not running : won't send the message from "+message.getIdsrc() +" to " +message.getIddest());
 		}
 	}
 
@@ -110,7 +118,7 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		}
 
 		if (event instanceof Message) {
-			System.out.println("Thread" + Thread.currentThread().getId());
+			// System.out.println("Thread" + Thread.currentThread().getId());
 			serialThreadRun(() -> process.processMessage((Message) event));
 			
 		} else {
