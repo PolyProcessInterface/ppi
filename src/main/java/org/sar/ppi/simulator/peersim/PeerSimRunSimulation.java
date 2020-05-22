@@ -14,9 +14,9 @@ import java.nio.file.Paths;
 
 public class PeerSimRunSimulation implements Runner {
     @Override
-    public void run(Class<? extends NodeProcess> processClass, String[] args) {
-        if(args.length<4)
-            throw new PpiException("Moore args are needed <Name Class Protocol> <Name Class Runner> <nb process> <Path to the file .json>");
+    public void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario) {
+        if (scenario == null)
+            throw new PpiException("<scenario> parameter is needed for this Runner");
 
         String tmpdir = System.getProperty("java.io.tmpdir");
         String tmpfile = Paths.get(tmpdir, "ppi-peersim.config").toString();
@@ -27,9 +27,9 @@ public class PeerSimRunSimulation implements Runner {
             Path base = Paths.get(loader.getResource("peersimSimulate.base.conf").toURI());
             Files.copy(base, os);
             ps.println();
-            ps.println("protocol.infra.nodeprocess " + processClass.getName());
-            ps.println("network.size " + args[2]);
-            ps.println("path "+args[3]);
+            ps.println("protocol.infra.nodeprocess " + pClass.getName());
+            ps.printf("network.size %d\n", nbProcs);
+            ps.println("path " + scenario);
         } catch (Exception e) {
             e.printStackTrace();
         }

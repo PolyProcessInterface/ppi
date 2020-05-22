@@ -14,17 +14,19 @@ import org.sar.ppi.Runner;
  */
 public class MpiRunner implements Runner {
 
-	public static void main(String[] args) {
-		Ppi.run(args, new MpiRunner());
-	}
-
 	@Override
-	public void init(String[] args) throws PpiException {
+	public void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario) throws PpiException {
 		String s = null;
 		boolean err = false;
 		String cmd = String.format(
-			"mpirun --oversubscribe --np %s java -cp %s %s %s",
-			args[2], System.getProperty("java.class.path"), this.getClass().getName(), args[0]);
+			"mpirun --oversubscribe --np %s java -cp %s %s %s %s %d %s",
+			nbProcs,
+			System.getProperty("java.class.path"),
+			Ppi.class.getName(), pClass.getName(),
+			MpiSubRunner.class.getName(),
+			nbProcs,
+			scenario
+		);
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);
 			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -51,15 +53,5 @@ public class MpiRunner implements Runner {
 		if (err) {
 			throw new PpiException("An error occured with Mpi");
 		}
-	}
-
-	@Override
-	public void run(Class<? extends NodeProcess> processClass, String[] options)
-			throws ReflectiveOperationException {
-		NodeProcess process = processClass.newInstance();
-		MpiInfrastructure infra = new MpiInfrastructure(process);
-		process.setInfra(infra);
-		infra.run(options);
-		infra.exit();
 	}
 }
