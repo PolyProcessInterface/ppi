@@ -107,6 +107,6 @@ If you installed the libraries in a different location you can use the options
     sudo apt install texlive latexmk texlive-lang-french cm-super
 
 [docsbadge]: https://github.com/Atlaoui/ParallelProgramingInterface/workflows/docs/badge.svg
-[docworkflow]: https://github.com/Atlaoui/ParallelProgramingInterface/actions?query=workflow%3Adocs+branch%3Amaster
+[docsworkflow]: https://github.com/Atlaoui/ParallelProgramingInterface/actions?query=workflow%3Adocs+branch%3Amaster
 [javadocbadge]: https://img.shields.io/github/deployments/Atlaoui/ParallelProgramingInterface/github-pages?label=javadoc
 [javadocurl]: https://atlaoui.github.io/ParallelProgramingInterface
