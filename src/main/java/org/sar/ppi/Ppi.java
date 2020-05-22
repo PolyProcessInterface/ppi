@@ -10,6 +10,8 @@ import java.io.IOException;
  * Ppi Main class.
  */
 public class Ppi {
+	
+	public static ClassLoader loader = ClassLoader.getSystemClassLoader();
 
 	/**
 	 * The main to call to run the app. Usage:
@@ -35,9 +37,9 @@ public class Ppi {
 		try {
 			processClass = Class.forName(pClassName).asSubclass(NodeProcess.class);
 		} catch (ClassNotFoundException e) {
-			try (URLClassLoader loader = new URLClassLoader(new URL[] { new File(System.getProperty("user.dir")).toURI().toURL() })) {
+			try {
+				loader = new URLClassLoader(new URL[] { new File(System.getProperty("user.dir")).toURI().toURL() }, loader);
 				processClass = loader.loadClass(pClassName).asSubclass(NodeProcess.class);
-				loader.close();
 			} catch (ClassCastException | ClassNotFoundException | IOException t) {
 				throw new PpiException("Could not find the process class " + args[0], t);
 			}

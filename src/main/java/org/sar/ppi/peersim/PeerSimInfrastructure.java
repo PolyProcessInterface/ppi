@@ -38,7 +38,7 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		super(null);
 		NodeProcess np=null;
 		try {
-			np = (NodeProcess) Class.forName(Configuration.getString(prefix+"."+PAR_NP)).getConstructor().newInstance();
+			np = (NodeProcess) Ppi.loader.loadClass(Configuration.getString(prefix+"."+PAR_NP)).getConstructor().newInstance();
 			np.setInfra(this);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {

@@ -56,6 +56,27 @@ public class ExampleNodeProcess extends NodeProcess {
 }
 ```
 
+Then you can compile your class and run it with the bundled jar which will
+dynamically load it:
+
+```bash
+javac -cp ppi-0.2-dev-bundle.jar ExampleNodeProcess
+java -jar ppi-0.2-dev-bundle.jar ExampleNodeProcess org.sar.ppi.peersim.PeerSimRunner 4
+```
+
+Alternatively you can call `Ppi.main()` yourself like this and the run your class:
+
+```java
+public static void main(String[] args) {
+	Ppi.main(ExampleNodeProcess.class, new MpiRunner(), 4, null);
+}
+```
+
+```bash
+javac -cp ppi-0.2-dev-bundle.jar ExampleNodeProcess
+java -cp .:ppi-0.2-dev-bundle.jar ExampleNodeProcess
+```
+
 ### API reference
 
 The API consists of the [public methods of the `Infrastructure` class](https://atlaoui.github.io/ParallelProgramingInterface/org/sar/ppi/Infrastructure.html)
@@ -99,6 +120,10 @@ If you installed the libraries in a different location you can use the options
 ## Run tests
 
     mvn test
+
+## Build executable jar
+
+    mvn package
 
 ## Docs
 
