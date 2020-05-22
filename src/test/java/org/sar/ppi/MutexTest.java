@@ -136,13 +136,13 @@ public class MutexTest extends NodeProcess {
 	@Test
 	public void MpiMutexTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		Ppi.main(this.getClass(), new MpiRunner(), 6, new File("src/test/resources/MutexTest.json"));
+		Ppi.main(this.getClass(), new MpiRunner(), new String[0], 6, new File("src/test/resources/MutexTest.json"));
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimMutexTest() {
-		Ppi.main(this.getClass(), new PeerSimRunner(), 6, new File("src/test/resources/MutexTest.json"));
+		Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 6, new File("src/test/resources/MutexTest.json"));
 		assertTrue(true);
 	}
 }

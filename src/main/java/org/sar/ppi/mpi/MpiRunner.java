@@ -18,18 +18,19 @@ public class MpiRunner implements Runner {
 
 	/** {@inheritDoc} */
 	@Override
-	public void run(Class<? extends NodeProcess> pClass, int nbProcs, File scenario) throws PpiException {
+	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, File scenario) throws PpiException {
 		String s = null;
 		boolean err = false;
 		String cmd = String.format(
-			"mpirun --oversubscribe --np %s java -cp %s %s %s %s --np=%d %s",
+			"mpirun --oversubscribe --np %s java -cp %s %s %s %s --np=%d %s %s",
 			nbProcs,
 			System.getProperty("java.class.path"),
 			Ppi.class.getName(),
 			pClass.getName(),
 			MpiSubRunner.class.getName(),
 			nbProcs,
-			scenario != null ? "-s" + scenario.getAbsolutePath() : ""
+			scenario != null ? "-s" + scenario.getAbsolutePath() : "",
+			String.join(" ", args)
 		);
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);

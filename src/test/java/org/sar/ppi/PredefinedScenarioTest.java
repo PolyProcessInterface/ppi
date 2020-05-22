@@ -97,14 +97,14 @@ public class PredefinedScenarioTest extends NodeProcess{
     @Test
     public void MpiScenario() {
              Assume.assumeTrue(Environment.mpirunExist());
-             Ppi.main(this.getClass(), new MpiRunner(), 3 , new File(fileName));
+             Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3 , new File(fileName));
               assertTrue(true);
               System.out.println("Teste Sceneario from Json mpi ok");
     }
 
     @Test
     public void PeersimScenario() {
-          Ppi.main(this.getClass(), new PeerSimRunner(), 3 , new File(fileName));
+          Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3 , new File(fileName));
           assertTrue(true);
           System.out.println("Teste Sceneario from Json Peersim ok");
     }
