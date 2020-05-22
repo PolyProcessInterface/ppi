@@ -67,6 +67,17 @@
 
   <build>
     <plugins>
+      <!-- Compiler plugin options -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <showWarnings>true</showWarnings>
+          <showDeprecation>true</showDeprecation>
+          <compilerArgument>-Xlint:all</compilerArgument>
+        </configuration>
+      </plugin>
       <!-- Unit tests runner -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -75,24 +86,6 @@
           <argLine>-Djava.library.path=${mpi.path}:${peersim.path}:${java.library.path}</argLine>
           <reuseForks>false</reuseForks>
         </configuration>
-      </plugin>
-      <!-- Write the class path to classpath.txt -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.1.1</version>
-        <executions>
-          <execution>
-            <id>build-classpath</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>build-classpath</goal>
-            </goals>
-            <configuration>
-              <outputFile>${project.build.directory}/classpath.txt</outputFile>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <!-- Render the javadoc -->
       <plugin>

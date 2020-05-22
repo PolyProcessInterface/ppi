@@ -3,6 +3,9 @@ package org.sar.ppi.mpi;
 import org.sar.ppi.Message;
 
 public class SchedMessage extends Message {
+
+    private static final long serialVersionUID = 1L;
+
     private Object[] args;
     private String name ;
     private long delay;

@@ -5,7 +5,6 @@ import org.sar.ppi.Ppi;
 import org.sar.ppi.PpiException;
 import org.sar.ppi.Runner;
 import org.sar.ppi.mpi.MpiInfrastructure;
-import org.sar.ppi.mpi.MpiRunner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
