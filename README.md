@@ -1,17 +1,19 @@
 # Parallel Programing Interface
 
+[![docs][docsbadge]][docsworkflow] [![javadoc][javadocbadge]][javadocurl]
+
 A high level Java interface to develop distributed protocols.
 
 ## Usage
 
-### Exammple
+### Example
 
 Create a class that extends `NodeProcess` and at least one class that extends
 `Message`. The function `start` is the first one to be run by PPI. It must be
 overriden with the initialisation of the process.
 
 Inside of `NodeProces` there is an instance on `Infrastructure` name `infra`.
-This is the entry point of the API.
+This is the entry point of the [API](#api-reference).
 
 ```java
 // ExampleNodeProcess.java
@@ -53,6 +55,11 @@ public class ExampleNodeProcess extends NodeProcess {
 	}
 }
 ```
+
+### API reference
+
+The API consists of the [public methods of the `Infrastructure` class](https://atlaoui.github.io/ParallelProgramingInterface/org/sar/ppi/Infrastructure.html)
+which can be access via the `infra` property.
 
 ## Requirement
 
@@ -99,3 +106,7 @@ If you installed the libraries in a different location you can use the options
 
     sudo apt install texlive latexmk texlive-lang-french cm-super
 
+[docsbadge]: https://github.com/Atlaoui/ParallelProgramingInterface/workflows/docs/badge.svg
+[docworkflow]: https://github.com/Atlaoui/ParallelProgramingInterface/actions?query=workflow%3Adocs+branch%3Amaster
+[javadocbadge]: https://img.shields.io/github/deployments/Atlaoui/ParallelProgramingInterface/github-pages?label=javadoc
+[javadocurl]: https://atlaoui.github.io/ParallelProgramingInterface
