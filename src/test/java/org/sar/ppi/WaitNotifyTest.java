@@ -66,7 +66,7 @@ public class WaitNotifyTest extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			for (int i = 1; i < infra.size(); i++) {
 				infra.send(new StartMessage(infra.getId(), i));

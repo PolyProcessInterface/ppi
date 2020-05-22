@@ -20,7 +20,7 @@ public class PeerSimRunner implements Runner {
 
 	/** {@inheritDoc} */
 	@Override
-	public void run(Class<? extends NodeProcess> pClass, String[]args, int nbProcs, File scenario)
+	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, File scenario)
 			throws ReflectiveOperationException {
 		String tmpdir = System.getProperty("java.io.tmpdir");
 		String tmpfile = Paths.get(tmpdir, "ppi-peersim.config").toString();
@@ -43,6 +43,7 @@ public class PeerSimRunner implements Runner {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		PeerSimInfrastructure.setArgs(args);
 		String[] tab = new String[1];
 		tab[0] = tmpfile;
 		Simulator.main(tab);

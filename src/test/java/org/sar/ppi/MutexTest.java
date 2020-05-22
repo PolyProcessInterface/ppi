@@ -23,7 +23,7 @@ public class MutexTest extends NodeProcess {
 	int nbEnd = 0;
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == father) {
 			father = null;
 			token = true;

@@ -37,7 +37,7 @@ public class NodeProcessTest extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			//System.err.println("SENDING FIRST MESSAGE");
 			infra.send(new ExampleMessage(infra.getId(), 1, "hello"));

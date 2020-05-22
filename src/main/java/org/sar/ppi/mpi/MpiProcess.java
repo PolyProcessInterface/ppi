@@ -11,23 +11,26 @@ public class MpiProcess implements Runnable {
 
 	protected NodeProcess process;
 	protected MpiInfrastructure infra;
+	protected String[] args;
 
 	/**
 	 * Constructor for MpiProcess.
 	 *
 	 * @param process a {@link org.sar.ppi.NodeProcess} object.
 	 * @param infra a {@link org.sar.ppi.mpi.MpiInfrastructure} object.
+	 * @param args list of arguments to pass to the NodeProcess.
 	 */
-	public MpiProcess(NodeProcess process, MpiInfrastructure infra) {
+	public MpiProcess(NodeProcess process, MpiInfrastructure infra, String[] args) {
 		this.process = process;
 		this.infra = infra;
+		this.args = args;
 	}
 
 
 	/** {@inheritDoc} */
 	@Override
 	public void run() {
-		process.start();
+		process.init(args);
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
 				Message m = infra.recv();

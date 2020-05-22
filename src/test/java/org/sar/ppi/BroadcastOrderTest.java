@@ -2,12 +2,8 @@ package org.sar.ppi;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.Scanner;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.sar.ppi.communication.Message;
 import org.sar.ppi.communication.MessageHandler;
@@ -18,7 +14,7 @@ import peersim.config.Configuration;
 /**
  * ExampleNodeProces
  */
-public class BroadcastOrderTest extends NodeProcess {
+public class BroadcastOrderTest extends RedirectedTest {
 
 	public static class ExampleMessage extends Message {
 
@@ -42,7 +38,7 @@ public class BroadcastOrderTest extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		
 		if (infra.getId() == 0) {
 			
@@ -55,24 +51,8 @@ public class BroadcastOrderTest extends NodeProcess {
 		}
 	}
 
-	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-	private final PrintStream originalOut = System.out;
-	private final PrintStream originalErr = System.err;
 	private static final Integer NETWORKSIZE = 10 ;
 	private static final String PAR_SIZE = "network.size";
-	
-	@Before
-	public void setUpStreams() {
-		System.setOut(new PrintStream(outContent));
-		System.setErr(new PrintStream(errContent));
-	}
-
-	@After
-	public void restoreStreams() {
-		System.setOut(originalOut);
-		System.setErr(originalErr);
-	}
 
 	String outputPeersim;
 	@Test

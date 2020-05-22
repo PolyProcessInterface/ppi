@@ -35,7 +35,6 @@ public class MpiInfrastructure extends Infrastructure {
 	protected Comm comm;
 	protected Queue<Message> sendQueue = new ConcurrentLinkedQueue<>();
 	protected BlockingQueue<Message> recvQueue = new LinkedBlockingQueue<>();
-	protected Thread executor;
 	protected File scenario = null;
 	/**
 	 * Constructor for MpiInfrastructure.
@@ -44,7 +43,6 @@ public class MpiInfrastructure extends Infrastructure {
 	 */
 	public MpiInfrastructure(NodeProcess process, File scenario) {
 		super(process);
-		executor = new Thread(new MpiProcess(process, this));
 		this.scenario = scenario;
 	}
 
@@ -56,6 +54,7 @@ public class MpiInfrastructure extends Infrastructure {
 	 * @throws org.sar.ppi.PpiException if any.
 	 */
 	public void run(String[] args) throws PpiException {
+		Thread executor = new Thread(new MpiProcess(process, this, args));
 		try {
 			MPI.InitThread(args, MPI.THREAD_FUNNELED);
 			comm = MPI.COMM_WORLD;

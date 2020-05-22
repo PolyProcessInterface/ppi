@@ -32,7 +32,7 @@ public class PredefinedScenarioTest extends NodeProcess{
     }
 
     @Override
-    public void start () {
+    public void init (String[] args) {
         System.out.println("my id "+infra.getId());
     }
 

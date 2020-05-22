@@ -18,6 +18,6 @@ public class MpiSubRunner implements Runner {
 		MpiInfrastructure infra;
 		infra = new MpiInfrastructure(process, scenario);
 		process.setInfra(infra);
-		infra.run(new String[0]);
+		infra.run(args);
 	}
 }
