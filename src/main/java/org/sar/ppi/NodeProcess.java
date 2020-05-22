@@ -5,8 +5,6 @@ import org.sar.ppi.mpi.SchedMessage;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Timer;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Process
@@ -14,8 +12,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class NodeProcess {
 
 	protected Infrastructure infra;
-	protected static Lock lock = new ReentrantLock();
-
 	protected Timer timer = new Timer();
 	public void setInfra(Infrastructure infra) {
 		this.infra = infra;
@@ -44,28 +40,12 @@ public abstract class NodeProcess {
 				throw new MessageHandlerException(method.getName() + ": first param must extend Message");
 			if (!params[0].equals(message.getClass()))
 				continue;
-			Thread t = new Thread(() -> threadMessageHandler(method, message));
-			synchronized (lock) {
-				t.start();
-				try {
-					lock.wait();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	protected void threadMessageHandler(Method method, Message message)
-	{
-		try {
-			synchronized (lock) {
+			try {
 				method.invoke(this, message);
-				lock.notify();
+				return;
+			} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
+				e.printStackTrace();
 			}
-		} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
-			e.printStackTrace();
 		}
 	}
 

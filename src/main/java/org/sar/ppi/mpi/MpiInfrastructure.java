@@ -141,7 +141,6 @@ public class MpiInfrastructure extends Infrastructure {
 
 
 
-
 	protected void printByteArray(byte[] tab){
 		System.out.print("[");
 		for (int i =0,len=tab.length;i<len;i++){

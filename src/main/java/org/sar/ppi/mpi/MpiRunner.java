@@ -27,6 +27,10 @@ public class MpiRunner implements Runner {
 			args[2], System.getProperty("java.class.path"), this.getClass().getName(), args[0]);
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+				System.out.println("Interrupt received, killing MPI");
+				p.destroyForcibly();
+			}));
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
