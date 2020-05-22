@@ -18,9 +18,9 @@ public interface Runner {
 
 	/**
 	 * 
-	 * @param processClass
-	 * @param args
-	 * @throws ReflectiveOperationException
+	 * @param processClass the user extension of NodeProcess
+	 * @param args cli arguments
+	 * @throws ReflectiveOperationException if processClass instanciation fails
 	 */
 	public void run(Class<? extends NodeProcess> processClass, String[] args)
 			throws ReflectiveOperationException;
