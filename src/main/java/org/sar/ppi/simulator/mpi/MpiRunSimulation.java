@@ -4,28 +4,27 @@ import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Ppi;
 import org.sar.ppi.PpiException;
 import org.sar.ppi.Runner;
-import org.sar.ppi.mpi.MpiInfrastructure;
+import org.sar.ppi.mpi.MpiSubRunner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class MpiRunSimulation implements Runner {
-    public static void main(String[] args) {
-        Ppi.run(args, new MpiRunSimulation());
-
-    }
 
     @Override
-    public void init(String[] args) throws PpiException {
-        System.out.println("la : "+ Arrays.toString(args));
+    public void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario) throws PpiException {
         String s = null;
         boolean err = false;
-        String nb_process=Integer.toString((Integer.parseInt(args[2])));//ici a modifier des que en peux ajouter un process
         String cmd = String.format(
-                "mpirun --oversubscribe --np %s java -cp %s %s %s",
-                nb_process, System.getProperty("java.class.path"), this.getClass().getName(), args[0]);
+            "mpirun --oversubscribe --np %s java -cp %s %s %s %s %d %s",
+            nbProcs,
+            System.getProperty("java.class.path"),
+            Ppi.class.getName(), pClass.getName(),
+            MpiSubRunner.class.getName(),
+            nbProcs,
+            scenario
+        );
         try {
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -48,16 +47,5 @@ public class MpiRunSimulation implements Runner {
         if (err) {
             throw new PpiException("An error occured with Mpi simulation runner");
         }
-    }
-
-    @Override
-    public void run(Class<? extends NodeProcess> processClass, String[] options)
-                throws ReflectiveOperationException {
-        NodeProcess process = processClass.newInstance();
-        MpiInfrastructure infra;
-        infra = new MpiInfrastructure(process);
-        process.setInfra(infra);
-        infra.run(options);
-        infra.exit();
     }
 }

@@ -6,22 +6,11 @@ package org.sar.ppi;
 public interface Runner {
 
 	/**
-	 * The init sequence for this Runner.
-	 * If nothing needs to be prepared before the run method, then the default
-	 * implementation can be left as it is.
-	 *
-	 * @param args the cli args.
+	 * Run the runner.
+	 * @param pClass the class to execute by Ppi.
+	 * @param nbProcs the number of processes to run.
+	 * @param scenario the name of the scenario file.
+	 * @throws ReflectiveOperationException if pClass instanciation fails.
 	 */
-	default public void init(String[] args) throws PpiException {
-		Ppi.run(args, this);
-	}
-
-	/**
-	 * 
-	 * @param processClass the user extension of NodeProcess
-	 * @param args cli arguments
-	 * @throws ReflectiveOperationException if processClass instanciation fails
-	 */
-	public void run(Class<? extends NodeProcess> processClass, String[] args)
-			throws ReflectiveOperationException;
+	public void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario) throws ReflectiveOperationException;
 }
