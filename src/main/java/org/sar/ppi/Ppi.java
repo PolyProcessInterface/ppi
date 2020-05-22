@@ -5,13 +5,35 @@ import java.net.URLClassLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Callable;
+
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 /**
  * Ppi Main class.
  */
-public class Ppi {
-	
+@Command(name = "ppi", version = "ppi 0.2-dev")
+public class Ppi implements Callable<Integer> {
+
 	public static ClassLoader loader = ClassLoader.getSystemClassLoader();
+	
+	@Option(names = { "--np" }, paramLabel = "<number>", description = "Number of processus in the network")
+	int nbProcs = 4;
+	
+	@Option(names = { "-s", "--scenario" }, paramLabel = "<path>", description = "Path to the scenario file")
+	File scenario = null;
+
+	@Parameters(paramLabel = "<process-class>", description = "Fully qualified name of the class to use as process")
+	String pClassName;
+
+	@Parameters(paramLabel = "<runner-class>", description = "Fully qualified name of the class to use as runner")
+	String rClassName;
+
+	@Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message")
+	protected boolean help = false;
 
 	/**
 	 * The main to call to run the app. Usage:
@@ -23,17 +45,14 @@ public class Ppi {
 	 * @param args cli args.
 	 * @throws PpiException on every internal error (TODO more Exceptions)
 	 */
-	public static void main(String[] args) throws PpiException {
+	public static void main(String[] args) {
+		System.exit(new CommandLine(new Ppi()).execute(args));
+	}
+
+	@Override
+	public Integer call() {
 		Class<? extends NodeProcess> processClass;
 		Runner runner;
-		int nbProcs = 5;
-		String scenario = "no";//le test !=null passe mm avec null du coup je mets une chaine de base
-
-		if (args.length < 2 || args.length > 4) {
-			System.out.println("Usage: ppirun <process-class-name> <runner-class-name> [<nb-proc> [<scenario>]]");
-			return;
-		}
-		String pClassName = args[0];
 		try {
 			processClass = Class.forName(pClassName).asSubclass(NodeProcess.class);
 		} catch (ClassNotFoundException e) {
@@ -41,28 +60,23 @@ public class Ppi {
 				loader = new URLClassLoader(new URL[] { new File(System.getProperty("user.dir")).toURI().toURL() }, loader);
 				processClass = loader.loadClass(pClassName).asSubclass(NodeProcess.class);
 			} catch (ClassCastException | ClassNotFoundException | IOException t) {
-				throw new PpiException("Could not find the process class " + args[0], t);
+				return exitWithError(1, "Could not find the process class %s", pClassName);
 			}
 		} catch (ClassCastException e) {
-			throw new PpiException("The class " + pClassName + " does not extend NodeProcess", e);
+			return exitWithError(1, "The class %s does not extend NodeProcess", pClassName);
 		}
 		try {
-			Class<? extends Runner> rClass = Class.forName(args[1]).asSubclass(Runner.class);
+			Class<? extends Runner> rClass = Class.forName(rClassName).asSubclass(Runner.class);
 			runner = rClass.newInstance();
 		} catch (ReflectiveOperationException e) {
-			throw new PpiException("Failed to intanciate the Runner", e);
+			return exitWithError(2, "Failed to intanciate the Runner %s", rClassName);
 		}
-		if (args.length >= 3) {
-			try {
-				nbProcs = new Integer(args[2]);
-			} catch (NumberFormatException e) {
-				throw new PpiException("Not a valid number for <nb-proc> param", e);
-			}
+		try {
+			main(processClass, runner, nbProcs, scenario);
+		} catch (PpiException e) {
+			return exitWithError(5, e.getMessage());
 		}
-		if (args.length >= 4) {
-			scenario = args[3];
-		}
-		main(processClass, runner, nbProcs, scenario);
+		return 0;
 	}
 
 	/**
@@ -74,7 +88,7 @@ public class Ppi {
 	 * @param scenario the name of the scenario file.
 	 * @throws PpiException if pClass instanciation fails.
 	 */
-	public static void main(Class<? extends NodeProcess> pClass, Runner runner, int nbProcs, String scenario)
+	public static void main(Class<? extends NodeProcess> pClass, Runner runner, int nbProcs, File scenario)
 			throws PpiException {
 		try {
 			runner.run(pClass, nbProcs, scenario);
@@ -83,4 +97,9 @@ public class Ppi {
 		}
 	}
 
+	private int exitWithError(int code, String message, Object... params) {
+		System.err.printf(message + "\n", params);
+		// new CommandLine(this).usage(System.err);
+		return code;
+	}
 }

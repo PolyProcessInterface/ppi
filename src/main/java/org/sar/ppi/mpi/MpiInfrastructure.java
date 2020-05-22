@@ -36,22 +36,16 @@ public class MpiInfrastructure extends Infrastructure {
 	protected Queue<Message> sendQueue = new ConcurrentLinkedQueue<>();
 	protected BlockingQueue<Message> recvQueue = new LinkedBlockingQueue<>();
 	protected Thread executor;
-	protected String FileName = "no";
+	protected File scenario = null;
 	/**
 	 * Constructor for MpiInfrastructure.
 	 *
 	 * @param process a {@link org.sar.ppi.NodeProcess} object.
 	 */
-	public MpiInfrastructure(NodeProcess process) {
+	public MpiInfrastructure(NodeProcess process, File scenario) {
 		super(process);
 		executor = new Thread(new MpiProcess(process, this));
-	}
-
-	public MpiInfrastructure(NodeProcess process,String scenario) {
-		this(process);
-		System.out.println(scenario);
-		FileName=scenario;
-		System.out.println(FileName);
+		this.scenario = scenario;
 	}
 
 
@@ -67,8 +61,8 @@ public class MpiInfrastructure extends Infrastructure {
 			comm = MPI.COMM_WORLD;
 			currentNode = comm.getRank();
 			executor.start();
-			if(!FileName.equals("no"))
-				get_my_tasks(FileName);
+			if(scenario != null)
+				get_my_tasks(scenario.getAbsolutePath());
 			while (running.get() || !sendQueue.isEmpty()) {
 				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
 				if (s != null) {

@@ -9,6 +9,7 @@
 
 # IDE files
 /.classpath
+/.factorypath
 /.project
 /.settings
 /.vscode
