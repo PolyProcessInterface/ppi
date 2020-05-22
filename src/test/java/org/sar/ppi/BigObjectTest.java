@@ -60,15 +60,13 @@ public class BigObjectTest extends NodeProcess {
 	@Test
 	public void MpiBigObjectTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName(), "3" };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new MpiRunner(), 3);
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimBigObjectTest() {
-		String[] args = { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName(), "3" };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new PeerSimRunner(), 3);
 		assertTrue(true);
 	}
 }

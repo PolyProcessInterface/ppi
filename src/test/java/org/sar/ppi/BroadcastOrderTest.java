@@ -77,8 +77,7 @@ public class BroadcastOrderTest extends NodeProcess {
 	String outputPeersim;
 	@Test
 	public void PeersimBroadcastOrderTest() {
-		String[] args = { BroadcastOrderTest.class.getName(), PeerSimRunner.class.getName(),NETWORKSIZE.toString()};
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new PeerSimRunner(), NETWORKSIZE);
 		int networkSize=Configuration.getInt(PAR_SIZE);
 		int i=0;
 		

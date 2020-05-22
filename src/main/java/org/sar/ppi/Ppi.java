@@ -21,16 +21,16 @@ public class Ppi implements Callable<Integer> {
 	public static ClassLoader loader = ClassLoader.getSystemClassLoader();
 	
 	@Option(names = { "--np" }, paramLabel = "<number>", description = "Number of processus in the network")
-	int nbProcs = 4;
+	static int nbProcs = 4;
 	
 	@Option(names = { "-s", "--scenario" }, paramLabel = "<path>", description = "Path to the scenario file")
-	File scenario = null;
+	static File scenario = null;
 
 	@Parameters(paramLabel = "<process-class>", description = "Fully qualified name of the class to use as process")
-	String pClassName;
+	static String pClassName;
 
 	@Parameters(paramLabel = "<runner-class>", description = "Fully qualified name of the class to use as runner")
-	String rClassName;
+	static String rClassName;
 
 	@Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message")
 	protected boolean help = false;
@@ -80,6 +80,27 @@ public class Ppi implements Callable<Integer> {
 	}
 
 	/**
+	 * Higher level main only required parameters for easier from java invocations.
+	 * @param pClass the class to execute by Ppi.
+	 * @param runner the runner to use for this execution.
+	 * @throws PpiException if pClass instanciation fails.
+	 */
+	public static void main(Class<? extends NodeProcess> pClass, Runner runner) throws PpiException {
+		main(pClass, runner, nbProcs, scenario);
+	}
+
+	/**
+	 * Higher level main without optional parameters for easier from java invocations.
+	 * @param pClass the class to execute by Ppi.
+	 * @param runner the runner to use for this execution.
+	 * @param nbProcs the number of processes to run.
+	 * @throws PpiException if pClass instanciation fails.
+	 */
+	public static void main(Class<? extends NodeProcess> pClass, Runner runner, int nbProcs) throws PpiException {
+		main(pClass, runner, nbProcs, scenario);
+	}
+
+	/**
 	 * Higher level main for easier from java invocations.
 	 *
 	 * @param pClass the class to execute by Ppi.
@@ -98,8 +119,7 @@ public class Ppi implements Callable<Integer> {
 	}
 
 	private int exitWithError(int code, String message, Object... params) {
-		System.err.printf(message + "\n", params);
-		// new CommandLine(this).usage(System.err);
+		System.err.printf(message + "\nuse --help for help\n", params);
 		return code;
 	}
 }

@@ -22,13 +22,14 @@ public class MpiRunner implements Runner {
 		String s = null;
 		boolean err = false;
 		String cmd = String.format(
-			"mpirun --oversubscribe --np %s java -cp %s %s %s %s %d %s",
+			"mpirun --oversubscribe --np %s java -cp %s %s %s %s --np=%d %s",
 			nbProcs,
 			System.getProperty("java.class.path"),
-			Ppi.class.getName(), pClass.getName(),
+			Ppi.class.getName(),
+			pClass.getName(),
 			MpiSubRunner.class.getName(),
 			nbProcs,
-			scenario.getAbsolutePath()
+			scenario != null ? "-s" + scenario.getAbsolutePath() : ""
 		);
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);

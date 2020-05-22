@@ -3,6 +3,8 @@ package org.sar.ppi;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Assume;
+import java.io.File;
+
 import org.junit.Test;
 import org.sar.ppi.communication.Message;
 import org.sar.ppi.communication.MessageHandler;
@@ -134,15 +136,13 @@ public class MutexTest extends NodeProcess {
 	@Test
 	public void MpiMutexTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = { this.getClass().getName(), MpiRunner.class.getName(), "6", "src/test/resources/MutexTest.json" };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new MpiRunner(), 6, new File("src/test/resources/MutexTest.json"));
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimMutexTest() {
-		String[] args = { this.getClass().getName(), PeerSimRunner.class.getName(), "6", "src/test/resources/MutexTest.json" };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new PeerSimRunner(), 6, new File("src/test/resources/MutexTest.json"));
 		assertTrue(true);
 	}
 }
