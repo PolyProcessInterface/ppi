@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
@@ -56,6 +57,7 @@ public class BigObjectTest extends NodeProcess {
 
 	@Test
 	public void MpiBigObjectTest() {
+		Assume.assumeTrue(Environment.mpirunExist());
 		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName(), "3" };
 		Ppi.main(args);
 		assertTrue(true);

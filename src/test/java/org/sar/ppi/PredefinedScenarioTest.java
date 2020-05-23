@@ -3,6 +3,7 @@ package org.sar.ppi;
 
 import org.json.simple.JSONObject;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sar.ppi.mpi.MpiInfrastructure;
@@ -102,6 +103,7 @@ public class PredefinedScenarioTest extends NodeProcess{
 
     @Test
     public void MpiScenario() {
+             Assume.assumeTrue(Environment.mpirunExist());
              Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), MpiRunSimulation.class.getName() ,"3" , fileName});
               assertTrue(true);
               System.out.println("Teste Sceneario from Json mpi ok");

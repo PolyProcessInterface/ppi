@@ -2,6 +2,7 @@ package org.sar.ppi;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.sar.ppi.simulator.mpi.MpiRunSimulation;
 import org.sar.ppi.simulator.peersim.PeerSimRunSimulation;
@@ -104,6 +105,7 @@ public class MutexTest extends NodeProcess {
 
 	// @Test
 	public void MpiMutexTest() {
+		Assume.assumeTrue(Environment.mpirunExist());
 		String[] args = { this.getClass().getName(), MpiRunSimulation.class.getName(), "6", "src/test/resources/MutexTest.json" };
 		Ppi.main(args);
 		assertTrue(true);
