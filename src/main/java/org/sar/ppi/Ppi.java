@@ -1,9 +1,17 @@
 package org.sar.ppi;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Ppi Main class.
  */
 public class Ppi {
+	
+	public static ClassLoader loader = ClassLoader.getSystemClassLoader();
 
 	/**
 	 * The main to call to run the app. Usage:
@@ -25,10 +33,18 @@ public class Ppi {
 			System.out.println("Usage: ppirun <process-class-name> <runner-class-name> [<nb-proc> [<scenario>]]");
 			return;
 		}
+		String pClassName = args[0];
 		try {
-			processClass = Class.forName(args[0]).asSubclass(NodeProcess.class);
+			processClass = Class.forName(pClassName).asSubclass(NodeProcess.class);
 		} catch (ClassNotFoundException e) {
-			throw new PpiException("Could not find the process class " + args[0], e);
+			try {
+				loader = new URLClassLoader(new URL[] { new File(System.getProperty("user.dir")).toURI().toURL() }, loader);
+				processClass = loader.loadClass(pClassName).asSubclass(NodeProcess.class);
+			} catch (ClassCastException | ClassNotFoundException | IOException t) {
+				throw new PpiException("Could not find the process class " + args[0], t);
+			}
+		} catch (ClassCastException e) {
+			throw new PpiException("The class " + pClassName + " does not extend NodeProcess", e);
 		}
 		try {
 			Class<? extends Runner> rClass = Class.forName(args[1]).asSubclass(Runner.class);
