@@ -14,9 +14,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <maven-compiler-plugin.version>3.5</maven-compiler-plugin.version>
+    <maven.compiler.version>3.5</maven.compiler.version>
     <mpi.path>/usr/local/lib</mpi.path>
     <peersim.path>/usr/local/lib</peersim.path>
+    <main.class>${project.groupId}.Ppi</main.class>
   </properties>
 
   <dependencies>
@@ -72,12 +73,18 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <!-- Compiler plugin options -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin.version}</version>
+        <version>${maven.compiler.version}</version>
         <configuration>
           <!-- Show all warnings -->
           <showWarnings>true</showWarnings>
@@ -121,9 +128,7 @@
         <version>3.3.0</version>
         <configuration>
           <archive>
-            <manifest>
-              <mainClass>org.sar.ppi.Ppi</mainClass>
-            </manifest>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>
           <descriptors>
             <descriptor>${basedir}/assembly.xml</descriptor>
@@ -141,4 +146,5 @@
       </plugin>
     </plugins>
   </build>
+
 </project>

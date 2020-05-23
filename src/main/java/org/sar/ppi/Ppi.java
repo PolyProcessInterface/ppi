@@ -16,7 +16,7 @@ import picocli.CommandLine.Help.Visibility;
 /**
  * Ppi Main class.
  */
-@Command(name = "ppi", version = "ppi 0.2-dev")
+@Command(name = "ppi", versionProvider = ManifestVersionProvider.class)
 public class Ppi implements Callable<Integer> {
 
 	public static ClassLoader loader = ClassLoader.getSystemClassLoader();
@@ -36,8 +36,11 @@ public class Ppi implements Callable<Integer> {
 	@Parameters(paramLabel = "<args>", arity = "0..*", description = "Args to pass to the processes", index = "2..*")
 	static String[] args = new String[0];
 
-	@Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message")
+	@Option(names = { "-h", "--help" }, usageHelp = true, description = "Display a help message")
 	protected boolean help = false;
+
+	@Option(names = {"-V", "--version"}, versionHelp = true, description = "Print version info")
+	protected boolean version = false;
 
 	/**
 	 * The main to call to run the app. Usage:
