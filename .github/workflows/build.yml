@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: docs
+name: build
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
       - master
 
 jobs:
-  javadoc:
+  build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout branch
@@ -33,8 +33,14 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
+    - name: Add Maven problem matcher
+      run: echo "::add-matcher::.github/matchers/maven.json"
+    - name: Compile
+      run: mvn compile -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib
     - name: Build Javadoc
       run: mvn javadoc:javadoc -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib
+    - name: Remove Maven problem matcher
+      run: echo "::remove-matcher owner=maven::"
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@releases/v3
       if: ${{ github.event_name == 'push' }}
