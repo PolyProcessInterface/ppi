@@ -36,7 +36,7 @@ jobs:
     - name: Add Maven problem matcher
       run: echo "::add-matcher::.github/matchers/maven.json"
     - name: Compile
-      run: mvn compile -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib
+      run: mvn compile test-compile -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib
     - name: Build Javadoc
       run: mvn javadoc:javadoc -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib
     - name: Remove Maven problem matcher
