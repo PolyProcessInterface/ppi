@@ -7,12 +7,17 @@ import java.lang.reflect.Method;
 import java.util.Timer;
 
 /**
- * Process
+ * Node Process Abstract class.
  */
 public abstract class NodeProcess {
 
 	protected Infrastructure infra;
 	protected Timer timer = new Timer();
+	/**
+	 * Setter for the field <code>infra</code>.
+	 *
+	 * @param infra a {@link org.sar.ppi.Infrastructure} object.
+	 */
 	public void setInfra(Infrastructure infra) {
 		this.infra = infra;
 	}
@@ -56,6 +61,9 @@ public abstract class NodeProcess {
 	
 	/**
 	 * Needed for peersim. Return a new intance of the current class by default.
+	 *
+	 * @return a {@link java.lang.Object} object.
+	 * @throws java.lang.CloneNotSupportedException if fail to instanciate a new instance.
 	 */
 	public Object clone() throws CloneNotSupportedException {
 		try {
@@ -72,10 +80,16 @@ public abstract class NodeProcess {
 		}
 	}
 
+	/**
+	 * Getter for the field <code>timer</code>.
+	 *
+	 * @return a {@link java.util.Timer} object.
+	 */
 	public Timer getTimer() {
 		return timer;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "NodeProcess{" + "infra=" + infra.getId() + '}';

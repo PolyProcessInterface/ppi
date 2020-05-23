@@ -35,17 +35,17 @@ public class BroadcastOrderTest extends NodeProcess {
 
 	@MessageHandler
 	public void processExampleMessage(ExampleMessage message) {
-		System.out.printf("%d Received '%s' from %d\n", message.getIddest()%infra.size(), message.getS(), message.getIdsrc()%infra.size());
+		System.out.printf("%d Received '%s' from %d\n", message.getIddest(), message.getS(), message.getIdsrc());
 		infra.exit();
 	}
 
 	@Override
 	public void start() {
 		
-		if ((infra.getId()%infra.size()) == 0) {
+		if (infra.getId() == 0) {
 			
 
-			for(int i=infra.getId()+1;i<infra.getId()+infra.size();i++) {
+			for(int i = 1; i < infra.size(); i++) {
 
 				infra.send(new ExampleMessage(infra.getId(),i, "OrderTest"));
 			}

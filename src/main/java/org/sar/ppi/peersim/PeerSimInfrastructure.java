@@ -13,6 +13,9 @@ import peersim.edsim.EDProtocol;
 import peersim.transport.Transport;
 
 
+/**
+ * PeerSimInfrastructure class.
+ */
 public class PeerSimInfrastructure extends Infrastructure implements EDProtocol , NodeInitializer {
 
 	private static final String PAR_TRANSPORT="transport";
@@ -26,6 +29,11 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	private boolean running; // true while exit() hasnt been executed
 	private static int cptID=0;
 
+	/**
+	 * Constructor for PeerSimInfrastructure.
+	 *
+	 * @param prefix a {@link java.lang.String} object.
+	 */
 	public PeerSimInfrastructure(String prefix) {
 		super(null);
 		NodeProcess np=null;
@@ -45,7 +53,9 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	}
 
 	/**
-	 * Deep cloning necessary ! 
+	 * Deep cloning necessary !
+	 *
+	 * @return a {@link java.lang.Object} object.
 	 */
 	public Object clone() {
 		PeerSimInfrastructure psi= null;
@@ -61,11 +71,13 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		return psi;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getId() {
 		// TODO Auto-generated method stub
 		return super.getId()%Network.size();
 	}
+	/** {@inheritDoc} */
 	@Override
 	public void send(Message message) {
 		if(running) {
@@ -80,21 +92,25 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void exit() {
 		running=false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return Network.size();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void initialize(Node node) {
 		this.process.start();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void processEvent(Node host, int pid, Object event) {
 		if(pid!=my_pid) throw new IllegalArgumentException("Inconsistency on protocol id");

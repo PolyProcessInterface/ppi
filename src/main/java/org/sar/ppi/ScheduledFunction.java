@@ -6,6 +6,9 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.TimerTask;
 
+/**
+ * ScheduledFunction class.
+ */
 public class ScheduledFunction extends TimerTask implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -14,12 +17,20 @@ public class ScheduledFunction extends TimerTask implements Serializable {
     private Object[] args;
     private NodeProcess node;
 
+    /**
+     * Constructor for ScheduledFunction.
+     *
+     * @param funcName a {@link java.lang.String} object.
+     * @param args an array of {@link java.lang.Object} objects.
+     * @param node a {@link org.sar.ppi.NodeProcess} object.
+     */
     public ScheduledFunction(String funcName , Object[] args , NodeProcess node){
         name=funcName;
         this.args=args;
         this.node=node;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void run() {
         for(Method m : node.getClass().getMethods()){

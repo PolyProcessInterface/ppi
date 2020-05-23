@@ -1,7 +1,7 @@
 package org.sar.ppi;
 
 /**
- * Ppi
+ * Ppi Main class.
  */
 public class Ppi {
 
@@ -51,6 +51,7 @@ public class Ppi {
 
 	/**
 	 * Higher level main for easier from java invocations.
+	 *
 	 * @param pClass the class to execute by Ppi.
 	 * @param runner the runner to use for this execution.
 	 * @param nbProcs the number of processes to run.

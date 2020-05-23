@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
- * MpiInfrastructure
+ * MpiInfrastructure class.
  */
 public class MpiInfrastructure extends Infrastructure {
 
@@ -28,6 +28,11 @@ public class MpiInfrastructure extends Infrastructure {
 	protected Queue<Message> sendQueue;
 	protected BlockingQueue<Message> recvQueue;
 	protected Thread executor;
+	/**
+	 * Constructor for MpiInfrastructure.
+	 *
+	 * @param process a {@link org.sar.ppi.NodeProcess} object.
+	 */
 	public MpiInfrastructure(NodeProcess process) {
 		super(process);
 		sendQueue = new ConcurrentLinkedQueue<>();
@@ -35,6 +40,12 @@ public class MpiInfrastructure extends Infrastructure {
 		executor = new Thread(new MpiProcess(process, this));
 	}
 
+	/**
+	 * Run the infrastructure.
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 * @throws org.sar.ppi.PpiException if any.
+	 */
 	public void run(String[] args) throws PpiException {
 		try {
 			MPI.InitThread(args, MPI.THREAD_FUNNELED);
@@ -57,6 +68,14 @@ public class MpiInfrastructure extends Infrastructure {
 		}
 	}
 
+	/**
+	 * Fetch a message from MPI and add it the ce <code>recvQueue</code>.
+	 * This function is blocking.
+	 *
+	 * @param source the MPI source of the message.
+	 * @param tag the MPI tag of the message.
+	 * @throws org.sar.ppi.PpiException on MpiException.
+	 */
 	protected void recvMpi(int source, int tag) throws PpiException {
 		try {
 			int[] sizeMsgTab = new int[1];
@@ -71,6 +90,12 @@ public class MpiInfrastructure extends Infrastructure {
 		}
 	}
 
+	/**
+	 * Send a message via MPI. This function is blocking.
+	 *
+	 * @param message the {@link org.sar.ppi.Message} object to send.
+	 * @throws org.sar.ppi.PpiException if any.
+	 */
 	protected void sendMpi(Message message) throws PpiException {
 		try {
 			byte[] tab = ParseMessage(message);
@@ -82,20 +107,33 @@ public class MpiInfrastructure extends Infrastructure {
 		}
 	}
 
+	/**
+	 * Fetch a message from the <code>recvQueue</code>. This function is blocking.
+	 *
+	 * @return a {@link org.sar.ppi.Message} object.
+	 * @throws java.lang.InterruptedException if interrupted while waiting.
+	 */
 	public Message recv() throws InterruptedException {
 		return recvQueue.take();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void send(Message message) {
 		sendQueue.add(message);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void exit() {
 		process.stopSched();
 		running.set(false);
 	}
+	/**
+	 * Launch the simulation.</p>
+	 *
+	 * @param path path of the scenario file.
+	 */
 	public  void launchSimulation(String path){
 		List<Object[]> l_call = ProtocolTools.readProtocolJSON(path);
 		int num_node;
@@ -108,6 +146,7 @@ public class MpiInfrastructure extends Infrastructure {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		try {
@@ -141,6 +180,11 @@ public class MpiInfrastructure extends Infrastructure {
 
 
 
+	/**
+	 * Debug print an array of bytes.
+	 *
+	 * @param tab an array of {@link byte} objects.
+	 */
 	protected void printByteArray(byte[] tab){
 		System.out.print("[");
 		for (int i =0,len=tab.length;i<len;i++){

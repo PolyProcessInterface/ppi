@@ -1,7 +1,7 @@
 package org.sar.ppi;
 
 /**
- * MessageHandlerException
+ * MessageHandlerException.
  */
 public class MessageHandlerException extends PpiException {
 
@@ -10,6 +10,9 @@ public class MessageHandlerException extends PpiException {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public MessageHandlerException(String error) {
 		super(error);
 	}

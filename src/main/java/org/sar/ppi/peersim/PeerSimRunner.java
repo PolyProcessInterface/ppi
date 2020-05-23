@@ -13,10 +13,11 @@ import org.sar.ppi.Runner;
 import peersim.Simulator;
 
 /**
- * PeerSimRunner
+ * PeerSimRunner class.
  */
 public class PeerSimRunner implements Runner {
 
+	/** {@inheritDoc} */
 	@Override
 	public void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario)
 			throws ReflectiveOperationException {

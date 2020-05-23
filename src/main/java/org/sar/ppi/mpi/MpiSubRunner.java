@@ -3,8 +3,12 @@ package org.sar.ppi.mpi;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Runner;
 
+/**
+ * MpiSubRunner class.
+ */
 public class MpiSubRunner implements Runner {
 
+	/** {@inheritDoc} */
 	@Override
 	public void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario)
 			throws ReflectiveOperationException {

@@ -15,6 +15,7 @@ public class SchedEvent {
         return Funcname;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Object clone() {
         return new SchedEvent(Funcname,args.clone());

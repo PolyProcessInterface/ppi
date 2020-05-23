@@ -10,10 +10,11 @@ import org.sar.ppi.PpiException;
 import org.sar.ppi.Runner;
 
 /**
- * MpiRunner
+ * MpiRunner class.
  */
 public class MpiRunner implements Runner {
 
+	/** {@inheritDoc} */
 	@Override
 	public void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario) throws PpiException {
 		String s = null;

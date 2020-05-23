@@ -12,18 +12,28 @@ import peersim.edsim.EDSimulator;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * PeerSimInitSimulation class.
+ */
 public class PeerSimInitSimulation implements Control {
     private static final String PAR_PROTO="infrapid";
     private final int infrapid;
     private static final String TRANSPORT_SIMULATION="transport";
     private final int pid_trans;
     private String FileName;
+
+    /**
+     * Constructor for PeerSimInitSimulation.
+     *
+     * @param prefix a {@link java.lang.String} object.
+     */
     public PeerSimInitSimulation(String prefix) {
         infrapid=Configuration.getPid(prefix+"."+PAR_PROTO);
         pid_trans=Configuration.getPid(prefix+"."+TRANSPORT_SIMULATION);
         FileName=Configuration.getString("path");
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean execute() {
         if(FileName==null)
@@ -49,10 +59,20 @@ public class PeerSimInitSimulation implements Control {
         }
     }
 
+    /**
+     * getFileName.
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getFileName() {
         return FileName;
     }
 
+    /**
+     * setFileName.
+     *
+     * @param fileName a {@link java.lang.String} object.
+     */
     public void setFileName(String fileName) {
         FileName = fileName;
     }

@@ -8,6 +8,9 @@ import peersim.core.Node;
 import peersim.util.ExtendedRandom;
 
 
+/**
+ * PeerSimInit class.
+ */
 public class PeerSimInit implements Control {
 
 	private static final String PAR_PROTO="infrapid";
@@ -15,10 +18,16 @@ public class PeerSimInit implements Control {
 	private final int infrapid;
 	
 	
+	/**
+	 * Constructor for PeerSimInit.
+	 *
+	 * @param prefix a {@link java.lang.String} object.
+	 */
 	public PeerSimInit(String prefix) {
 		infrapid=Configuration.getPid(prefix+"."+PAR_PROTO);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean execute() {
 		

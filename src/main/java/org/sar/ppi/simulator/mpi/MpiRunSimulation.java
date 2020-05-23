@@ -10,8 +10,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * MpiRunSimulation class.
+ */
 public class MpiRunSimulation implements Runner {
 
+    /** {@inheritDoc} */
     @Override
     public void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario) throws PpiException {
         String s = null;

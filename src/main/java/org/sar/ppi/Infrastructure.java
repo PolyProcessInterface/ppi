@@ -6,6 +6,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
 
+/**
+ * Abstract Infrastructure class.
+ */
 public abstract class Infrastructure {
 
 	protected NodeProcess process;
@@ -15,6 +18,11 @@ public abstract class Infrastructure {
 	protected Thread nextThread;
 	protected Map<BooleanSupplier, Thread> threads = new ConcurrentHashMap<>();
 
+	/**
+	 * Constructor for Infrastructure.
+	 *
+	 * @param process a {@link org.sar.ppi.NodeProcess} object.
+	 */
 	public Infrastructure(NodeProcess process) {
 		this.process = process;
 	}
@@ -27,14 +35,16 @@ public abstract class Infrastructure {
 	public abstract void send(Message message);
 
 	/**
-	 * @return the currentNode
+	 * Get the current node's id.
+	 *
+	 * @return current node's id.
 	 */
 	public int getId() {
 		return currentNode;
 	}
 
 	/**
-	 * Stop the execution of the infrastructure for th current node.
+	 * Stop the execution of the infrastructure for the current node.
 	 */
 	public abstract void exit();
 
@@ -45,6 +55,12 @@ public abstract class Infrastructure {
 	 */
 	public abstract int size();
 
+	/**
+	 * Run a new thread that will start immediately. The current thread
+	 * will wait for it to end or to wait before continuing its process.
+	 *
+	 * @param method a {@link java.lang.Runnable} object.
+	 */
 	public void serialThreadRun(Runnable method) {
 		Thread t = new Thread(() -> {
 			synchronized (lock) {
@@ -69,6 +85,10 @@ public abstract class Infrastructure {
 		}
 	}
 
+	/**
+	 * This scheduler iterates over the waiting serialThreads and wakes them up
+	 * if they can continue.
+	 */
 	protected void serialThreadScheduler() {
 		synchronized (lock) {
 			for (BooleanSupplier condition : threads.keySet()) {
@@ -88,6 +108,13 @@ public abstract class Infrastructure {
 		}
 	}
 
+	/**
+	 * Wait until the condition is true. This function can not be used in
+	 * {@link org.sar.ppi.NodeProcess#start()}.
+	 *
+	 * @param condition a lambda which returns a boolean.
+	 * @throws java.lang.InterruptedException if the process has been interrupted while waiting.
+	 */
 	public void wait(BooleanSupplier condition) throws InterruptedException {
 		synchronized (lock) {
 			if (!condition.getAsBoolean()) {

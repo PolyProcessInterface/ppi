@@ -12,7 +12,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * PeerSimRunSimulation class.
+ */
 public class PeerSimRunSimulation implements Runner {
+    /** {@inheritDoc} */
     @Override
     public void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario) {
         if (scenario == null)

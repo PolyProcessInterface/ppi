@@ -11,10 +11,14 @@ import java.io.*;
 import java.util.*;
 
 
+/**
+ * ProtocolTools class.
+ */
 public class ProtocolTools {
 
     /**
      * Write a call to a function to a Json Object
+     *
      * @param funcName
      *     The name of the function that gone be called
      * @param node
@@ -23,8 +27,7 @@ public class ProtocolTools {
      *       The delay to wait before the call
      * @param args
      *       The args
-     * @return
-     *       Json Object
+     * @return a {@link org.json.simple.JSONObject} object.
      */
     public static JSONObject protocolToJSON(String funcName , int node,long delay, List<Object> args){
         JSONObject jo = new JSONObject();
@@ -42,6 +45,13 @@ public class ProtocolTools {
         return jo;
     }
 
+    /**
+     * Transform a {@link org.json.simple.JSONObject} object into an
+     * {@link java.lang.Object} array protocl.
+     *
+     * @param o a {@link org.json.simple.JSONObject} object.
+     * @return the protocol.
+     */
     public static Object[] ProtocolFromJSON(JSONObject o){
         JSONArray ja = (JSONArray) o.get("args");
         int len=ja.size()+3;
@@ -118,8 +128,7 @@ public class ProtocolTools {
      *       The args
      * @param str
      *      The OutputStream of the file where to write
-     * @throws IOException on io failure
-     *
+     * @throws java.io.IOException on io failure
      */
     public static void writeTimeFuncCall(String funcName , int node, long delay, List<Object> args , ObjectOutputStream str) throws IOException {
         str.writeUTF(funcName);
@@ -131,13 +140,6 @@ public class ProtocolTools {
         str.flush();
     }
 
-    /**
-     *
-     * @param b input stream
-     * @return Object[]
-     * @throws IOException on io failure
-     * @throws ClassNotFoundException if readObject fails
-     */
     public static Object[] readTimeFuncCall(ObjectInputStream b) throws IOException, ClassNotFoundException {
         String name = b.readUTF();
         int node = b.readInt();
