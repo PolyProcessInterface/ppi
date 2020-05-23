@@ -2,6 +2,7 @@ package org.sar.ppi;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
@@ -46,6 +47,7 @@ public class NodeProcessTest extends NodeProcess {
 
 	@Test
 	public void MpiExample() {
+		Assume.assumeTrue(Environment.mpirunExist());
 		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName() };
 		Ppi.main(args);
 		assertTrue(true);
