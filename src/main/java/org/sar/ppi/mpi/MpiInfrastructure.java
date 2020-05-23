@@ -130,7 +130,7 @@ public class MpiInfrastructure extends Infrastructure {
 		running.set(false);
 	}
 	/**
-	 * Launch the simulation.</p>
+	 * Launch the simulation.
 	 *
 	 * @param path path of the scenario file.
 	 */
