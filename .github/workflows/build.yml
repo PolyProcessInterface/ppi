@@ -37,6 +37,11 @@ jobs:
       run: echo "::add-matcher::.github/matchers/maven.json"
     - name: Run tests
       run: mvn install -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib --no-transfer-progress
+    - name: Upload bundled jar
+      uses: actions/upload-artifact@v2
+      with:
+        name: ppi-master-bundle.jar
+        path: target/ppi-*-bundle.jar
     - name: Build Javadoc
       run: mvn javadoc:javadoc -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib --no-transfer-progress
     - name: Remove Maven problem matcher
