@@ -29,10 +29,11 @@ public class MpiRunner implements Runner {
 		);
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);
-			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			Thread killMpi = new Thread(() -> {
 				System.out.println("Interrupt received, killing MPI");
-				p.destroyForcibly();
-			}));
+				p.destroy();
+			});
+			Runtime.getRuntime().addShutdownHook(killMpi);
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
@@ -47,8 +48,12 @@ public class MpiRunner implements Runner {
 			}
 			stdInput.close();
 			stdError.close();
+			p.waitFor();
+			Runtime.getRuntime().removeShutdownHook(killMpi);
 		} catch (IOException e) {
 			throw new PpiException("Could not run MPI", e);
+		} catch (InterruptedException e) {
+			throw new PpiException("Interrupted while waiting for MPI process", e);
 		}
 		if (err) {
 			throw new PpiException("An error occured with Mpi");
