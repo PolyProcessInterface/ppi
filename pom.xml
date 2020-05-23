@@ -6,7 +6,7 @@
 
   <groupId>org.sar.ppi</groupId>
   <artifactId>ppi</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>https://jgitver.github.io/</version>
 
   <name>ppi</name>
   <url>https://github.com/Atlaoui/ParallelProgramingInterface</url>
