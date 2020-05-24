@@ -1,6 +1,6 @@
 # Parallel Programing Interface
 
-[![build][buildbadge]][buildworkflow] [![javadoc][javadocbadge]][javadocurl]
+[![build][buildbadge]][buildworkflow] [![javadoc][javadocbadge]][javadocurl] [![release][releasebadge]][releaseurl]
 
 A high level Java interface to develop distributed protocols.
 
@@ -135,3 +135,5 @@ If you installed the libraries in a different location you can use the options
 [buildworkflow]: https://github.com/Atlaoui/ParallelProgramingInterface/actions?query=workflow%3Abuild+branch%3Amaster
 [javadocbadge]: https://img.shields.io/github/deployments/Atlaoui/ParallelProgramingInterface/github-pages?label=javadoc
 [javadocurl]: https://atlaoui.github.io/ParallelProgramingInterface
+[releasebadge]: https://img.shields.io/github/v/release/Atlaoui/ParallelProgramingInterface
+[releaseurl]: https://github.com/Atlaoui/ParallelProgramingInterface/releases/latest

@@ -4,7 +4,7 @@ on:
     branches:
       - release
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
 
@@ -34,7 +34,9 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Package jar
-        run: mvn package -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib --no-transfer-progress
+        run: |
+          git -c user.email=email@domain.fr -c user.name='Your Name' tag -am "tmp tag" ${{ steps.tag.outputs.new_version}}
+          mvn package -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib --no-transfer-progress
 
       - name: Create Release
         id: create_release
