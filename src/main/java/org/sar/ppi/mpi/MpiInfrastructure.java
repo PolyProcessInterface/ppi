@@ -128,6 +128,7 @@ public class MpiInfrastructure extends Infrastructure {
 	public void exit() {
 		process.stopSched();
 		running.set(false);
+
 	}
 	/**
 	 * Launch the simulation.
