@@ -1,6 +1,7 @@
 package org.sar.ppi;
 
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Assume;
@@ -69,32 +70,36 @@ public class PredefinedScenarioTest extends NodeProcess{
             FileWriter filew = new FileWriter(fileName);
             JSONObject toWrite = new JSONObject();
             List<Object> array = new ArrayList<>();
+            JSONArray arrayJSON = new JSONArray();
             //CALL 1
             array.add("Arg_1er Appel");
             array.add(4);
             long delay = 1;
-            JSONObject call_1 = ProtocolTools.protocolToJSON("callMe",0,delay,array);
-            toWrite.put("Call_1",call_1);
+            JSONObject call_1 = ProtocolTools.CallFuncToJSON("callMe",0,delay,array);
+            arrayJSON.add(call_1);
+
 
             //CALL 2
             array = new ArrayList<>();
             array.add("Arg_1er");
             array.add(4);
             delay = 2;
-            JSONObject call_2 = ProtocolTools.protocolToJSON("callMe",1,delay,array);
-            toWrite.put("Call_2",call_2);
+            JSONObject call_2 = ProtocolTools.CallFuncToJSON("callMe",1,delay,array);
+            arrayJSON.add(call_2);
 
             //CALL 3
             array = new ArrayList<>();
             array.add("Arg_dernier Appel");
             array.add(45);
             delay = 3;
-            JSONObject call_3 = ProtocolTools.protocolToJSON("callMe",2,delay,array);
-            toWrite.put("Call_3",call_3);
+            JSONObject call_3 = ProtocolTools.CallFuncToJSON("callMe",2,delay,array);
+            arrayJSON.add(call_3);
+            toWrite.put("Calls",arrayJSON);
 
             filew.write(toWrite.toString());
             filew.flush();
             filew.close();
+
 
         } catch (IOException e) {
             e.printStackTrace();

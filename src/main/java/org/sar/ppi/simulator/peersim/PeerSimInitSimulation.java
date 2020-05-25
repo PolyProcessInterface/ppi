@@ -2,6 +2,9 @@ package org.sar.ppi.simulator.peersim;
 
 import org.sar.ppi.PpiException;
 import org.sar.ppi.peersim.PeerSimInfrastructure;
+import org.sar.ppi.simulator.peersim.AppEvents.OffEvent;
+import org.sar.ppi.simulator.peersim.AppEvents.OnEvent;
+import org.sar.ppi.simulator.peersim.AppEvents.SchedEvent;
 import peersim.config.Configuration;
 import peersim.core.Control;
 import peersim.core.Network;
@@ -10,6 +13,7 @@ import peersim.edsim.EDSimulator;
 
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -21,6 +25,7 @@ public class PeerSimInitSimulation implements Control {
     private static final String TRANSPORT_SIMULATION="transport";
     private final int pid_trans;
     private String FileName;
+    private HashMap<Integer,PeerSimInfrastructure>  mapOfInfra = new HashMap<>();
 
     /**
      * Constructor for PeerSimInitSimulation.
@@ -42,22 +47,37 @@ public class PeerSimInitSimulation implements Control {
             Node node=Network.get(i);
             PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infrapid);
             pInfra.initialize(node);
+            mapOfInfra.put(pInfra.getId(),pInfra);
         }
         launchSimulation(FileName);
-
         return false;
     }
 
     private void launchSimulation(String path) {
-        List<Object[]> l_call = ProtocolTools.readProtocolJSON(path);
+        HashMap<String,List<Object[]>> map = ProtocolTools.readProtocolJSON(path);
+        List<Object[]> l_call = map.get("Calls");
         int num_node;
         long delay;
         for(Object[] func : l_call){
             num_node=(int)func[1];
             delay=(long)func[2];
-            EDSimulator.add(delay,new SchedEvent((String) func[0], Arrays.copyOfRange(func,3,func.length)),Network.get(num_node),infrapid);
+            EDSimulator.add(delay,new SchedEvent((String) func[0], Arrays.copyOfRange(func,3,func.length),mapOfInfra.get(num_node)),Network.get(num_node),infrapid);
+        }
+        l_call = map.get("Off");
+        Node node;
+        for(Object[] func : l_call) {
+            num_node = (int) func[0];
+            delay = (long) func[1];
+            EDSimulator.add(delay,new OffEvent(mapOfInfra.get(num_node)),Network.get(num_node),infrapid);
+        }
+        l_call = map.get("On");
+        for(Object[] func : l_call) {
+            num_node = (int) func[0];
+            delay = (long) func[1];
+            EDSimulator.add(delay,new OnEvent(mapOfInfra.get(num_node)),Network.get(num_node),infrapid);
         }
     }
+
 
     /**
      * getFileName.

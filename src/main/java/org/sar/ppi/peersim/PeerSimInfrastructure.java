@@ -4,7 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.sar.ppi.*;
-import org.sar.ppi.simulator.peersim.SchedEvent;
+import org.sar.ppi.simulator.peersim.AppEvents.AppEvent;
+import org.sar.ppi.simulator.peersim.AppEvents.SchedEvent;
 import peersim.config.Configuration;
 import peersim.core.Network;
 import peersim.core.Node;
@@ -115,28 +116,20 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	public void processEvent(Node host, int pid, Object event) {
 		if(pid!=my_pid) throw new IllegalArgumentException("Inconsistency on protocol id");
 		//a mettre dans process message ici juste pour les teste
-		if(event instanceof SchedEvent){
-			SchedEvent shed = (SchedEvent) event;
-			String name = shed.getFuncName();
-			for(Method m : process.getClass().getMethods()){
-				if(m.getName().equals(name)) {
-					serialThreadRun(() -> {
-						try {
-							m.invoke(process,shed.getArgs());
-						} catch (IllegalAccessException | InvocationTargetException e) {
-							e.printStackTrace();
-						}
-					});
-				}
-			}
+		if (event instanceof AppEvent){
+			if(event instanceof SchedEvent && process.getIs_down())
+				return;
+
+			AppEvent ev = (AppEvent) event;
+			ev.run();
 			return;
 		}
 
-		if (event instanceof Message) {
+		if  (event instanceof Message && !process.getIs_down()){
 			// System.out.println("Thread" + Thread.currentThread().getId());
 			serialThreadRun(() -> process.processMessage((Message) event));
 			
-		} else {
+		} else if(!process.getIs_down()){
 			throw new IllegalArgumentException("Unknown event for this protocol");
 		}
 	}

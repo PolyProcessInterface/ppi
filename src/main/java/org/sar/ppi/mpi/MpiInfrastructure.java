@@ -6,12 +6,19 @@ import mpi.Comm;
 import mpi.MPI;
 import mpi.MPIException;
 import mpi.Status;
+import org.sar.ppi.simulator.mpi.AppMessage.SchedMessage;
+import org.sar.ppi.simulator.mpi.AppMessage.ShedBreakMessage;
+import org.sar.ppi.simulator.mpi.AppMessage.ShedOnMessage;
+import org.sar.ppi.simulator.mpi.TimerTasks.SchedDeploy;
+import org.sar.ppi.simulator.mpi.TimerTasks.ScheduledBreakDown;
+import org.sar.ppi.simulator.mpi.TimerTasks.ScheduledFunction;
 import org.sar.ppi.simulator.peersim.ProtocolTools;
 
 
 import java.io.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
@@ -136,7 +143,8 @@ public class MpiInfrastructure extends Infrastructure {
 	 * @param path path of the scenario file.
 	 */
 	public  void launchSimulation(String path){
-		List<Object[]> l_call = ProtocolTools.readProtocolJSON(path);
+		HashMap<String,List<Object[]>> map = ProtocolTools.readProtocolJSON(path);
+		List<Object[]> l_call = map.get("Calls");
 		int num_node;
 		for(Object[] func : l_call){
 			num_node=(int)func[1];
@@ -144,6 +152,22 @@ public class MpiInfrastructure extends Infrastructure {
 				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process),(long)func[2]);
 			else
 				send(new SchedMessage(currentNode,num_node,(String) func[0],(long)func[2],Arrays.copyOfRange(func,3,func.length)));
+		}
+		l_call=map.get("Off");
+		for(Object[] func : l_call){
+			num_node=(int)func[0];
+			if(num_node==currentNode)
+				process.getTimer().schedule(new ScheduledBreakDown(process),(long)func[1]);
+			else
+				send(new ShedBreakMessage(currentNode,num_node,(long)func[1]));
+		}
+		l_call=map.get("On");
+		for(Object[] func : l_call){
+			num_node=(int)func[0];
+			if(num_node==currentNode)
+				process.getTimer().schedule(new SchedDeploy(this),(long)func[1]);
+			else
+				send(new ShedOnMessage(currentNode,num_node,(long)func[1]));
 		}
 	}
 

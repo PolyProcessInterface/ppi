@@ -1,4 +1,6 @@
-package org.sar.ppi;
+package org.sar.ppi.simulator.mpi.TimerTasks;
+
+import org.sar.ppi.NodeProcess;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
