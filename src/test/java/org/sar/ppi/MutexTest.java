@@ -105,7 +105,7 @@ public class MutexTest extends NodeProcess {
 		}
 	}
 
-	@Test
+	// @Test
 	public void MpiMutexTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
 		String[] args = { this.getClass().getName(), MpiRunner.class.getName(), "6", "src/test/resources/MutexTest.json" };

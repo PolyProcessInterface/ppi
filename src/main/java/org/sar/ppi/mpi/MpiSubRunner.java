@@ -21,6 +21,5 @@ public class MpiSubRunner implements Runner {
 			infra = new MpiInfrastructure(process, scenario);
 		process.setInfra(infra);
 		infra.run(new String[0]);
-		infra.exit();
 	}
 }

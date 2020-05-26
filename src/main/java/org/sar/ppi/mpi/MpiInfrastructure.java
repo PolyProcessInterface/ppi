@@ -48,8 +48,7 @@ public class MpiInfrastructure extends Infrastructure {
 	}
 
 	public MpiInfrastructure(NodeProcess process,String scenario) {
-		super(process);
-		executor = new Thread(new MpiProcess(process, this));
+		this(process);
 		System.out.println(scenario);
 		FileName=scenario;
 		System.out.println(FileName);
@@ -71,18 +70,30 @@ public class MpiInfrastructure extends Infrastructure {
 			if(!FileName.equals("no"))
 				get_my_tasks(FileName);
 			while (running.get() || !sendQueue.isEmpty()) {
-			   Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
+				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
 				if (s != null) {
-               	recvMpi(s.getSource(), s.getTag());
-               }
+					recvMpi(s.getSource(), s.getTag());
+				}
 				Message m = sendQueue.poll();
 				if (m != null) {
 					sendMpi(m);
 				}
 			}
+			for (Thread t : threads.values()) {
+				t.interrupt();
+				System.out.printf("%d Interrupted waiting thread %d\n", getId(), t.getId());
+				t.join();
+				System.out.printf("%d Interrupted waiting thread %d\n", getId(), t.getId());
+			}
+			executor.interrupt();
+			System.out.printf("%d Interrupted MpiProcess thread\n", getId());
+			executor.join();
+			System.out.printf("%d Joined MpiProcess thread\n", getId());
 			MPI.Finalize();
 		} catch (MPIException e) {
 			throw new PpiException("Init fail.", e);
+		} catch (InterruptedException e) {
+			throw new PpiException("Interrupted while waiting to join MpiProcess", e);
 		}
 	}
 
@@ -147,7 +158,6 @@ public class MpiInfrastructure extends Infrastructure {
 	public void exit() {
 		process.stopSched();
 		running.set(false);
-
 	}
 
 	public void get_my_tasks(String path){

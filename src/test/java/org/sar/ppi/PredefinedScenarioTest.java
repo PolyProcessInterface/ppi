@@ -14,8 +14,6 @@ import org.sar.ppi.tools.ProtocolTools;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,17 +31,6 @@ public class PredefinedScenarioTest extends NodeProcess{
     @Override
     public void start () {
         System.out.println("my id "+infra.getId());
-        if (infra.getId() == 0) {
-            infra.exit();
-        }
-        else
-          try {
-              Thread.sleep(200);
-              System.out.println("j'ai attendu 20 secon");
-           //   infra.exit();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -53,8 +40,9 @@ public class PredefinedScenarioTest extends NodeProcess{
             Thread.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             infra.exit();
+            System.out.printf("%d called exit\n", infra.getId());
         }
 
     }
