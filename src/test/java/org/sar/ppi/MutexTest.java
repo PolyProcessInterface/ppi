@@ -15,7 +15,10 @@ public class MutexTest extends NodeProcess {
 	Integer next = null;
 	boolean token = false;
 	boolean requesting = false;
-	int nbReq = 0;
+	int nbCS = 0;
+
+	// terminaison
+	int nbEnd = 0;
 
 	@Override
 	public void start() {
@@ -32,6 +35,12 @@ public class MutexTest extends NodeProcess {
 			infra.wait(() -> token == true);
 			cs();
 			release();
+
+			// terminaison
+			if (nbCS == 2) {
+				System.out.printf("%d Had 2 critical sections\n", infra.getId());
+				infra.send(new End(infra.getId(), 0));
+			}
 		} catch (InterruptedException e) {
 			System.out.printf("%d Was interrupted while waiting\n", infra.getId());
 		}
@@ -48,6 +57,7 @@ public class MutexTest extends NodeProcess {
 
 	public void cs() {
 		System.out.printf("%d Entered critical section\n", infra.getId());
+		nbCS++;
 	}
 
 	public void release() {
@@ -75,6 +85,7 @@ public class MutexTest extends NodeProcess {
 				token = false;
 			}
 		} else {
+			System.out.printf("%d Pass request to %d\n", host, father);
 			infra.send(new Request(request.getIdsrc(), father));
 		}
 		father = request.getIdsrc();
@@ -87,25 +98,40 @@ public class MutexTest extends NodeProcess {
 		token = true;
 	}
 
+
 	public static class Request extends Message {
-
 		private static final long serialVersionUID = 1L;
-
-		public Request(int idsrc, int iddest) {
-			super(idsrc, iddest);
-		}
+		public Request(int idsrc, int iddest) { super(idsrc, iddest); }
 	}
 
 	public static class Token extends Message {
-
 		private static final long serialVersionUID = 1L;
-
-		public Token(int idsrc, int iddest) {
-			super(idsrc, iddest);
-		}
+		public Token(int idsrc, int iddest) { super(idsrc, iddest); }
 	}
 
-	// @Test
+	// terminaison
+	@MessageHandler
+	public void processEnd(End end) {
+		if (infra.getId() == 0) {
+			nbEnd++;
+			if (nbEnd == 5) {
+				for (int i = 1; i < 6; i++) {
+					infra.send(new End(0, i));
+				}
+				System.out.printf("%d Called exit\n", infra.getId());
+				infra.exit();
+			}
+		} else {
+			System.out.printf("%d Called exit\n", infra.getId());
+			infra.exit();
+		}
+	}
+	public static class End extends Message {
+		private static final long serialVersionUID = 1L;
+		public End(int idsrc, int iddest) { super(idsrc, iddest); }
+	}
+
+	@Test
 	public void MpiMutexTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
 		String[] args = { this.getClass().getName(), MpiRunner.class.getName(), "6", "src/test/resources/MutexTest.json" };
