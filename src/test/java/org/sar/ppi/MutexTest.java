@@ -4,8 +4,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Assume;
 import org.junit.Test;
-import org.sar.ppi.simulator.mpi.MpiRunSimulation;
-import org.sar.ppi.simulator.peersim.PeerSimRunSimulation;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.communication.MessageHandler;
+import org.sar.ppi.mpi.MpiRunner;
+import org.sar.ppi.peersim.PeerSimRunner;
 
 public class MutexTest extends NodeProcess {
 
@@ -106,14 +108,14 @@ public class MutexTest extends NodeProcess {
 	// @Test
 	public void MpiMutexTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = { this.getClass().getName(), MpiRunSimulation.class.getName(), "6", "src/test/resources/MutexTest.json" };
+		String[] args = { this.getClass().getName(), MpiRunner.class.getName(), "6", "src/test/resources/MutexTest.json" };
 		Ppi.main(args);
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimMutexTest() {
-		String[] args = { this.getClass().getName(), PeerSimRunSimulation.class.getName(), "6", "src/test/resources/MutexTest.json" };
+		String[] args = { this.getClass().getName(), PeerSimRunner.class.getName(), "6", "src/test/resources/MutexTest.json" };
 		Ppi.main(args);
 		assertTrue(true);
 	}

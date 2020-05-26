@@ -6,12 +6,20 @@ import mpi.Comm;
 import mpi.MPI;
 import mpi.MPIException;
 import mpi.Status;
-import org.sar.ppi.simulator.peersim.ProtocolTools;
+import org.sar.ppi.communication.AppMessage.SchedMessage;
+import org.sar.ppi.communication.AppMessage.ShedBreakMessage;
+import org.sar.ppi.communication.AppMessage.ShedOnMessage;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.communication.Tasks.SchedDeploy;
+import org.sar.ppi.communication.Tasks.ScheduledBreakDown;
+import org.sar.ppi.communication.Tasks.ScheduledFunction;
+import org.sar.ppi.tools.ProtocolTools;
 
 
 import java.io.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
@@ -25,9 +33,10 @@ public class MpiInfrastructure extends Infrastructure {
 
 	AtomicBoolean running = new AtomicBoolean(true);
 	protected Comm comm;
-	protected Queue<Message> sendQueue;
-	protected BlockingQueue<Message> recvQueue;
+	protected Queue<Message> sendQueue = new ConcurrentLinkedQueue<>();
+	protected BlockingQueue<Message> recvQueue = new LinkedBlockingQueue<>();
 	protected Thread executor;
+	protected String FileName = "no";
 	/**
 	 * Constructor for MpiInfrastructure.
 	 *
@@ -35,10 +44,16 @@ public class MpiInfrastructure extends Infrastructure {
 	 */
 	public MpiInfrastructure(NodeProcess process) {
 		super(process);
-		sendQueue = new ConcurrentLinkedQueue<>();
-		recvQueue = new LinkedBlockingQueue<>();
 		executor = new Thread(new MpiProcess(process, this));
 	}
+
+	public MpiInfrastructure(NodeProcess process,String scenario) {
+		this(process);
+		System.out.println(scenario);
+		FileName=scenario;
+		System.out.println(FileName);
+	}
+
 
 	/**
 	 * Run the infrastructure.
@@ -52,6 +67,8 @@ public class MpiInfrastructure extends Infrastructure {
 			comm = MPI.COMM_WORLD;
 			currentNode = comm.getRank();
 			executor.start();
+			if(!FileName.equals("no"))
+				get_my_tasks(FileName);
 			while (running.get() || !sendQueue.isEmpty()) {
 				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
 				if (s != null) {
@@ -62,9 +79,21 @@ public class MpiInfrastructure extends Infrastructure {
 					sendMpi(m);
 				}
 			}
+			for (Thread t : threads.values()) {
+				t.interrupt();
+				System.out.printf("%d Interrupted waiting thread %d\n", getId(), t.getId());
+				t.join();
+				System.out.printf("%d Interrupted waiting thread %d\n", getId(), t.getId());
+			}
+			executor.interrupt();
+			System.out.printf("%d Interrupted MpiProcess thread\n", getId());
+			executor.join();
+			System.out.printf("%d Joined MpiProcess thread\n", getId());
 			MPI.Finalize();
 		} catch (MPIException e) {
 			throw new PpiException("Init fail.", e);
+		} catch (InterruptedException e) {
+			throw new PpiException("Interrupted while waiting to join MpiProcess", e);
 		}
 	}
 
@@ -83,8 +112,8 @@ public class MpiInfrastructure extends Infrastructure {
 			int sizeMsg = sizeMsgTab[0];
 			byte [] tab = new byte[sizeMsg];
 			comm.recv(tab, sizeMsg, MPI.BYTE, source, tag);
-			// printByteArray(tab);
-			recvQueue.add(RetriveMessage(tab));
+			Message msg = RetriveMessage(tab);
+			recvQueue.add(msg);
 		} catch (MPIException e) {
 			throw new PpiException("Receive from" + source + "failed", e);
 		}
@@ -93,7 +122,7 @@ public class MpiInfrastructure extends Infrastructure {
 	/**
 	 * Send a message via MPI. This function is blocking.
 	 *
-	 * @param message the {@link org.sar.ppi.Message} object to send.
+	 * @param message the {@link Message} object to send.
 	 * @throws org.sar.ppi.PpiException if any.
 	 */
 	protected void sendMpi(Message message) throws PpiException {
@@ -110,7 +139,7 @@ public class MpiInfrastructure extends Infrastructure {
 	/**
 	 * Fetch a message from the <code>recvQueue</code>. This function is blocking.
 	 *
-	 * @return a {@link org.sar.ppi.Message} object.
+	 * @return a {@link Message} object.
 	 * @throws java.lang.InterruptedException if interrupted while waiting.
 	 */
 	public Message recv() throws InterruptedException {
@@ -129,20 +158,32 @@ public class MpiInfrastructure extends Infrastructure {
 		process.stopSched();
 		running.set(false);
 	}
-	/**
-	 * Launch the simulation.
-	 *
-	 * @param path path of the scenario file.
-	 */
-	public  void launchSimulation(String path){
-		List<Object[]> l_call = ProtocolTools.readProtocolJSON(path);
+
+	public void get_my_tasks(String path){
+		HashMap<String,List<Object[]>> map = ProtocolTools.readProtocolJSON(path);
+		List<Object[]> l_call = map.get("events");
 		int num_node;
 		for(Object[] func : l_call){
+		    System.out.println(22);
 			num_node=(int)func[1];
+			if(process==null)
+				System.out.println("process null");
+			if(process.getTimer() == null)
+				System.out.println("MERDE");
 			if(num_node==currentNode)
-				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process),(long)func[2]);
-			else
-				send(new SchedMessage(currentNode,num_node,(String) func[0],(long)func[2],Arrays.copyOfRange(func,3,func.length)));
+				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process,this),(long)func[2]);
+		}
+		l_call=map.get("Off");
+		for(Object[] func : l_call){
+			num_node=(int)func[0];
+			if(num_node==currentNode)
+				process.getTimer().schedule(new ScheduledBreakDown(process),(long)func[1]);
+		}
+		l_call=map.get("On");
+		for(Object[] func : l_call){
+			num_node=(int)func[0];
+			if(num_node==currentNode)
+				process.getTimer().schedule(new SchedDeploy(this),(long)func[1]);
 		}
 	}
 
@@ -192,4 +233,39 @@ public class MpiInfrastructure extends Infrastructure {
 		}
 		System.out.println("]");
 	}
+
+	/**
+	 * Launch the simulation.
+	 *
+	 * @param path path of the scenario file.
+	 */
+	private  void launchSimulation(String path){
+		HashMap<String,List<Object[]>> map = ProtocolTools.readProtocolJSON(path);
+		List<Object[]> l_call = map.get("Calls");
+		int num_node;
+		for(Object[] func : l_call){
+			num_node=(int)func[1];
+			if(num_node==currentNode)
+				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process,this),(long)func[2]);
+			else
+				send(new SchedMessage(currentNode,num_node,(String) func[0],(long)func[2],Arrays.copyOfRange(func,3,func.length)));
+		}
+		l_call=map.get("Off");
+		for(Object[] func : l_call){
+			num_node=(int)func[0];
+			if(num_node==currentNode)
+				process.getTimer().schedule(new ScheduledBreakDown(process),(long)func[1]);
+			else
+				send(new ShedBreakMessage(currentNode,num_node,(long)func[1]));
+		}
+		l_call=map.get("On");
+		for(Object[] func : l_call){
+			num_node=(int)func[0];
+			if(num_node==currentNode)
+				process.getTimer().schedule(new SchedDeploy(this),(long)func[1]);
+			else
+				send(new ShedOnMessage(currentNode,num_node,(long)func[1]));
+		}
+	}
+
 }
