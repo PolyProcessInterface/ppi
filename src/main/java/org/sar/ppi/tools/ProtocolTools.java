@@ -23,6 +23,7 @@ public class ProtocolTools {
      *  The delay to wait before the start
      * @return
      */
+    @SuppressWarnings("unchecked")
     public static JSONObject BreakDownToJSON(int node, long start_at){
         JSONObject jo = new JSONObject();
         jo.put("node",node);
@@ -69,6 +70,7 @@ public class ProtocolTools {
      *       The args
      * @return a {@link org.json.simple.JSONObject} object.
      */
+    @SuppressWarnings("unchecked")
     public static JSONObject CallFuncToJSON(String funcName , int node, long delay, List<Object> args){
         JSONObject jo = new JSONObject();
         JSONArray ja = new JSONArray();

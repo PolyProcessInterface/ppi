@@ -111,6 +111,7 @@ public class NodeBreakDownTest extends NodeProcess {
     }
 
     @BeforeClass
+    @SuppressWarnings("unchecked")
     public static void createJsonTeste() {
         try {
             FileWriter filew = new FileWriter(fileName);

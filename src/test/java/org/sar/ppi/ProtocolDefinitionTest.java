@@ -41,9 +41,11 @@ public class ProtocolDefinitionTest {
         }
     }
     @Test
+    @SuppressWarnings("unchecked")
     public void JsonDescriptionTeste(){
         String fileName = "testeJson.json";
-        try(FileWriter filew = new FileWriter(fileName)){
+        try{
+            FileWriter filew = new FileWriter(fileName);
             //in
             JSONObject toWrite = new JSONObject();
             List<Object> array = new ArrayList<>();

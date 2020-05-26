@@ -1,5 +1,7 @@
 package org.sar.ppi;
 
+import org.sar.ppi.communication.AppEvents.AppEvent;
+import org.sar.ppi.communication.AppEvents.SchedEvent;
 import org.sar.ppi.communication.AppMessage.AppMessage;
 import org.sar.ppi.communication.AppMessage.SchedMessage;
 import org.sar.ppi.communication.AppMessage.ShedBreakMessage;
@@ -45,6 +47,7 @@ public abstract class NodeProcess {
 			processAppMessage(message);
 			return;
 		}
+
 		Method[] methods = this.getClass().getMethods();
 		for (Method method : methods) {
 			Class<?>[] params = method.getParameterTypes();
