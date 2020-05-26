@@ -5,6 +5,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sar.ppi.communication.Message;
@@ -23,8 +24,8 @@ import static org.junit.Assert.assertTrue;
 
 import static org.junit.Assert.assertTrue;
 
-import org.sar.ppi.simulator.peersim.PeerSimRunSimulation;
-import org.sar.ppi.simulator.peersim.ProtocolTools;
+import org.sar.ppi.peersim.PeerSimRunner;
+import org.sar.ppi.tools.ProtocolTools;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -96,6 +97,7 @@ public class NodeBreakDownTest extends NodeProcess {
 
     @Test
     public void MpitesteProtocolBreakDown() {
+        Assume.assumeTrue(Environment.mpirunExist());
         String[] args = {NodeBreakDownTest.class.getName(), MpiRunner.class.getName() ,"3",fileName};
         Ppi.main(args);
         assertTrue(true);
@@ -103,7 +105,7 @@ public class NodeBreakDownTest extends NodeProcess {
 
     @Test
     public void PeersimtesteProtocolBreakDown() {
-        Ppi.main(new String[]{NodeBreakDownTest.class.getName(), PeerSimRunSimulation.class.getName(), "3", fileName});
+        Ppi.main(new String[]{NodeBreakDownTest.class.getName(), PeerSimRunner.class.getName(), "3", fileName});
         assertTrue(true);
         System.out.println("Teste BreakDown from Json Peersim ok");
     }
@@ -134,7 +136,7 @@ public class NodeBreakDownTest extends NodeProcess {
             List<Object> objects = new ArrayList<>();
             array.add(ProtocolTools.CallFuncToJSON("End", 1, 900, objects));
             array.add(ProtocolTools.CallFuncToJSON("End", 2, 900, objects));
-            toWrite.put("Calls", array);
+            toWrite.put("events", array);
 
             filew.write(toWrite.toString());
             filew.flush();

@@ -9,9 +9,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sar.ppi.communication.Message;
 import org.sar.ppi.mpi.MpiRunner;
-import org.sar.ppi.peersim.PeerSimInit;
-import org.sar.ppi.simulator.peersim.PeerSimRunSimulation;
-import org.sar.ppi.simulator.peersim.ProtocolTools;
+import org.sar.ppi.peersim.PeerSimRunner;
+import org.sar.ppi.tools.ProtocolTools;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -91,7 +90,7 @@ public class PredefinedScenarioTest extends NodeProcess{
             delay = 3000;
             JSONObject call_3 = ProtocolTools.CallFuncToJSON("callMe",2,delay,array);
             arrayJSON.add(call_3);
-            toWrite.put("Calls",arrayJSON);
+            toWrite.put("events",arrayJSON);
 
             filew.write(toWrite.toString());
             filew.flush();
@@ -113,7 +112,7 @@ public class PredefinedScenarioTest extends NodeProcess{
 
     @Test
     public void PeersimScenario() {
-          Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), PeerSimRunSimulation.class.getName() ,"3" , fileName});
+          Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), PeerSimRunner.class.getName() ,"3" , fileName});
           assertTrue(true);
           System.out.println("Teste Sceneario from Json Peersim ok");
     }

@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Runner;
-import org.sar.ppi.Utils;
+import org.sar.ppi.tools.Utils;
 
 import peersim.Simulator;
 
@@ -27,12 +27,17 @@ public class PeerSimRunner implements Runner {
 			 PrintStream ps = new PrintStream(os))
 		{
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			InputStream base = loader.getResourceAsStream("peersim.base.conf");
+			InputStream base;
+			if(scenario.equals("no"))
+				base = loader.getResourceAsStream("peersim.base.conf");
+			else
+				base=loader.getResourceAsStream("peersimSimulate.base.conf");
+			assert base != null;
 			Utils.transferTo(base, os);
 			ps.println();
 			ps.println("protocol.infra.nodeprocess " + pClass.getName());
 			ps.printf("network.size %d\n", nbProcs);
-			if(scenario!=null)
+			if(!scenario.equals("no"))
 				ps.println("path " + scenario);
 		} catch (Exception e) {
 			e.printStackTrace();

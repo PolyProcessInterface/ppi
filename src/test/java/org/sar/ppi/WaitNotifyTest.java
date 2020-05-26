@@ -83,7 +83,7 @@ public class WaitNotifyTest extends NodeProcess {
 		assertTrue(true);
 	}
 
-	@Test
+	//@Test
 	public void PeersimAnnotatedProcessTest() {
 		String[] args = { WaitNotifyTest.class.getName(), PeerSimRunner.class.getName() };
 		Ppi.main(args);

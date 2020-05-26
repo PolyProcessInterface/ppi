@@ -6,7 +6,6 @@ import mpi.Comm;
 import mpi.MPI;
 import mpi.MPIException;
 import mpi.Status;
-import org.sar.ppi.communication.AppMessage.AppMessage;
 import org.sar.ppi.communication.AppMessage.SchedMessage;
 import org.sar.ppi.communication.AppMessage.ShedBreakMessage;
 import org.sar.ppi.communication.AppMessage.ShedOnMessage;
@@ -14,7 +13,7 @@ import org.sar.ppi.communication.Message;
 import org.sar.ppi.communication.Tasks.SchedDeploy;
 import org.sar.ppi.communication.Tasks.ScheduledBreakDown;
 import org.sar.ppi.communication.Tasks.ScheduledFunction;
-import org.sar.ppi.simulator.peersim.ProtocolTools;
+import org.sar.ppi.tools.ProtocolTools;
 
 
 import java.io.*;
@@ -148,7 +147,7 @@ public class MpiInfrastructure extends Infrastructure {
 
 	public void get_my_tasks(String path){
 		HashMap<String,List<Object[]>> map = ProtocolTools.readProtocolJSON(path);
-		List<Object[]> l_call = map.get("Calls");
+		List<Object[]> l_call = map.get("events");
 		int num_node;
 		for(Object[] func : l_call){
 			num_node=(int)func[1];

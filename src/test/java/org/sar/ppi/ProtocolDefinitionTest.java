@@ -3,7 +3,7 @@ package org.sar.ppi;
 
 import org.json.simple.JSONObject;
 import org.junit.Test;
-import org.sar.ppi.simulator.peersim.ProtocolTools;
+import org.sar.ppi.tools.ProtocolTools;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -55,14 +55,14 @@ public class ProtocolDefinitionTest {
             JSONObject call_1 = ProtocolTools.CallFuncToJSON("Name_01",3,delay,array);
             Json_array.add(call_1);
             Json_array.add(ProtocolTools.CallFuncToJSON("func_no_args",5,delay,new ArrayList<>()));
-            toWrite.put("Calls",Json_array);
+            toWrite.put("events",Json_array);
             filew.write(toWrite.toString());
             filew.flush();
             filew.close();
 
             //Out
             HashMap<String,List<Object[]>> map = ProtocolTools.readProtocolJSON(fileName);
-            List<Object[]> array_obj = map.get("Calls");
+            List<Object[]> array_obj = map.get("events");
             assertEquals(2,array_obj.size());
             Object[] res_call1 = array_obj.get(0);
             Object[] res_call2 = array_obj.get(1);
