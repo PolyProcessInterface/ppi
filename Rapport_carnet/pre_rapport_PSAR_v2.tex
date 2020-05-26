@@ -227,6 +227,31 @@ public class BasicTest {
 			L'utilisateur aura aussi accès à une API permettant de décrire un scenario où il devra spécifier en premier lieu
 			le nombre de noeuds demandé, puis préciser sur quelle API le scénario devra être exécuté, et enfin les événements et leur date qui devront être appelés.
 			Sachant que MPI travaille sur de vraies machine et que le temps d'arrivée des messages est inconnu, on ne promet pas l'éxécution exacte du scénario demandé. 
+			\begin{lstlisting}
+				{"Off":[
+					{
+					"node":0,
+					"start":100
+					}
+					]
+				,
+				"events":[
+					{
+					"args":[{"val":"MonArgument1","type":"String"},{"val":4,"type":"Integer"}]
+					"FunctionName":"End",
+					"Node":1,
+					"Delay":900
+					},
+					{
+					{
+						"args": [],
+						"FunctionName": "doSomething",
+						"Node": 2,
+						"Delay": 1
+					}]
+					,
+					"On":[ { "node":0, "start":10000}]}
+			\end{lstlisting}
 			%\subsection{Rédaction du rapport}
 
 		\section{Plan de validation}

@@ -36,6 +36,7 @@ public class MpiInfrastructure extends Infrastructure {
 	protected Queue<Message> sendQueue = new ConcurrentLinkedQueue<>();
 	protected BlockingQueue<Message> recvQueue = new LinkedBlockingQueue<>();
 	protected Thread executor;
+	protected String FileName = "no";
 	/**
 	 * Constructor for MpiInfrastructure.
 	 *
@@ -49,7 +50,9 @@ public class MpiInfrastructure extends Infrastructure {
 	public MpiInfrastructure(NodeProcess process,String scenario) {
 		super(process);
 		executor = new Thread(new MpiProcess(process, this));
-		get_my_tasks(scenario);
+		System.out.println(scenario);
+		FileName=scenario;
+		System.out.println(FileName);
 	}
 
 
@@ -65,11 +68,13 @@ public class MpiInfrastructure extends Infrastructure {
 			comm = MPI.COMM_WORLD;
 			currentNode = comm.getRank();
 			executor.start();
+			if(!FileName.equals("no"))
+				get_my_tasks(FileName);
 			while (running.get() || !sendQueue.isEmpty()) {
-				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
+			   Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
 				if (s != null) {
-					recvMpi(s.getSource(), s.getTag());
-				}
+               	recvMpi(s.getSource(), s.getTag());
+               }
 				Message m = sendQueue.poll();
 				if (m != null) {
 					sendMpi(m);
@@ -150,7 +155,12 @@ public class MpiInfrastructure extends Infrastructure {
 		List<Object[]> l_call = map.get("events");
 		int num_node;
 		for(Object[] func : l_call){
+		    System.out.println(22);
 			num_node=(int)func[1];
+			if(process==null)
+				System.out.println("process null");
+			if(process.getTimer() == null)
+				System.out.println("MERDE");
 			if(num_node==currentNode)
 				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process),(long)func[2]);
 		}

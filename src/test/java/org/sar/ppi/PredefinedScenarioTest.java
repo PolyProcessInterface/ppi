@@ -40,7 +40,7 @@ public class PredefinedScenarioTest extends NodeProcess{
           try {
               Thread.sleep(200);
               System.out.println("j'ai attendu 20 secon");
-              infra.exit();
+           //   infra.exit();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -119,12 +119,12 @@ public class PredefinedScenarioTest extends NodeProcess{
     }
     @AfterClass
     public static void  after(){
-        try {
+        /*try {
             Files.deleteIfExists(Paths.get(fileName));
             System.out.println("End Scenario Test");
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 

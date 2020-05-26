@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class NodeProcess {
 
 	protected Infrastructure infra;
-	protected Timer timer = new Timer();
+	protected Timer timer;
 
 	protected AtomicBoolean is_down = new AtomicBoolean(false);
 	/**
@@ -113,6 +113,10 @@ public abstract class NodeProcess {
 	 * @return a {@link java.util.Timer} object.
 	 */
 	public Timer getTimer() {
+		if(timer==null){
+			timer=new Timer(true);
+			return timer;
+		}
 		return timer;
 	}
 
