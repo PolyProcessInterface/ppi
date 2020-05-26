@@ -120,7 +120,7 @@ public class NodeBreakDownTest extends NodeProcess {
             //off
             long delay =100;
             int node = 0;
-            JSONObject B1 = ProtocolTools.BreakDownToJSON(node, delay);
+            JSONObject B1 = ProtocolTools.StateBuilder(node, delay);
             array.add(B1);
 
             toWrite.put("Off", array);
@@ -128,15 +128,15 @@ public class NodeBreakDownTest extends NodeProcess {
             array = new JSONArray();
             //on
             delay = 500;
-            array.add(ProtocolTools.BreakDownToJSON(node, 4 * delay));
+            array.add(ProtocolTools.StateBuilder(node, 4 * delay));
             // toWrite.put("On", array);
 
 
             delay = 500;
             array = new JSONArray();
             List<Object> objects = new ArrayList<>();
-            array.add(ProtocolTools.CallFuncToJSON("End", 1, 900, objects));
-            array.add(ProtocolTools.CallFuncToJSON("End", 2, 900, objects));
+            array.add(ProtocolTools.eventBuilder("End", 1, 900, objects));
+            array.add(ProtocolTools.eventBuilder("End", 2, 900, objects));
             toWrite.put("events", array);
 
             filew.write(toWrite.toString());

@@ -14,6 +14,8 @@ import org.sar.ppi.tools.ProtocolTools;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +62,7 @@ public class PredefinedScenarioTest extends NodeProcess{
             array.add("Arg_1er Appel");
             array.add(4);
             long delay = 1000;
-            JSONObject call_1 = ProtocolTools.CallFuncToJSON("callMe",0,delay,array);
+            JSONObject call_1 = ProtocolTools.eventBuilder("callMe",0,delay,array);
             arrayJSON.add(call_1);
 
 
@@ -69,7 +71,7 @@ public class PredefinedScenarioTest extends NodeProcess{
             array.add("Arg_1er");
             array.add(4);
             delay = 2000;
-            JSONObject call_2 = ProtocolTools.CallFuncToJSON("callMe",1,delay,array);
+            JSONObject call_2 = ProtocolTools.eventBuilder("callMe",1,delay,array);
             arrayJSON.add(call_2);
 
             //CALL 3
@@ -77,7 +79,7 @@ public class PredefinedScenarioTest extends NodeProcess{
             array.add("Arg_dernier Appel");
             array.add(45);
             delay = 3000;
-            JSONObject call_3 = ProtocolTools.CallFuncToJSON("callMe",2,delay,array);
+            JSONObject call_3 = ProtocolTools.eventBuilder("callMe",2,delay,array);
             arrayJSON.add(call_3);
             toWrite.put("events",arrayJSON);
 
@@ -107,12 +109,12 @@ public class PredefinedScenarioTest extends NodeProcess{
     }
     @AfterClass
     public static void  after(){
-        /*try {
+        try {
             Files.deleteIfExists(Paths.get(fileName));
             System.out.println("End Scenario Test");
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
 

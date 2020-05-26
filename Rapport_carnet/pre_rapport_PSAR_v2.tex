@@ -226,32 +226,58 @@ public class BasicTest {
 			\subsection{API pour un scenario}
 			L'utilisateur aura aussi accès à une API permettant de décrire un scenario où il devra spécifier en premier lieu
 			le nombre de noeuds demandé, puis préciser sur quelle API le scénario devra être exécuté, et enfin les événements et leur date qui devront être appelés.
-			Sachant que MPI travaille sur de vraies machine et que le temps d'arrivée des messages est inconnu, on ne promet pas l'éxécution exacte du scénario demandé. 
+			Sachant que MPI travaille sur de vraies machine et que le temps d'arrivée des messages est inconnu, on ne promet pas l'éxécution exacte du scénario demandé.
+			\newline
+			\newline
+			A fin de demandé l'éxecution d'un scénario il faut aussi étandre la class NodeProcess et y 
+			implanter les fonctions qui fon office de events , et dont on peux programmer l'appel avec delais données.
+			Pour le faire il faut un fichier au format Json avec le format suivant.
+			\subsection{Format}
 			\begin{lstlisting}
-				{"Off":[
-					{
+				{"Off":[{
 					"node":0,
 					"start":100
-					}
-					]
-				,
-				"events":[
-					{
+					}],
+				"events":[{
 					"args":[{"val":"MonArgument1","type":"String"},{"val":4,"type":"Integer"}]
 					"FunctionName":"End",
 					"Node":1,
-					"Delay":900
-					},
-					{
-					{
+					"Delay":900},
+					{{
 						"args": [],
 						"FunctionName": "doSomething",
 						"Node": 2,
-						"Delay": 1
-					}]
-					,
+						"Delay": 300
+					}],
 					"On":[ { "node":0, "start":10000}]}
 			\end{lstlisting}
+			Les Json object nomé "off","on" et "events" fon office de conteuneur pour les différent appelés demander,
+			chaqu'un contient une liste des evenement,par exemple {\color{magenta} "off"} sa liste contien un sous objet qui définis
+			\newline
+			{\color{magenta} "node"} qui indique le noeud sur le quelle a la date {\color{magenta} "start"} le noeud va arreter de répondre au message
+			l'inverse {\color{magenta} "On"} réactive le noeud et permette a eux deux de simuler une panne.
+			\newline
+			\newline
+			l'objet {\color{magenta} "events"} représente l'appel d'une fonction utilisateur l'element {\color{magenta} "args"} représente les argument de la fonction 
+			doit etre données dans le meme ordre que ce de la fonction et spécifier le type de chaque arguments ainsi que ça valeur.
+			\newline
+			Notons que les type des arguments accepter sont les type de base de java.
+			Enfin la clé {\color{magenta} "FunctionName"} représente le nom de la fonction a appeler.
+			\newline
+			\newline
+			Pour aider la construction du fichier de configuration nous proposont les primitive de la class ProtocolTools suivante:
+			\newline
+			Pour construire un appelle de fonction
+			\begin{lstlisting}
+				public static JSONObject eventBuilder(String funcName , int node, long delay, List<Object> args);
+			\end{lstlisting}
+			Pour construire un appelle de fonction
+			\begin{lstlisting}
+				public static JSONObject StateBuilder(int node, long start_at);
+			\end{lstlisting}
+
+			Enfin pour lancée l'execution du scénario il faut juste ajouter le nombre de processus et le chemin ver le fichier Json au runneur souhaiter.
+
 			%\subsection{Rédaction du rapport}
 
 		\section{Plan de validation}

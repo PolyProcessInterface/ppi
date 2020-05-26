@@ -54,9 +54,9 @@ public class ProtocolDefinitionTest {
             array.add(14);
             array.add(13);
             long delay = 15;
-            JSONObject call_1 = ProtocolTools.CallFuncToJSON("Name_01",3,delay,array);
+            JSONObject call_1 = ProtocolTools.eventBuilder("Name_01",3,delay,array);
             Json_array.add(call_1);
-            Json_array.add(ProtocolTools.CallFuncToJSON("func_no_args",5,delay,new ArrayList<>()));
+            Json_array.add(ProtocolTools.eventBuilder("func_no_args",5,delay,new ArrayList<>()));
             toWrite.put("events",Json_array);
             filew.write(toWrite.toString());
             filew.flush();

@@ -24,7 +24,7 @@ public class ProtocolTools {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static JSONObject BreakDownToJSON(int node, long start_at){
+    public static JSONObject StateBuilder(int node, long start_at){
         JSONObject jo = new JSONObject();
         jo.put("node",node);
         jo.put("start",start_at);
@@ -71,7 +71,7 @@ public class ProtocolTools {
      * @return a {@link org.json.simple.JSONObject} object.
      */
     @SuppressWarnings("unchecked")
-    public static JSONObject CallFuncToJSON(String funcName , int node, long delay, List<Object> args){
+    public static JSONObject eventBuilder(String funcName , int node, long delay, List<Object> args){
         JSONObject jo = new JSONObject();
         JSONArray ja = new JSONArray();
         jo.put("FunctionName",funcName);
