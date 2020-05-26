@@ -112,8 +112,7 @@ public class MpiInfrastructure extends Infrastructure {
 			int sizeMsg = sizeMsgTab[0];
 			byte [] tab = new byte[sizeMsg];
 			comm.recv(tab, sizeMsg, MPI.BYTE, source, tag);
-			Message msg =RetriveMessage(tab);
-			//if(!process.getIs_down() || msg instanceof AppMessage)
+			Message msg = RetriveMessage(tab);
 			recvQueue.add(msg);
 		} catch (MPIException e) {
 			throw new PpiException("Receive from" + source + "failed", e);
@@ -172,7 +171,7 @@ public class MpiInfrastructure extends Infrastructure {
 			if(process.getTimer() == null)
 				System.out.println("MERDE");
 			if(num_node==currentNode)
-				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process),(long)func[2]);
+				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process,this),(long)func[2]);
 		}
 		l_call=map.get("Off");
 		for(Object[] func : l_call){
@@ -247,7 +246,7 @@ public class MpiInfrastructure extends Infrastructure {
 		for(Object[] func : l_call){
 			num_node=(int)func[1];
 			if(num_node==currentNode)
-				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process),(long)func[2]);
+				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process,this),(long)func[2]);
 			else
 				send(new SchedMessage(currentNode,num_node,(String) func[0],(long)func[2],Arrays.copyOfRange(func,3,func.length)));
 		}
