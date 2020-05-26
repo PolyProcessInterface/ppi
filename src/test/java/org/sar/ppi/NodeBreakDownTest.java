@@ -7,7 +7,8 @@ import org.json.simple.parser.JSONParser;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.sar.ppi.mpi.MpiInfrastructure;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.communication.MessageHandler;
 import org.sar.ppi.mpi.MpiRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -22,15 +23,12 @@ import static org.junit.Assert.assertTrue;
 
 import static org.junit.Assert.assertTrue;
 
-import org.sar.ppi.peersim.PeerSimRunner;
-import org.sar.ppi.simulator.mpi.MpiRunSimulation;
 import org.sar.ppi.simulator.peersim.PeerSimRunSimulation;
 import org.sar.ppi.simulator.peersim.ProtocolTools;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,10 +89,6 @@ public class NodeBreakDownTest extends NodeProcess {
     @Override
     public void start() {
         if (infra.getId() == 0) {
-            if (infra instanceof MpiInfrastructure){
-                MpiInfrastructure mp = (MpiInfrastructure) infra;
-                mp.launchSimulation(fileName);
-            }
             infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
             infra.exit();
         }
@@ -102,7 +96,7 @@ public class NodeBreakDownTest extends NodeProcess {
 
     @Test
     public void MpitesteProtocolBreakDown() {
-        String[] args = {NodeBreakDownTest.class.getName(), MpiRunSimulation.class.getName() ,"3"};
+        String[] args = {NodeBreakDownTest.class.getName(), MpiRunner.class.getName() ,"3",fileName};
         Ppi.main(args);
         assertTrue(true);
     }

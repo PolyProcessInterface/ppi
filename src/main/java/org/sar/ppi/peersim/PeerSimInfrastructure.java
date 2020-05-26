@@ -1,11 +1,11 @@
 package org.sar.ppi.peersim;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import org.sar.ppi.*;
-import org.sar.ppi.simulator.peersim.AppEvents.AppEvent;
-import org.sar.ppi.simulator.peersim.AppEvents.SchedEvent;
+import org.sar.ppi.communication.AppEvents.AppEvent;
+import org.sar.ppi.communication.AppEvents.SchedEvent;
+import org.sar.ppi.communication.Message;
 import peersim.config.Configuration;
 import peersim.core.Network;
 import peersim.core.Node;
@@ -119,7 +119,6 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		if (event instanceof AppEvent){
 			if(event instanceof SchedEvent && process.getIs_down())
 				return;
-
 			AppEvent ev = (AppEvent) event;
 			ev.run();
 			return;

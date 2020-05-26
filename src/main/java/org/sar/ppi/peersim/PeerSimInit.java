@@ -16,8 +16,8 @@ public class PeerSimInit implements Control {
 	private static final String PAR_PROTO="infrapid";
 	public static final String PAR_SEED = "random.seed";
 	private final int infrapid;
-	
-	
+
+
 	/**
 	 * Constructor for PeerSimInit.
 	 *
@@ -34,7 +34,7 @@ public class PeerSimInit implements Control {
 		long seed =	Configuration.getLong(PAR_SEED,System.currentTimeMillis());
 		System.err.println("SETTING THE RANDOM.SEED TO "+seed);
 		CommonState.r=new ExtendedRandom(seed);
-		
+
 		for(int i=0;i < Network.size();i++) {
 			Node node=Network.get(i);
 			PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infrapid);

@@ -1,5 +1,7 @@
 package org.sar.ppi;
 
+import org.sar.ppi.communication.Message;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;

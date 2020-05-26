@@ -1,6 +1,6 @@
-package org.sar.ppi.simulator.mpi.AppMessage;
+package org.sar.ppi.communication.AppMessage;
 
-import org.sar.ppi.Message;
+import org.sar.ppi.communication.Message;
 
 /**
  * SchedMessage class.

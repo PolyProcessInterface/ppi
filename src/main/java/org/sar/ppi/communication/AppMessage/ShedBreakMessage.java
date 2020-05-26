@@ -1,7 +1,6 @@
-package org.sar.ppi.simulator.mpi.AppMessage;
+package org.sar.ppi.communication.AppMessage;
 
-import org.sar.ppi.simulator.mpi.AppMessage.AppMessage;
-import org.sar.ppi.Message;
+import org.sar.ppi.communication.Message;
 
 public class ShedBreakMessage extends Message implements AppMessage {
     private long delay;

@@ -1,4 +1,6 @@
-package org.sar.ppi;
+package org.sar.ppi.communication;
+
+import org.sar.ppi.PpiException;
 
 /**
  * MessageHandlerException.

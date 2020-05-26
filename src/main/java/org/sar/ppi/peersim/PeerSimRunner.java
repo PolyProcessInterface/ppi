@@ -32,6 +32,8 @@ public class PeerSimRunner implements Runner {
 			ps.println();
 			ps.println("protocol.infra.nodeprocess " + pClass.getName());
 			ps.printf("network.size %d\n", nbProcs);
+			if(scenario!=null)
+				ps.println("path " + scenario);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,12 +1,15 @@
 package org.sar.ppi;
 
-import org.sar.ppi.simulator.mpi.AppMessage.AppMessage;
-import org.sar.ppi.simulator.mpi.AppMessage.SchedMessage;
-import org.sar.ppi.simulator.mpi.AppMessage.ShedBreakMessage;
-import org.sar.ppi.simulator.mpi.AppMessage.ShedOnMessage;
-import org.sar.ppi.simulator.mpi.TimerTasks.SchedDeploy;
-import org.sar.ppi.simulator.mpi.TimerTasks.ScheduledBreakDown;
-import org.sar.ppi.simulator.mpi.TimerTasks.ScheduledFunction;
+import org.sar.ppi.communication.AppMessage.AppMessage;
+import org.sar.ppi.communication.AppMessage.SchedMessage;
+import org.sar.ppi.communication.AppMessage.ShedBreakMessage;
+import org.sar.ppi.communication.AppMessage.ShedOnMessage;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.communication.MessageHandler;
+import org.sar.ppi.communication.MessageHandlerException;
+import org.sar.ppi.communication.Tasks.SchedDeploy;
+import org.sar.ppi.communication.Tasks.ScheduledBreakDown;
+import org.sar.ppi.communication.Tasks.ScheduledFunction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

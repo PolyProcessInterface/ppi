@@ -9,6 +9,8 @@ import java.util.Scanner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.communication.MessageHandler;
 import org.sar.ppi.peersim.PeerSimRunner;
 
 import peersim.config.Configuration;
@@ -18,7 +20,7 @@ import peersim.config.Configuration;
  */
 public class BroadcastOrderTest extends NodeProcess {
 
-	public static class ExampleMessage extends Message{
+	public static class ExampleMessage extends Message {
 
 		private static final long serialVersionUID = 1L;
 		private String s;

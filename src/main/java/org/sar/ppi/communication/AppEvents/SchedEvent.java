@@ -1,4 +1,4 @@
-package org.sar.ppi.simulator.peersim.AppEvents;
+package org.sar.ppi.communication.AppEvents;
 
 import org.sar.ppi.peersim.PeerSimInfrastructure;
 

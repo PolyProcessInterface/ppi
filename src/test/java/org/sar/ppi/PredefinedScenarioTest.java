@@ -7,8 +7,9 @@ import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.sar.ppi.mpi.MpiInfrastructure;
-import org.sar.ppi.simulator.mpi.MpiRunSimulation;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.mpi.MpiRunner;
+import org.sar.ppi.peersim.PeerSimInit;
 import org.sar.ppi.simulator.peersim.PeerSimRunSimulation;
 import org.sar.ppi.simulator.peersim.ProtocolTools;
 
@@ -34,10 +35,6 @@ public class PredefinedScenarioTest extends NodeProcess{
     public void start () {
         System.out.println("my id "+infra.getId());
         if (infra.getId() == 0) {
-            if(infra instanceof MpiInfrastructure) {
-                MpiInfrastructure mp= (MpiInfrastructure)    infra;
-                mp.launchSimulation(fileName);
-            }
             infra.exit();
         }
         else
@@ -74,7 +71,7 @@ public class PredefinedScenarioTest extends NodeProcess{
             //CALL 1
             array.add("Arg_1er Appel");
             array.add(4);
-            long delay = 1;
+            long delay = 1000;
             JSONObject call_1 = ProtocolTools.CallFuncToJSON("callMe",0,delay,array);
             arrayJSON.add(call_1);
 
@@ -83,7 +80,7 @@ public class PredefinedScenarioTest extends NodeProcess{
             array = new ArrayList<>();
             array.add("Arg_1er");
             array.add(4);
-            delay = 2;
+            delay = 2000;
             JSONObject call_2 = ProtocolTools.CallFuncToJSON("callMe",1,delay,array);
             arrayJSON.add(call_2);
 
@@ -91,7 +88,7 @@ public class PredefinedScenarioTest extends NodeProcess{
             array = new ArrayList<>();
             array.add("Arg_dernier Appel");
             array.add(45);
-            delay = 3;
+            delay = 3000;
             JSONObject call_3 = ProtocolTools.CallFuncToJSON("callMe",2,delay,array);
             arrayJSON.add(call_3);
             toWrite.put("Calls",arrayJSON);
@@ -109,7 +106,7 @@ public class PredefinedScenarioTest extends NodeProcess{
     @Test
     public void MpiScenario() {
              Assume.assumeTrue(Environment.mpirunExist());
-             Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), MpiRunSimulation.class.getName() ,"3" , fileName});
+             Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), MpiRunner.class.getName() ,"3" , fileName});
               assertTrue(true);
               System.out.println("Teste Sceneario from Json mpi ok");
     }

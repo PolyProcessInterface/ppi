@@ -2,10 +2,11 @@ package org.sar.ppi.simulator.peersim;
 
 import org.sar.ppi.PpiException;
 import org.sar.ppi.peersim.PeerSimInfrastructure;
-import org.sar.ppi.simulator.peersim.AppEvents.OffEvent;
-import org.sar.ppi.simulator.peersim.AppEvents.OnEvent;
-import org.sar.ppi.simulator.peersim.AppEvents.SchedEvent;
+import org.sar.ppi.communication.AppEvents.OffEvent;
+import org.sar.ppi.communication.AppEvents.OnEvent;
+import org.sar.ppi.communication.AppEvents.SchedEvent;
 import peersim.config.Configuration;
+import peersim.config.MissingParameterException;
 import peersim.core.Control;
 import peersim.core.Network;
 import peersim.core.Node;
@@ -35,7 +36,11 @@ public class PeerSimInitSimulation implements Control {
     public PeerSimInitSimulation(String prefix) {
         infrapid=Configuration.getPid(prefix+"."+PAR_PROTO);
         pid_trans=Configuration.getPid(prefix+"."+TRANSPORT_SIMULATION);
-        FileName=Configuration.getString("path");
+        try {
+            FileName = Configuration.getString("path");
+        }catch (MissingParameterException e){
+
+        }
     }
 
     /** {@inheritDoc} */

@@ -1,4 +1,4 @@
-package org.sar.ppi.simulator.mpi.TimerTasks;
+package org.sar.ppi.communication.Tasks;
 
 import org.sar.ppi.Infrastructure;
 import org.sar.ppi.mpi.MpiInfrastructure;
