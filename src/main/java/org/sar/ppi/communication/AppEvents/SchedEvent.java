@@ -31,12 +31,15 @@ public class SchedEvent implements AppEvent {
     @Override
     public void run() {
         for(Method m : peerInfra.getProcess().getClass().getMethods()){
-            if(m.getName().equals(Funcname))
-                try {
-                    m.invoke(peerInfra.getProcess(),args);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+            if(m.getName().equals(Funcname)) {
+                peerInfra.serialThreadRun(() -> {
+                    try {
+                        m.invoke(peerInfra.getProcess(),args);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
         }
     }
 }
