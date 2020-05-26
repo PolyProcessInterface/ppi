@@ -12,21 +12,12 @@ import org.sar.ppi.communication.Message;
 import org.sar.ppi.communication.MessageHandler;
 import org.sar.ppi.mpi.MpiRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-
-
-
-
-
-
-
 import static org.junit.Assert.assertTrue;
 
 import org.sar.ppi.peersim.PeerSimRunner;
 import org.sar.ppi.tools.ProtocolTools;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -38,9 +29,6 @@ import java.util.List;
  */
 public class NodeBreakDownTest extends NodeProcess {
     static String fileName = System.getProperty("user.dir") + "/testeJson.json";
-    private int NB_ENVOIS = 5;
-
-    private int nb_recus = 0, nb_envois = 0;
 
     public static class ExampleMessage extends Message {
 
@@ -88,7 +76,7 @@ public class NodeBreakDownTest extends NodeProcess {
     }
 
     @Override
-    public void start() {
+    public void init(String[] args) {
         if (infra.getId() == 0) {
             infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
             infra.exit();
@@ -98,14 +86,13 @@ public class NodeBreakDownTest extends NodeProcess {
     @Test
     public void MpitesteProtocolBreakDown() {
         Assume.assumeTrue(Environment.mpirunExist());
-        String[] args = {NodeBreakDownTest.class.getName(), MpiRunner.class.getName() ,"3",fileName};
-        Ppi.main(args);
+        Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3, new File(fileName));
         assertTrue(true);
     }
 
     @Test
     public void PeersimtesteProtocolBreakDown() {
-        Ppi.main(new String[]{NodeBreakDownTest.class.getName(), PeerSimRunner.class.getName(), "3", fileName});
+        Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3, new File(fileName));
         assertTrue(true);
         System.out.println("Teste BreakDown from Json Peersim ok");
     }

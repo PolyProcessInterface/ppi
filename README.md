@@ -48,7 +48,7 @@ public class ExampleNodeProcess extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
 		}
@@ -61,14 +61,14 @@ dynamically load it:
 
 ```bash
 javac -cp ppi-0.2-dev-bundle.jar ExampleNodeProcess
-java -jar ppi-0.2-dev-bundle.jar ExampleNodeProcess org.sar.ppi.peersim.PeerSimRunner 4
+java -jar ppi-0.2-dev-bundle.jar ExampleNodeProcess org.sar.ppi.peersim.PeerSimRunner --np=4
 ```
 
 Alternatively you can call `Ppi.main()` yourself like this and the run your class:
 
 ```java
 public static void main(String[] args) {
-	Ppi.main(ExampleNodeProcess.class, new MpiRunner(), 4, null);
+	Ppi.main(ExampleNodeProcess.class, new MpiRunner(), args, 3);
 }
 ```
 
@@ -81,6 +81,21 @@ java -cp .:ppi-0.2-dev-bundle.jar ExampleNodeProcess
 
 The API consists of the [public methods of the `Infrastructure` class](https://atlaoui.github.io/ParallelProgramingInterface/org/sar/ppi/Infrastructure.html)
 which can be access via the `infra` property.
+
+### CLI reference
+
+```
+Usage: ppi [-hV] [--np=<number>] [-s=<path>] <process-class> <runner-class>
+           [<args>...]
+      <process-class>     Fully qualified name of the class to use as process
+      <runner-class>      Fully qualified name of the class to use as runner
+      [<args>...]         Args to pass to the processes
+  -h, --help              Display a help message
+      --np=<number>       Number of processus in the network
+                            Default: 4
+  -s, --scenario=<path>   Path to the scenario file
+  -V, --version           Print version info
+```
 
 ## Requirement
 

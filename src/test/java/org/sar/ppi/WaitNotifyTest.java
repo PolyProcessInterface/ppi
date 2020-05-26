@@ -66,7 +66,7 @@ public class WaitNotifyTest extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			for (int i = 1; i < infra.size(); i++) {
 				infra.send(new StartMessage(infra.getId(), i));
@@ -78,15 +78,13 @@ public class WaitNotifyTest extends NodeProcess {
 	@Test
 	public void MpiAnnotatedProcessTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = { WaitNotifyTest.class.getName(), MpiRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new MpiRunner());
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimAnnotatedProcessTest() {
-		String[] args = { WaitNotifyTest.class.getName(), PeerSimRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new PeerSimRunner());
 		assertTrue(true);
 	}
 }

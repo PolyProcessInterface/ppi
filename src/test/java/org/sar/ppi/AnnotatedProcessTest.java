@@ -41,7 +41,7 @@ public class AnnotatedProcessTest extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
 		}
@@ -50,15 +50,13 @@ public class AnnotatedProcessTest extends NodeProcess {
 	@Test
 	public void MpiAnnotatedProcessTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new MpiRunner());
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimAnnotatedProcessTest() {
-		String[] args = { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new PeerSimRunner());
 		assertTrue(true);
 	}
 }

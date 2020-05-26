@@ -51,7 +51,7 @@ public class BigObjectTest extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			infra.send(new ExampleMessage(infra.getId(), 1, newMsg()));
 		}
@@ -60,15 +60,13 @@ public class BigObjectTest extends NodeProcess {
 	@Test
 	public void MpiBigObjectTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName(), "3" };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3);
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimBigObjectTest() {
-		String[] args = { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName(), "3" };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3);
 		assertTrue(true);
 	}
 }

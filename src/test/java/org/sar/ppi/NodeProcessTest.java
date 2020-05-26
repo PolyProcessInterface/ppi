@@ -37,7 +37,7 @@ public class NodeProcessTest extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			//System.err.println("SENDING FIRST MESSAGE");
 			infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
@@ -49,15 +49,13 @@ public class NodeProcessTest extends NodeProcess {
 	@Test
 	public void MpiExample() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new MpiRunner());
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimExample() {
-		String[] args = { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new PeerSimRunner());
 		assertTrue(true);
 	}
 }

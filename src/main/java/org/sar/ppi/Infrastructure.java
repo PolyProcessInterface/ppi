@@ -139,7 +139,7 @@ public abstract class Infrastructure {
 
 	/**
 	 * Wait until the condition is true. This function can not be used in
-	 * {@link org.sar.ppi.NodeProcess#start()}.
+	 * {@link org.sar.ppi.NodeProcess#init(String[])}.
 	 *
 	 * @param condition a lambda which returns a boolean.
 	 * @throws java.lang.InterruptedException if the process has been interrupted while waiting.

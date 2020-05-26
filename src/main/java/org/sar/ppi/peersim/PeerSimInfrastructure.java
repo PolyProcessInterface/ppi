@@ -21,6 +21,8 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 	private static final String PAR_TRANSPORT="transport";
 
+	private static String[] args;
+
 	private final int pid_transport; // id du protocole de transport
 
 	private static final String PAR_NP="nodeprocess"; 
@@ -51,6 +53,10 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		pid_transport=Configuration.getPid(prefix+"."+PAR_TRANSPORT);
 		running=true;
 		currentNode=0;  
+	}
+
+	public static void setArgs(String[] pargs) {
+		args = pargs;
 	}
 
 	/**
@@ -108,7 +114,7 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	/** {@inheritDoc} */
 	@Override
 	public void initialize(Node node) {
-		this.process.start();
+		this.process.init(args.clone());
 	}
 
 	/** {@inheritDoc} */

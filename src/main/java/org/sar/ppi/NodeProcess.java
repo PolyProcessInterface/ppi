@@ -80,9 +80,9 @@ public abstract class NodeProcess {
 	}
 
 	/**
-	 * Start execution sequence for the current node.
+	 * Start init sequence for the current node.
 	 */
-	public abstract void start();
+	public abstract void init(String[] args);
 	
 	/**
 	 * Needed for peersim. Return a new intance of the current class by default.

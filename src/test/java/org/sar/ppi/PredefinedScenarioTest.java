@@ -12,6 +12,7 @@ import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 import org.sar.ppi.tools.ProtocolTools;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,7 +32,7 @@ public class PredefinedScenarioTest extends NodeProcess{
     }
 
     @Override
-    public void start () {
+    public void init (String[] args) {
         System.out.println("my id "+infra.getId());
     }
 
@@ -96,14 +97,14 @@ public class PredefinedScenarioTest extends NodeProcess{
     @Test
     public void MpiScenario() {
              Assume.assumeTrue(Environment.mpirunExist());
-             Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), MpiRunner.class.getName() ,"3" , fileName});
+             Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3 , new File(fileName));
               assertTrue(true);
               System.out.println("Teste Sceneario from Json mpi ok");
     }
 
     @Test
     public void PeersimScenario() {
-          Ppi.main(new String[] { org.sar.ppi.PredefinedScenarioTest.class.getName(), PeerSimRunner.class.getName() ,"3" , fileName});
+          Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3 , new File(fileName));
           assertTrue(true);
           System.out.println("Teste Sceneario from Json Peersim ok");
     }
