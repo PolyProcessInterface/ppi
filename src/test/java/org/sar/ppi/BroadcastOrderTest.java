@@ -9,6 +9,8 @@ import java.util.Scanner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.communication.MessageHandler;
 import org.sar.ppi.peersim.PeerSimRunner;
 
 import peersim.config.Configuration;
@@ -18,7 +20,7 @@ import peersim.config.Configuration;
  */
 public class BroadcastOrderTest extends NodeProcess {
 
-	public static class ExampleMessage extends Message{
+	public static class ExampleMessage extends Message {
 
 		private static final long serialVersionUID = 1L;
 		private String s;
@@ -81,16 +83,17 @@ public class BroadcastOrderTest extends NodeProcess {
 		int i=0;
 		
 		outputPeersim=outContent.toString();
+		System.out.println(outputPeersim);
 		Scanner scanner = new Scanner(outputPeersim);
 		String[] expected=new String[networkSize];
-		
+
 		while (scanner.hasNextLine()) {
 		  String line = scanner.nextLine();
 		  if(line.isEmpty()) {	//Skipping empty output lines
 			  continue;
 		  }else {
 			  String[] results=line.split(" ");
-			  
+			  System.out.println( "dd"+line);
 			  if(i<networkSize-1) { // Initialisation des output expected pour chaque ligne lors du premier experiment
 				  
 				  expected[i]=results[0]+","+results[2]+","+results[4];

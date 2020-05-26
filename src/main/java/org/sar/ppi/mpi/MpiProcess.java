@@ -1,6 +1,7 @@
 package org.sar.ppi.mpi;
 
 import org.sar.ppi.NodeProcess;
+import org.sar.ppi.communication.Message;
 
 /**
  * MpiProcess class. This Process will wait for messages to arrive from the recvQueue
@@ -27,14 +28,14 @@ public class MpiProcess implements Runnable {
 	@Override
 	public void run() {
 		process.start();
-		while (infra.running.get()) {
-			infra.serialThreadRun(() -> {
-				try {
-					process.processMessage(infra.recv());
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			});
+		while (!Thread.currentThread().isInterrupted()) {
+			try {
+				Message m = infra.recv();
+				infra.serialThreadRun(() -> process.processMessage(m));
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt(); // preserve interruption status
+				return;
+			}
 		}
 	}
 }

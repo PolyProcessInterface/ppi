@@ -1,4 +1,4 @@
-package org.sar.ppi.simulator.peersim;
+package org.sar.ppi.tools;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,6 +15,47 @@ import java.util.*;
  * ProtocolTools class.
  */
 public class ProtocolTools {
+    /**
+     *
+     * @param node
+     *  The node to turn off
+     * @param start_at
+     *  The delay to wait before the start
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static JSONObject StateBuilder(int node, long start_at){
+        JSONObject jo = new JSONObject();
+        jo.put("node",node);
+        jo.put("start",start_at);
+        return jo;
+    }
+
+    /**
+     *
+     * @param o
+     * Json object "on" or "off"
+     * @param name
+     * "on" or "off"
+     * @return
+     */
+    public static List<Object[]> BreakDownFromJSON(JSONObject o,String name){
+        JSONArray ja = (JSONArray) o.get(name);
+        JSONObject jo;
+        List<Object[]>retArray = new ArrayList<>();
+        if(ja==null)
+            return retArray;
+        Object[] tuple;
+        for(int i = 0,len = ja.size();i<len;i++){
+            jo= (JSONObject) ja.get(i);
+            tuple = new Object[2];
+            tuple[0]=Integer.parseInt(jo.get("node").toString());
+            tuple[1]=jo.get("start");
+            retArray.add(tuple);
+        }
+        return retArray;
+    }
+
 
     /**
      * Write a call to a function to a Json Object
@@ -29,7 +70,8 @@ public class ProtocolTools {
      *       The args
      * @return a {@link org.json.simple.JSONObject} object.
      */
-    public static JSONObject protocolToJSON(String funcName , int node,long delay, List<Object> args){
+    @SuppressWarnings("unchecked")
+    public static JSONObject eventBuilder(String funcName , int node, long delay, List<Object> args){
         JSONObject jo = new JSONObject();
         JSONArray ja = new JSONArray();
         jo.put("FunctionName",funcName);
@@ -52,7 +94,7 @@ public class ProtocolTools {
      * @param o a {@link org.json.simple.JSONObject} object.
      * @return the protocol.
      */
-    public static Object[] ProtocolFromJSON(JSONObject o){
+    public static Object[] CallFuncFromJSON(JSONObject o){
         JSONArray ja = (JSONArray) o.get("args");
         int len=ja.size()+3;
         Object [] object_func = new Object[len];
@@ -62,7 +104,6 @@ public class ProtocolTools {
         for(int i =3,indexJa =0;i<len;i++,indexJa++){
             JSONObject jo = (JSONObject) ja.get(indexJa);
             String type = (String) jo.get("type");
-            //ptet ajouter par la suite
             switch(type) {
                 case "Integer":
                     object_func[i]=Integer.parseInt(jo.get("val").toString());
@@ -75,30 +116,38 @@ public class ProtocolTools {
         return object_func;
     }
 
-    public static List<Object[]> readProtocolJSON(String path){
+    /**
+     *
+     * @param path
+     * Path to the Json file
+     * @return
+     * returns "on" "off" or "events" list of calls
+     */
+    public static HashMap<String,List<Object[]>> readProtocolJSON(String path){
+        HashMap<String,List<Object[]>> res = null;
         JSONParser parser = new JSONParser();
-        System.out.println("je suis passer par la fun2");
         List<Object[]> func_list = new ArrayList<>();
-        System.out.println("je suis passer par la fun22");
         try (FileReader f = new FileReader(path)){
 
             JSONObject jsonObject = (JSONObject) parser.parse(f);
             //nb call protocole
-            int nb_call = jsonObject.size();
-            for (int i = 0;i<nb_call;i++){
-                System.out.println("i="+i);
-                Object[] recip =ProtocolFromJSON((JSONObject) jsonObject.get("Call_"+(i+1)));
-                System.out.println(Arrays.toString(recip));
-                func_list.add(recip);
+            JSONArray ja = (JSONArray) jsonObject.get("events");
+            if(ja!=null)
+                for(Object o : ja){
+                    Object[] recip = CallFuncFromJSON((JSONObject) o);
+                    func_list.add(recip);
+                }
+            res = new HashMap<>();
+            res.put("events",func_list);
+            res.put("Off",BreakDownFromJSON(jsonObject,"Off"));
+            res.put("On",BreakDownFromJSON(jsonObject,"On"));
 
-            }
-            System.out.println("je suis passer par la fun23 + "+nb_call);
+
         } catch (IOException | ParseException e) {
-            System.out.println("error");
             e.printStackTrace();
         }
 
-        return func_list;
+        return res;
     }
 
     /** Json object joins some types (Integer/long)  */
@@ -139,7 +188,13 @@ public class ProtocolTools {
             str.writeObject(o);
         str.flush();
     }
-
+    /**
+     *
+     * @param b
+     * @return Object[]
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static Object[] readTimeFuncCall(ObjectInputStream b) throws IOException, ClassNotFoundException {
         String name = b.readUTF();
         int node = b.readInt();

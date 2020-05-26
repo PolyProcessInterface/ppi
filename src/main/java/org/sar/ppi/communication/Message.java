@@ -1,4 +1,4 @@
-package org.sar.ppi;
+package org.sar.ppi.communication;
 
 import java.io.Serializable;
 

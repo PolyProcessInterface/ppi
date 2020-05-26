@@ -3,7 +3,7 @@ package org.sar.ppi;
 
 import org.json.simple.JSONObject;
 import org.junit.Test;
-import org.sar.ppi.simulator.peersim.ProtocolTools;
+import org.sar.ppi.tools.ProtocolTools;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ProtocolDefinitionTest {
@@ -40,25 +41,30 @@ public class ProtocolDefinitionTest {
         }
     }
     @Test
+    @SuppressWarnings("unchecked")
     public void JsonDescriptionTeste(){
         String fileName = "testeJson.json";
-        try(FileWriter filew = new FileWriter(fileName)){
+        try{
+            FileWriter filew = new FileWriter(fileName);
             //in
             JSONObject toWrite = new JSONObject();
             List<Object> array = new ArrayList<>();
+            List<Object> Json_array = new ArrayList<>();
             array.add("arg_String");
             array.add(14);
             array.add(13);
             long delay = 15;
-            JSONObject call_1 = ProtocolTools.protocolToJSON("Name_01",3,delay,array);
-            toWrite.put("Call_1",call_1);
-            toWrite.put("Call_2",ProtocolTools.protocolToJSON("func_no_args",5,delay,new ArrayList<>()));
+            JSONObject call_1 = ProtocolTools.eventBuilder("Name_01",3,delay,array);
+            Json_array.add(call_1);
+            Json_array.add(ProtocolTools.eventBuilder("func_no_args",5,delay,new ArrayList<>()));
+            toWrite.put("events",Json_array);
             filew.write(toWrite.toString());
             filew.flush();
             filew.close();
 
             //Out
-            List<Object[]> array_obj = ProtocolTools.readProtocolJSON(fileName);
+            HashMap<String,List<Object[]>> map = ProtocolTools.readProtocolJSON(fileName);
+            List<Object[]> array_obj = map.get("events");
             assertEquals(2,array_obj.size());
             Object[] res_call1 = array_obj.get(0);
             Object[] res_call2 = array_obj.get(1);

@@ -1,5 +1,7 @@
 package org.sar.ppi;
 
+import org.sar.ppi.communication.Message;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -17,6 +19,7 @@ public abstract class Infrastructure {
 	protected Thread mainThread;
 	protected Thread nextThread;
 	protected Map<BooleanSupplier, Thread> threads = new ConcurrentHashMap<>();
+
 
 	/**
 	 * Constructor for Infrastructure.
@@ -54,6 +57,23 @@ public abstract class Infrastructure {
 	 * @return number of nodes.
 	 */
 	public abstract int size();
+
+	/**
+	 * deploy the current node so he can recive msg
+	 */
+	public void deploy(){ process.setIs_down(false); }
+
+	/**
+	 * undeploy the current node (turn it of)
+	 */
+	public void undeploy() { process.setIs_down(true); }
+
+	/**
+	 *
+	 * @return
+	 * the current process linked to this infra
+	 */
+	public NodeProcess getProcess() { return process; }
 
 	/**
 	 * Run a new thread that will start immediately. The current thread

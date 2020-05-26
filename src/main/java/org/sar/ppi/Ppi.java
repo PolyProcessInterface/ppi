@@ -27,7 +27,7 @@ public class Ppi {
 		Class<? extends NodeProcess> processClass;
 		Runner runner;
 		int nbProcs = 5;
-		String scenario = null;
+		String scenario = "no";//le test !=null passe mm avec null du coup je mets une chaine de base
 
 		if (args.length < 2 || args.length > 4) {
 			System.out.println("Usage: ppirun <process-class-name> <runner-class-name> [<nb-proc> [<scenario>]]");
