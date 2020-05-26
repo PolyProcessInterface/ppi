@@ -35,10 +35,10 @@ public class WaitTest extends NodeProcess {
 	public void helloN(){
 		try {
 			infra.wait( () -> msgReceived >= N );
+			System.out.println(infra.getId()+" Hello !");
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			System.out.println(infra.getId()+" Interrupted while waiting !");
 		}
-		System.out.println(infra.getId()+" Hello !");
 	}
 	
 	@MessageHandler

@@ -3,6 +3,7 @@ package org.sar.ppi.mpi;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Ppi;
@@ -32,6 +33,8 @@ public class MpiRunner implements Runner {
 			Process p = Runtime.getRuntime().exec(cmd);
 			Thread killMpi = new Thread(() -> {
 				System.out.println("Interrupt received, killing MPI");
+				p.destroyForcibly();
+				try { p.waitFor(1, TimeUnit.SECONDS); } catch (InterruptedException e) {}
 				p.destroy();
 			});
 			Runtime.getRuntime().addShutdownHook(killMpi);

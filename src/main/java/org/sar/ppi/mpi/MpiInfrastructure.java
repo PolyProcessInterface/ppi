@@ -83,7 +83,7 @@ public class MpiInfrastructure extends Infrastructure {
 				t.interrupt();
 				System.out.printf("%d Interrupted waiting thread %d\n", getId(), t.getId());
 				t.join();
-				System.out.printf("%d Interrupted waiting thread %d\n", getId(), t.getId());
+				System.out.printf("%d Joined waiting thread %d\n", getId(), t.getId());
 			}
 			executor.interrupt();
 			System.out.printf("%d Interrupted MpiProcess thread\n", getId());

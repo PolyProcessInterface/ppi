@@ -2,7 +2,9 @@ package org.sar.ppi;
 
 import org.sar.ppi.communication.Message;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -19,6 +21,7 @@ public abstract class Infrastructure {
 	protected Thread mainThread;
 	protected Thread nextThread;
 	protected Map<BooleanSupplier, Thread> threads = new ConcurrentHashMap<>();
+	protected Set<Thread> runningThreads = new HashSet<>();
 
 
 	/**
@@ -84,9 +87,11 @@ public abstract class Infrastructure {
 	public void serialThreadRun(Runnable method) {
 		Thread t = new Thread(() -> {
 			synchronized (lock) {
+				runningThreads.add(Thread.currentThread());
 				method.run();
 				nextThread = mainThread;
 				lock.notifyAll();
+				runningThreads.remove(Thread.currentThread());
 			}
 		});
 		synchronized (lock) {
@@ -98,8 +103,9 @@ public abstract class Infrastructure {
 					lock.wait();
 					serialThreadScheduler();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					t.interrupt();
+					serialThreadScheduler();
+					return;
 				}
 			}
 		}
@@ -113,14 +119,17 @@ public abstract class Infrastructure {
 		synchronized (lock) {
 			for (BooleanSupplier condition : threads.keySet()) {
 				if (condition.getAsBoolean()) {
-					nextThread = threads.get(condition);
+					Thread thread = threads.get(condition);
+					nextThread = thread;
 					lock.notifyAll();
 					while (Thread.currentThread() != nextThread) {
 						try {
 							lock.wait();
+							if (!runningThreads.contains(thread)) {
+								thread.join();
+							}
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							return;
 						}
 					}
 				}
@@ -143,7 +152,12 @@ public abstract class Infrastructure {
 				nextThread = mainThread;
 				while (Thread.currentThread() != nextThread) {
 					lock.notifyAll();
-					lock.wait();
+					try {
+						lock.wait();
+					} catch (InterruptedException e) {
+						threads.remove(condition);
+						throw new InterruptedException();
+					}
 				}
 				System.out.printf("%d Stopped waiting\n", this.getId());
 				threads.remove(condition);
