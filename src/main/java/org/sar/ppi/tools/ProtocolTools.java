@@ -1,4 +1,4 @@
-package org.sar.ppi.simulator.peersim;
+package org.sar.ppi.simulator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -129,14 +129,14 @@ public class ProtocolTools {
 
             JSONObject jsonObject = (JSONObject) parser.parse(f);
             //nb call protocole
-            JSONArray ja = (JSONArray) jsonObject.get("Calls");
+            JSONArray ja = (JSONArray) jsonObject.get("events");
             if(ja!=null)
                 for(Object o : ja){
                     Object[] recip = CallFuncFromJSON((JSONObject) o);
                     func_list.add(recip);
                 }
             res = new HashMap<>();
-            res.put("Calls",func_list);
+            res.put("events",func_list);
             res.put("Off",BreakDownFromJSON(jsonObject,"Off"));
             res.put("On",BreakDownFromJSON(jsonObject,"On"));
 
