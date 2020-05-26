@@ -1,7 +1,5 @@
 package org.sar.ppi;
 
-import org.sar.ppi.communication.AppEvents.AppEvent;
-import org.sar.ppi.communication.AppEvents.SchedEvent;
 import org.sar.ppi.communication.AppMessage.AppMessage;
 import org.sar.ppi.communication.AppMessage.SchedMessage;
 import org.sar.ppi.communication.AppMessage.ShedBreakMessage;
@@ -72,7 +70,7 @@ public abstract class NodeProcess {
 		//mpi
 		if(message instanceof SchedMessage && !is_down.get()) {
 			SchedMessage shed = (SchedMessage) message;
-			timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),this),shed.getDelay());
+			timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),this,this.infra),shed.getDelay());
 		}
 		if(message instanceof ShedBreakMessage)
 			timer.schedule(new ScheduledBreakDown(this),((ShedBreakMessage) message).getDelay());
