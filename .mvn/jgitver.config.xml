@@ -1,4 +1,4 @@
 <configuration xmlns="http://jgitver.github.io/maven/configuration/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jgitver.github.io/maven/configuration/1.1.0 https://jgitver.github.io/maven/configuration/jgitver-configuration-v1_1_0.xsd">
   <strategy>PATTERN</strategy>
-  <versionPattern>${v}${-~meta.COMMIT_DISTANCE}${-g~meta.GIT_SHA1_8}</versionPattern>
+  <versionPattern>${meta.BASE_VERSION}${-~meta.COMMIT_DISTANCE}${-g~meta.GIT_SHA1_8}</versionPattern>
 </configuration>
