@@ -52,6 +52,8 @@
 
 	\newpage
 	\pagenumbering{arabic}
+	\tableofcontents
+	\newpage
 		\section{Introduction}
 			\subsection{Les applications réparties : qu'est-ce ?}
 			\large{ Avant de commencer, il est important de définir ce qu’est une application répartie. Dans notre cas, nous pouvons voir une application répartie comme un ensemble d’entités logicielles, de composants qui peuvent être développés dans différents langages de programmation, s’exécutant sur plusieurs sites et qui sont reliés entre eux par une interface ou un réseau de communication.}
@@ -80,7 +82,7 @@
 			
 			\subsection{Aperçu de l'implémentation d'un anneau avec les deux API}
                 
-            \vspace*{7mm}
+            \vspace*{5mm}
 
                 {\bfseries Implémentation en MPI}
 				\begin{lstlisting}
@@ -135,7 +137,7 @@ public class HelloProtocol implements EDProtocol {
 	}
 }
                 \end{lstlisting}
-                \vspace*{7mm}
+                \vspace*{5mm}
 
 		\section{Motivation et objectif global}
 			\subsection{API générique : avantages, modèle de programmation(ici événementiel)}
@@ -199,37 +201,67 @@ public class BasicTest {
 		\section{Les étapes de réalisation}
 			\subsection{Définition API générique}
 			
-			\hspace*{-2cm} \includegraphics[width=19cm]{Ppi_uml.png}
-			Nous avons commencé par définir une classe abstraite Infrastructure  qui contient tous les éléments qui doivent être implantés par les deux API.
+			\hspace*{-2cm} \includegraphics[width=19cm]{Ppi_uml1.jpeg}
+			\hspace*{-1.8cm} \includegraphics[width=20cm]{Ppi_uml2.png}
+
+			\newpage
+			\hspace*{1cm} \includegraphics[width=13cm]{Ppi_uml3.png}
+
+			\vspace*{3mm}
+
+			Nous avons commencé par définir une classe abstraite Infrastructure qui contient toutes les méthodes que nos deux API (MPI et PeerSim) devront implanter et une classe abstraite NodeProcess qui est en lien direct avec Infrastructure.
 			\newline
-			Sachant que le lancement des deux applications est radicalement différent, nous avons réalisé qu'il était primordial que les deux 
-			lancements soient unifiés pour permettre un développement plus rapide et sûr, pour y remédier nous avons créé l'interface Runner qui nous permet 
-			d'instancier des exécutions des deux API avec les mêmes arguments, ainsi il suffit d'instancier MPIRunner ou PeerSimRunner avec en argument
-			le nom de la classe qui implante NodeProcess, le nom du runner et le nombre de processus.
+			Le lancement de ces deux applications est complètement différent, c’est pourquoi il est primordial que les deux lancements soient unifiés pour permettre un développement plus rapide et sûr. Pour remédier à cette situation, notre solution consiste à créer une interface Runner qui permet d’instancier les exécutions des deux API avec les mêmes arguments. Il suffit donc d’instancier MPIRunner et/ou PeerSimRunner avec en argument le nom de la classe qui hérite NodeProcess, le nom de la classe du Runner et (facultatifs) le nombre de processus ainsi qu’un scénario.
+
 			\subsection{Définitions des primitives offertes et explication}
 			\begin{lstlisting}
 			public void start();
 			\end{lstlisting}
 			La primitive start  doit etre redéfinie par l'utilisateur et permet de définir le code à éxécuter par le processus lors de son lancement.
+			\vspace*{4mm}
+
 			\begin{lstlisting}
 			public void processMessage(Message message);
 			\end{lstlisting}
 			De même pour processMessage qui permet  de définir le comportement du processus lors de la réception d'un message.
+			\vspace*{4mm}
+
 			\begin{lstlisting}
 			abstract class Message implements Serializable
 			\end{lstlisting}
 			Message est la classe définie afin de permettre une abstraction du traitement des messages et doit etre étendue par l'utilisateur.
+			\vspace*{4mm}
 
 			\begin{lstlisting}
-				public class Ppi
-				//utilisation
-				Ppi.main(new String[] {NodeProcess.class.getName(),Runner.class.getName()});
+			public void serialThreadRun(Runnable method);
+			\end{lstlisting}
+			Exécuter un nouveau thread qui démarrera immédiatement. 
+			Le thread courrant se met en attente jusqu'à la fin d l'exécution de ce dernier ou qu'il se met en attente avant de poursuivre son exécution.
+			\vspace*{4mm}
+
+			\begin{lstlisting}
+			protected void serialThreadScheduler();
+			\end{lstlisting}
+			Ordinnanceur qui parcourt les serialThreads en attente et les réveille s'ils peuvent continuer.
+			\vspace*{4mm}
+
+			\begin{lstlisting}
+			public void wait(BooleanSupplier condition);
+			\end{lstlisting}
+			Cette primitive wait met le processus appelant en attente jusqu'à que la condition soit vérifiée.
+			La condition doit etre un lambda retournant un booléen.
+			\vspace*{4mm}
+
+			\begin{lstlisting}
+			public class Ppi
+			//utilisation
+			Ppi.main(new String[] {NodeProcess.class.getName(),Runner.class.getName()});
 			\end{lstlisting}
 			La class Ppi est le main de notre application, elle permet d'executer le code utilisateur en MPI ou en PeerSim.
 
 			\subsection{Implantation vers MPI}
 			Pour l'implantation de l'adapteur permettant d'utiliser MPI nous avons commencé par implanter un algorithme simple en utilisant cette dernière.
-			Une fois que nous avions compris comment MPI fonctionnait nous avons étendu la class Infranstructure qui représente l'abstraction des deux adapteurs implantés, pour MPI la class MpiInfrastructure nous permet de communiquer avec MPI en ajoutant  une couche sur les primitives de MPI.
+			Une fois que nous avons compris comment MPI fonctionne, nous avons étendu la classe Infranstructure qui représente l'abstraction des deux adapteurs implantés, pour MPI la classes MpiInfrastructure nous permet de communiquer avec MPI en ajoutant  une couche sur les primitives de MPI.
 			Nous avons, cependant, dû ajouter une boucle  afin d'adapter le fonctionnement de MPI à celui de PeerSim.
 			\subsection{Implantation vers PeerSim}
 			Dans le cas de PeerSim, l'implantation de notre API consistait principalement à effectuer un Adapter avec l'API déjà existante de PeerSim, et donc la part la plus importante du travail était de comprendre le fonctionnement des quelques classes de PeerSim nécessaires pour faire le lien entre les deux API. Il a aussi fallu adapter certaines de nos classes pour PeerSim, par exemple rendre notre NodeProcess clonable. 
@@ -238,6 +270,13 @@ public class BasicTest {
 			le nombre de noeuds demandé, puis préciser sur quelle API le scénario devra être exécuté, et enfin les événements et leur date qui devront être appelés.
 			Sachant que MPI travaille sur de vraies machine et que le temps d'arrivée des messages est inconnu, on ne promet pas l'éxécution exacte du scénario demandé. 
 			%\subsection{Rédaction du rapport}
+		
+		\section{Déploiement}
+		\subsection{Déploiement en MPI}
+		\subsection{Déploiement en Peersim}
+
+		\section{Comment écrire un adapteur sur un autre API}
+
 
 		\section{Plan de validation}
 		\subsection{Tests de validation}
@@ -253,35 +292,40 @@ public class BasicTest {
 		Le même code applicatif sera executé sur plusieurs machines (potentiellement virtuelles) une première fois via l'infrastructure MPI puis sur celle de Peersim.
 		pour prouver le bon fonctionnement de notre application nous avons décidé de faire jouer une note musicale aux ordinateurs où chacun devra attendre un certain délai 
 		avant de jouer sa note tout en s'assurant qu'il est le seul à jouer à ce moments pour mpi et pour PeerSim nous allons nous assurer que l'exécution est déterministe
-		\section{Planning des tâches}
-			\subsection{Une deadline pour chaque tâche dans un ordre chronologique}
-			\begin{tabular}{|c|c|}
-				\hline
-				Tâche & Date d'échéance \\[1mm]
-				\hline
-				Se familiariser avec MPI et Peersim & 17/02 \\[1mm]
-				\hline
-				Proposer une API générique & 24/02 \\[1mm]
-				\hline
-				Implanter l'API pour MPI et pour PeerSim & 02/03 \\[1mm]
-				\hline
-				Créer une classe abstraite Message & 09/03 \\[1mm]
-				\hline
-				Unifier le lancement de l'application & 09/03 \\[1mm]
-				\hline
-				Rédiger le carnet de bord & 16/03 \\[1mm]
-				\hline
-				Rédiger le pre-rapport & 23/03 \\[1mm]
-				\hline 
-				Implanter l'aiguillage automatique des messages & 23/03 \\[1mm]
-				\hline
-				Ajouter la fonctionnalité de description de scenario & 30/03 \\[1mm]
-				\hline
-				Ajouter des fonctionnalités de wait/notify & 20/04 \\[1mm]
-				\hline 
-				Rédiger le rapport final & 27/04 \\[1mm]
-				\hline
-				Soutenance finale & XX/05 \\[1mm]
-				\hline
-			\end{tabular}
+		
+		\section{Conclusion}
+		\subsection{Les pricipales tâches de chacun}
+		\subsection{Améliorations possibles}
+		
+		%\section{Planning des tâches}
+		%	\subsection{Une deadline pour chaque tâche dans un ordre chronologique}
+		%	\begin{tabular}{|c|c|}
+		%		\hline
+		%		Tâche & Date d'échéance \\[1mm]
+		%		\hline
+		%   Se familiariser avec MPI et Peersim & 17/02 \\[1mm]
+		%						\hline
+		%		Proposer une API générique & 24/02 \\[1mm]
+		%		\hline
+		%		Implanter l'API pour MPI et pour PeerSim & 02/03 \\[1mm]
+		%		\hline
+		%		Créer une classe abstraite Message & 09/03 \\[1mm]
+		%		\hline
+		%		Unifier le lancement de l'application & 09/03 \\[1mm]
+		%		\hline
+		%		Rédiger le carnet de bord & 16/03 \\[1mm]
+		%		\hline
+		%		Rédiger le pre-rapport & 23/03 \\[1mm]
+		%		\hline 
+		%		Implanter l'aiguillage automatique des messages & 23/03 \\[1mm]
+		%		\hline
+		%		Ajouter la fonctionnalité de description de scenario & 30/03 \\[1mm]
+		%		\hline
+		%		Ajouter des fonctionnalités de wait/notify & 20/04 \\[1mm]
+		%		\hline 
+		%		Rédiger le rapport final & 27/04 \\[1mm]
+		%		\hline
+		%		Soutenance finale & XX/05 \\[1mm]
+		%		\hline
+		%	\end{tabular}
 \end{document}

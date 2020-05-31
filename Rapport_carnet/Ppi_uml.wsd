@@ -1,46 +1,190 @@
-@startuml Ppi_uml
-
-class Infrastructure {
-    ~ int currentNode
-    + send(Message) : void
-    + exit() : void
-    + size() : Integer
+@startuml
+interface MessageHandler [[java:org.sar.ppi.MessageHandler]] {
 }
-
-class MpiInfrastructure {
-
+abstract class NodeProcess [[java:org.sar.ppi.NodeProcess]] {
+	#Timer timer
+	+void setInfra(Infrastructure infra)
+	+void processMessage(Message message)
+	+{abstract}void start()
+	+Object clone()
+	+void stopSched()
+	+Timer getTimer()
+	+String toString()
 }
-
-class PeerSimInfrastructure {
-
+class Infrastructure [[java:org.sar.ppi.Infrastructure]] {
+}
+NodeProcess --> "1" Infrastructure : infra
+class ScheduledFunction [[java:org.sar.ppi.ScheduledFunction]] {
+	-{static}long serialVersionUID
+	-String name
+	-Object[] args
+	+ScheduledFunction(String funcName, Object[] args, NodeProcess node)
+	+void run()
+}
+class NodeProcess [[java:org.sar.ppi.NodeProcess]] {
+}
+ScheduledFunction --> "1" NodeProcess : node
+class TimerTask [[java:java.util.TimerTask]] {
+}
+TimerTask <|-- ScheduledFunction
+interface Serializable [[java:java.io.Serializable]] {
+}
+Serializable <|.. ScheduledFunction
+abstract class Message [[java:org.sar.ppi.Message]] {
+	-{static}long serialVersionUID
+	-int idsrc
+	-int iddest
+	+int getIdsrc()
+	+int getIddest()
+	+Message(int idsrc, int iddest)
+}
+interface Serializable [[java:java.io.Serializable]] {
+}
+Serializable <|.. Message
+class MessageHandlerException [[java:org.sar.ppi.MessageHandlerException]] {
+	-{static}long serialVersionUID
+	+MessageHandlerException(String error)
+}
+class PpiException [[java:org.sar.ppi.PpiException]] {
+}
+PpiException <|-- MessageHandlerException
+interface Runner [[java:org.sar.ppi.Runner]] {
+	void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario)
+}
+class PpiException [[java:org.sar.ppi.PpiException]] {
+	-{static}long serialVersionUID
+	+PpiException(Exception e)
+	+PpiException(String msg, Exception e)
+	+PpiException(String error)
+}
+class RuntimeException [[java:java.lang.RuntimeException]] {
+}
+RuntimeException <|-- PpiException
+class Utils [[java:org.sar.ppi.Utils]] {
+	+{static}void transferTo(InputStream in, OutputStream out)
+}
+abstract class Infrastructure [[java:org.sar.ppi.Infrastructure]] {
+	#int currentNode
+	#{static}Lock lock
+	#Thread mainThread
+	#Thread nextThread
+	#Map<BooleanSupplier,Thread> threads
+	+Infrastructure(NodeProcess process)
+	+{abstract}void send(Message message)
+	+int getId()
+	+{abstract}void exit()
+	+{abstract}int size()
+	+void serialThreadRun(Runnable method)
+	#void serialThreadScheduler()
+	+void wait(BooleanSupplier condition)
+}
+class NodeProcess [[java:org.sar.ppi.NodeProcess]] {
+}
+Infrastructure --> "1" NodeProcess : process
+class Ppi [[java:org.sar.ppi.Ppi]] {
+	+{static}ClassLoader loader
+	+{static}void main(String[] args)
+	+{static}void main(Class<? extends NodeProcess> pClass, Runner runner, int nbProcs, String scenario)
+}
+class MpiProcess [[java:org.sar.ppi.mpi.MpiProcess]] {
+	+MpiProcess(NodeProcess process, MpiInfrastructure infra)
+	+void run()
+}
+class NodeProcess [[java:org.sar.ppi.NodeProcess]] {
+}
+MpiProcess --> "1" NodeProcess : process
+class MpiInfrastructure [[java:org.sar.ppi.mpi.MpiInfrastructure]] {
+}
+MpiProcess --> "1" MpiInfrastructure : infra
+interface Runnable [[java:java.lang.Runnable]] {
+}
+Runnable <|.. MpiProcess
+class MpiRunner [[java:org.sar.ppi.mpi.MpiRunner]] {
+	+void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario)
+}
+interface Runner [[java:org.sar.ppi.Runner]] {
+}
+Runner <|.. MpiRunner
+class MpiInfrastructure [[java:org.sar.ppi.mpi.MpiInfrastructure]] {
+	~AtomicBoolean running
+	#Comm comm
+	#Queue<Message> sendQueue
+	#BlockingQueue<Message> recvQueue
+	#Thread executor
+	+MpiInfrastructure(NodeProcess process)
+	+void run(String[] args)
+	#void recvMpi(int source, int tag)
+	#void sendMpi(Message message)
+	+Message recv()
+	+void send(Message message)
+	+void exit()
+	+void launchSimulation(String path)
+	+int size()
+	-byte[] ParseMessage(Message message)
+	-Message RetriveMessage(byte[] message)
+	#void printByteArray(byte[] tab)
+}
+class Infrastructure [[java:org.sar.ppi.Infrastructure]] {
+}
+Infrastructure <|-- MpiInfrastructure
+class MpiSubRunner [[java:org.sar.ppi.mpi.MpiSubRunner]] {
+	+void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario)
+}
+interface Runner [[java:org.sar.ppi.Runner]] {
+}
+Runner <|.. MpiSubRunner
+class SchedMessage [[java:org.sar.ppi.mpi.SchedMessage]] {
+	-{static}long serialVersionUID
+	-Object[] args
+	-String name
+	-long delay
+	+SchedMessage(int idsrc, int iddest, String name, long delay, Object[] args)
+	+Object[] getArgs()
+	+String getName()
+	+long getDelay()
+}
+class Message [[java:org.sar.ppi.Message]] {
+}
+Message <|-- SchedMessage
+class PeerSimRunner [[java:org.sar.ppi.peersim.PeerSimRunner]] {
+	+void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario)
+}
+interface Runner [[java:org.sar.ppi.Runner]] {
+}
+Runner <|.. PeerSimRunner
+class PeerSimInit [[java:org.sar.ppi.peersim.PeerSimInit]] {
+	-{static}String PAR_PROTO
+	+{static}String PAR_SEED
+	-int infrapid
+	+PeerSimInit(String prefix)
+	+boolean execute()
+}
+interface Control [[java:javax.sound.sampled.Control]] {
+}
+Control <|.. PeerSimInit
+class PeerSimInfrastructure [[java:org.sar.ppi.peersim.PeerSimInfrastructure]] {
+	-{static}String PAR_TRANSPORT
+	-int pid_transport
+	-{static}String PAR_NP
+	-int my_pid
+	-boolean running
+	-{static}int cptID
+	+PeerSimInfrastructure(String prefix)
+	+Object clone()
+	+int getId()
+	+void send(Message message)
+	+void exit()
+	+int size()
+	+void initialize(Node node)
+	+void processEvent(Node host, int pid, Object event)
+}
+class Infrastructure [[java:org.sar.ppi.Infrastructure]] {
 }
 Infrastructure <|-- PeerSimInfrastructure
-Infrastructure <|-- MpiInfrastructure
-Infrastructure *-- NodeProcess
-Infrastructure -- NodeProcess
-class NodeProcess {
-   + processMessage(Message) : void
-   + start() : void
-   +  clone() : Object
+interface EDProtocol [[java:peersim.edsim.EDProtocol]] {
 }
-
-interface Runner {
-   + init(String[]) : void
-   + run(NodeProcess, String[]) : void
+EDProtocol <|.. PeerSimInfrastructure
+interface NodeInitializer [[java:peersim.dynamics.NodeInitializer]] {
 }
-
-class Message {
-
-}
-
-Runner <|-- MpiRunner
-Runner <|-- PeerSimRunner
-class MpiRunner {
-
-}
-
-class PeerSimRunner {
-
-}
- 
+NodeInitializer <|.. PeerSimInfrastructure
 @enduml
