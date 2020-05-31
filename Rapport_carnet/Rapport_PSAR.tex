@@ -199,6 +199,38 @@ public class BasicTest {
 }
 				\end{lstlisting}
 		\section{Les étapes de réalisation}
+			
+			\subsection{Répartition des tâches}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				Tâche & Date d'échéance & Fait par\\[1mm]
+				\hline
+		  		Se familiariser avec MPI et Peersim & 17/02 & Tous\\[1mm]
+				\hline
+				Proposer une API générique & 24/02 & Tous\\[1mm]
+				\hline
+				Implanter l'API pour MPI et pour PeerSim & 02/03 & Tous \\[1mm]
+				\hline
+				Créer une classe abstraite Message & 09/03 & Tous\\[1mm]
+				\hline
+				Unifier le lancement de l'application & 09/03 & Tous\\[1mm]
+				\hline
+				Rédiger le carnet de bord & 16/03 & Tous\\[1mm]
+				\hline
+				Rédiger le pre-rapport & 23/03 & Tous\\[1mm]
+				\hline 
+				Implanter l'aiguillage automatique des messages & 23/03 & Tous\\[1mm]
+				\hline
+				Ajouter la fonctionnalité de description de scenario & 30/03 & Tous\\[1mm]
+				\hline
+				Ajouter des fonctionnalités de wait/notify & 20/04 & Tous\\[1mm]
+				\hline 
+				Rédiger le rapport final & 08/06 & Tous\\[1mm]
+				\hline
+				Soutenance finale & 11/06 & Tous\\[1mm]
+				\hline
+			\end{tabular}			
+			\newpage			
 			\subsection{Définition API générique}
 			
 			\hspace*{-2cm} \includegraphics[width=19cm]{Ppi_uml1.jpeg}
@@ -213,44 +245,45 @@ public class BasicTest {
 			\newline
 			Le lancement de ces deux applications est complètement différent, c’est pourquoi il est primordial que les deux lancements soient unifiés pour permettre un développement plus rapide et sûr. Pour remédier à cette situation, notre solution consiste à créer une interface Runner qui permet d’instancier les exécutions des deux API avec les mêmes arguments. Il suffit donc d’instancier MPIRunner et/ou PeerSimRunner avec en argument le nom de la classe qui hérite NodeProcess, le nom de la classe du Runner et (facultatifs) le nombre de processus ainsi qu’un scénario.
 
+			\newpage
 			\subsection{Définitions des primitives offertes et explication}
 			\begin{lstlisting}
 			public void start();
 			\end{lstlisting}
 			La primitive start  doit etre redéfinie par l'utilisateur et permet de définir le code à éxécuter par le processus lors de son lancement.
-			\vspace*{4mm}
+			\vspace*{2.5mm}
 
 			\begin{lstlisting}
 			public void processMessage(Message message);
 			\end{lstlisting}
 			De même pour processMessage qui permet  de définir le comportement du processus lors de la réception d'un message.
-			\vspace*{4mm}
+			\vspace*{2.5mm}
 
 			\begin{lstlisting}
 			abstract class Message implements Serializable
 			\end{lstlisting}
 			Message est la classe définie afin de permettre une abstraction du traitement des messages et doit etre étendue par l'utilisateur.
-			\vspace*{4mm}
+			\vspace*{3mm}
 
 			\begin{lstlisting}
 			public void serialThreadRun(Runnable method);
 			\end{lstlisting}
 			Exécuter un nouveau thread qui démarrera immédiatement. 
 			Le thread courrant se met en attente jusqu'à la fin d l'exécution de ce dernier ou qu'il se met en attente avant de poursuivre son exécution.
-			\vspace*{4mm}
+			\vspace*{3mm}
 
 			\begin{lstlisting}
 			protected void serialThreadScheduler();
 			\end{lstlisting}
-			Ordinnanceur qui parcourt les serialThreads en attente et les réveille s'ils peuvent continuer.
-			\vspace*{4mm}
+			Ordonnanceur qui parcourt les serialThreads en attente et les réveille s'ils peuvent continuer.
+			\vspace*{3mm}
 
 			\begin{lstlisting}
 			public void wait(BooleanSupplier condition);
 			\end{lstlisting}
 			Cette primitive wait met le processus appelant en attente jusqu'à que la condition soit vérifiée.
 			La condition doit etre un lambda retournant un booléen.
-			\vspace*{4mm}
+			\vspace*{3mm}
 
 			\begin{lstlisting}
 			public class Ppi
@@ -269,15 +302,19 @@ public class BasicTest {
 			L'utilisateur aura aussi accès à une API permettant de décrire un scenario où il devra spécifier en premier lieu
 			le nombre de noeuds demandé, puis préciser sur quelle API le scénario devra être exécuté, et enfin les événements et leur date qui devront être appelés.
 			Sachant que MPI travaille sur de vraies machine et que le temps d'arrivée des messages est inconnu, on ne promet pas l'éxécution exacte du scénario demandé. 
-			%\subsection{Rédaction du rapport}
+			\subsection{Fonction de wait dans l'infrastructure}		
+			\subsection{Tests plus poussés des invariants}
+			\subsection{Test d'exclusion mutuelle}
+			\subsection{Scénario de panne}
 		
-		\section{Déploiement}
-		\subsection{Déploiement en MPI}
-		\subsection{Déploiement en Peersim}
+		\newpage
+		\section{Prise en main de notre API}
+		\subsection{Comment déployer en MPI}
+		\subsection{Comment déployer en Peersim}
+		\subsection{Comment décrire un scénario}
+		\subsection{Comment écrire son propre adapter pour un autre support}
 
-		\section{Comment écrire un adapteur sur un autre API}
-
-
+		\newpage
 		\section{Plan de validation}
 		\subsection{Tests de validation}
 		Pour chaque fonctionnalité ajoutée nous ajoutons un test et nous nous assurons que les tests précédents fonctionnent toujours.
@@ -290,42 +327,12 @@ public class BasicTest {
 		\subsection{Démonstration}
 		Lors de la soutenance, une démonstration sera lancée pour montrer de façon évidente que notre interface fonctionne.
 		Le même code applicatif sera executé sur plusieurs machines (potentiellement virtuelles) une première fois via l'infrastructure MPI puis sur celle de Peersim.
-		pour prouver le bon fonctionnement de notre application nous avons décidé de faire jouer une note musicale aux ordinateurs où chacun devra attendre un certain délai 
-		avant de jouer sa note tout en s'assurant qu'il est le seul à jouer à ce moments pour mpi et pour PeerSim nous allons nous assurer que l'exécution est déterministe
 		
+		\newpage
 		\section{Conclusion}
-		\subsection{Les pricipales tâches de chacun}
-		\subsection{Améliorations possibles}
+		\subsection{Rappel des objectifs}
+		\subsection{Axes principaux de travail}
+		\subsection{Axes d'amélioration possibles et ouverture}
 		
-		%\section{Planning des tâches}
-		%	\subsection{Une deadline pour chaque tâche dans un ordre chronologique}
-		%	\begin{tabular}{|c|c|}
-		%		\hline
-		%		Tâche & Date d'échéance \\[1mm]
-		%		\hline
-		%   Se familiariser avec MPI et Peersim & 17/02 \\[1mm]
-		%						\hline
-		%		Proposer une API générique & 24/02 \\[1mm]
-		%		\hline
-		%		Implanter l'API pour MPI et pour PeerSim & 02/03 \\[1mm]
-		%		\hline
-		%		Créer une classe abstraite Message & 09/03 \\[1mm]
-		%		\hline
-		%		Unifier le lancement de l'application & 09/03 \\[1mm]
-		%		\hline
-		%		Rédiger le carnet de bord & 16/03 \\[1mm]
-		%		\hline
-		%		Rédiger le pre-rapport & 23/03 \\[1mm]
-		%		\hline 
-		%		Implanter l'aiguillage automatique des messages & 23/03 \\[1mm]
-		%		\hline
-		%		Ajouter la fonctionnalité de description de scenario & 30/03 \\[1mm]
-		%		\hline
-		%		Ajouter des fonctionnalités de wait/notify & 20/04 \\[1mm]
-		%		\hline 
-		%		Rédiger le rapport final & 27/04 \\[1mm]
-		%		\hline
-		%		Soutenance finale & XX/05 \\[1mm]
-		%		\hline
-		%	\end{tabular}
+		
 \end{document}
