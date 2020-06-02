@@ -55,12 +55,12 @@
 	\tableofcontents
 	\newpage
 		\section{Introduction}
-			\subsection{Les applications réparties : qu'est-ce ?}
+			\subsection{Les applications réparties}
 			\large{ Avant de commencer, il est important de définir ce qu’est une application répartie. Dans notre cas, nous pouvons voir une application répartie comme un ensemble d’entités logicielles, de composants qui peuvent être développés dans différents langages de programmation, s’exécutant sur plusieurs sites et qui sont reliés entre eux par une interface ou un réseau de communication.}
 			\subsection{Les difficultés à programmer une application répartie}
 			\large { Aujourd’hui la programmation d’applications réparties est devenue une réalité du monde informatique, cette forme de programmation permet d'augmenter la disponibilité des applications et de diminuer leur temps d'exécution. Cependant, réaliser une application répartie reste une tâche délicate. En effet, nous devons prendre en compte la maintenabilité et la réutilisabilité des programmes. De plus, les accès concurrents peuvent créer des erreurs et des sources d'incohérence. C’est pourquoi il est très important de montrer que ces programmes fonctionnent bien avec des tests unitaires tout en respectant le cahier des charges.}
 		\section{Méthode de développement}
-			\subsection{API réelle : avantages/inconvénients + exemple API(MPI ou autre)}
+			\subsection{API réelle : avantages/inconvénients et exemple (MPI ou autre)}
 			%RESTE A COMPLETER ICI
 			L'API de MPI est avant tout une norme pour le passage de messages entre différents ordinateurs ou au sein d'un même ordinateur.
 			Elle est énormément utilisée pour la communication sur des architectures distribuées.
@@ -68,7 +68,7 @@
 			a été adaptée pour chacune de la façon la plus optimale. Cependant les tests et le debug sur celle-ci restent difficiles dû a l'impossibilité 
 			d'avoir un contrôle sur les évenements qui apparaissent, contrairement à PeerSim.
 			
-			\subsection{API simulation à évenements discrets : qu'est-ce ? + avantages/inconvénients + exemple(PeerSim ou autre)}
+			\subsection{API simulation à évenements discrets :avantages/inconvénients et exemple(PeerSim ou autre)}
 				Qu'entend-on par \textit{simulation à événements discrets}? C'est une simulation dont le temps évolue seulement lorsqu'un événement survient sur un noeud, et donc de même l'état du système ne peut être modifié qu'à ces moments là.
 
 				On distingue donc deux entités : les noeuds, et les événements qui sont caractérisés par une date de délivrance, un noeud destinataire, et des données.
@@ -299,9 +299,17 @@ public class BasicTest {
 			\subsection{Implantation vers PeerSim}
 			Dans le cas de PeerSim, l'implantation de notre API consistait principalement à effectuer un Adapter avec l'API déjà existante de PeerSim, et donc la part la plus importante du travail était de comprendre le fonctionnement des quelques classes de PeerSim nécessaires pour faire le lien entre les deux API. Il a aussi fallu adapter certaines de nos classes pour PeerSim, par exemple rendre notre NodeProcess clonable. 
 			\subsection{API pour un scenario}
-			L'utilisateur aura aussi accès à une API permettant de décrire un scenario où il devra spécifier en premier lieu
-			le nombre de noeuds demandé, puis préciser sur quelle API le scénario devra être exécuté, et enfin les événements et leur date qui devront être appelés.
-			Sachant que MPI travaille sur de vraies machine et que le temps d'arrivée des messages est inconnu, on ne promet pas l'éxécution exacte du scénario demandé. 
+			L'utilisateur aura aussi accès à une API permettant de décrire un scenario où il devra spécifier les méthodes qui devront être appeler à un temps donné ou encore 
+			la panne d'un nœud. 
+			\newline
+			Si pour Peersim, elle utilise la procédure d'ajout d'événement et ainsi l'évènement est déclenché à la bonne date.
+			\newline
+			Pour Mpi nous avons utilisé la class Timer de java afin d'avoir pour chaque processus Mpi un démon qui exécutera l'évènement spécifié, les évènements peuvent cependant avoir un décalage.
+			\newline
+			En premier lieu, chaque évènement est dépendant de l'horloge du processus sur lequel il va être exécuté ou plus précisément l'heure à laquelle ce dernier va démarrer car chaque processus reçoit le fichier de spécification du scénario et y prend que les évênements qui le concernent.
+			\newline
+			Dans un second temps, la class Timer n'utilise qu'un seul Thread et par conséquent si deux évènements sont trop proches, le second évènement va attendre la fin de l'exécution du premier pour s'exécuter.
+
 			\subsection{Fonction de wait dans l'infrastructure}		
 			\subsection{Tests plus poussés des invariants}
 			\subsection{Test d'exclusion mutuelle}
@@ -312,6 +320,59 @@ public class BasicTest {
 		\subsection{Comment déployer en MPI}
 		\subsection{Comment déployer en Peersim}
 		\subsection{Comment décrire un scénario}
+		Afin de décrire un scenario l'utilisateur devra spécifier en premier lieu le nombre de noeuds demandés, puis préciser sur quelle API le scénario devra être exécuté, et enfin les événements et leur date qui devront être appelés.
+		\newline
+		Sachant que MPI travaille sur de vraies machine et que le temps d'arrivée des messages est inconnu, on ne promet pas l'éxécution exacte du scénario demandé.
+			\newline
+			\newline
+			Afin de demander l'éxecution d'un scénario, il faut aussi étendre la class NodeProcess et y 
+			implanter les fonctions qui font office de events, et dont on peut programmer l'appel avec délais données.
+			Pour le faire, il faut un fichier au format Json avec le format suivant.
+			\subsection{Format}
+			\begin{lstlisting}
+				{"Off":[{
+					"node":0,
+					"start":100
+					}],
+				"events":[{
+					"args":[{"val":"MonArgument1","type":"String"},{"val":4,"type":"Integer"}]
+					"FunctionName":"End",
+					"Node":1,
+					"Delay":900},
+					{{
+						"args": [],
+						"FunctionName": "doSomething",
+						"Node": 2,
+						"Delay": 300
+					}],
+					"On" { "node":0, "start":10000}]}
+			\end{lstlisting}
+			Les Json object nommé "off","on" et "events" font office de conteneurs pour les différents appels demandés,
+			chaqu'un contient une liste des événements, par exemple {\color{magenta} "off"} sa liste contient un sous objet qui définit
+			\newline
+			{\color{magenta} "node"} qui indique le noeud sur lequel à la date {\color{magenta} "start"} le noeud arrêtera de répondre au message
+			l'inverse {\color{magenta} "On"} réactive le noeud et permet à eux deux de simuler une panne.
+			\newline
+			\newline
+			l'objet {\color{magenta} "events"} représente l'appel d'une fonction utilisateur, l'élément {\color{magenta} "args"} de cet objet représente les arguments de la fonction qui
+			doivent être donnés dans le meme ordre que ceux de la fonction. Il faudra aussi spécifier le type de chaque arguments ainsi que sa valeur.
+			\newline
+			Notons que les types des arguments acceptés sont les types de base de java.
+			Enfin la clé {\color{magenta} "FunctionName"} représente le nom de la fonction à appeler.
+			\newline
+			\newline
+			Pour aider la construction du fichier de configuration nous proposons les primitives de la class ProtocolTools suivante:
+			\newline
+			Pour construire un appel de fonction
+			\begin{lstlisting}
+				public static JSONObject eventBuilder(String funcName , int node, long delay, List<Object> args);
+			\end{lstlisting}
+			Pour construire un appel de fonction
+			\begin{lstlisting}
+				public static JSONObject StateBuilder(int node, long start_at);
+			\end{lstlisting}
+
+			Enfin, pour lancer l'exécution du scénario, il faut juste ajouter le nombre de processus et le chemin vers le fichier Json au runneur souhaité.
 		\subsection{Comment écrire son propre adapter pour un autre support}
 
 		\newpage
