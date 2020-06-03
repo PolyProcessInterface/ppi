@@ -150,24 +150,21 @@ Pouvoir éxécuter le même code métier aussi bien sur une plateforme réelle q
 public class ExampleNodeProcess extends NodeProcess {
 
 	public static class ExampleMessage extends Message{
-	
 		private static final long serialVersionUID = 1L;
-		private String s;
-		public ExampleMessage(int src, int dest, String s) {
+		public String content;
+		public ExampleMessage(int src, int dest, String content) {
 			super(src, dest);
-			this.s = s;
+			this.content = content;
 		}
-
-		public String getS() {
-			return s;
-		}
-
 	}
 
 	@MessageHandler
 	public void processExampleMessage(ExampleMessage message) {
 		int host = infra.getId();
-		System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
+		System.out.printf(
+			"%d Received '%s' from %d\n",
+			host, message.content, message.getIdsrc()
+		);
 		if (host != 0) {
 			int dest = (host + 1) % infra.size();
 			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));
@@ -176,25 +173,10 @@ public class ExampleNodeProcess extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
 		}
-	}
-}
-
-public class BasicTest {
-
-	@Test
-	public void MpiExample() {
-		Ppi.main(new String[] { ExampleNodeProcess.class.getName(), MpiRunner.class.getName() });
-		assertTrue(true);
-	}
-
-	@Test
-	public void PeersimExample() {
-		Ppi.main(new String[] { ExampleNodeProcess.class.getName(), PeerSimRunner.class.getName() });
-		assertTrue(true);
 	}
 }
 				\end{lstlisting}
