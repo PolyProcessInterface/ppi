@@ -215,17 +215,27 @@ public class ExampleNodeProcess extends NodeProcess {
 			\newpage			
 			\subsection{Définition API générique}
 			
-			\hspace*{-2cm} \includegraphics[width=19cm]{Ppi_uml1.jpeg}
-			\hspace*{-1.8cm} \includegraphics[width=20cm]{Ppi_uml2.png}
+			\vspace{5mm}
+			\hspace*{-1.8cm} \includegraphics[width=19cm]{uml/uml1.png}
+			
+			\vspace{5mm}
+			\hspace*{-2.2cm} \includegraphics[width=20cm]{uml/uml2.png}
+
+			\vspace{7mm}
+			\hspace*{2.4cm} \includegraphics[width=11cm]{uml/uml3.png}
 
 			\newpage
-			\hspace*{1cm} \includegraphics[width=13cm]{Ppi_uml3.png}
-
-			\vspace*{3mm}
 
 			Nous avons commencé par définir une classe abstraite Infrastructure qui contient toutes les méthodes que nos deux API (MPI et PeerSim) devront implanter et une classe abstraite NodeProcess qui est en lien direct avec Infrastructure.
 			\newline
 			Le lancement de ces deux applications est complètement différent, c’est pourquoi il est primordial que les deux lancements soient unifiés pour permettre un développement plus rapide et sûr. Pour remédier à cette situation, notre solution consiste à créer une interface Runner qui permet d’instancier les exécutions des deux API avec les mêmes arguments. Il suffit donc d’instancier MPIRunner et/ou PeerSimRunner avec en argument le nom de la classe qui hérite NodeProcess, le nom de la classe du Runner et (facultatifs) le nombre de processus ainsi qu’un scénario.
+
+			\subsection{Les classes utilitaires}
+			\vspace{10mm}
+			\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/uml4.png}
+
+			\vspace{10mm}
+			\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/uml5.png}
 
 			\newpage
 			\subsection{Définitions des primitives offertes et explication}
