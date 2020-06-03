@@ -299,10 +299,48 @@ public class ExampleNodeProcess extends NodeProcess {
 		
 		\newpage
 		\section{Prise en main de notre API}
-		\subsection{Comment déployer en MPI}
-		\subsection{Comment déployer en Peersim}
-		\subsection{Comment décrire un scénario}
-		Afin de décrire un scenario l'utilisateur devra spécifier en premier lieu le nombre de noeuds demandés, puis préciser sur quelle API le scénario devra être exécuté, et enfin les événements et leur date qui devront être appelés.
+
+		\subsection{Programmer un algorithme}
+		Pour programmer un algorithme à l'aide de Ppi il faut créer un classe qui étend la classe abstraite \lstinline{NodeProcess}. Par la suite l'ensemble des méthodes disponible seront accessibles par l'intermédiaire de la propriété \lstinline{infra}.
+
+		\subsubsection{Etendre le classe \lstinline{NodeProcess}}
+		La classe abstraite \lstinline{NodeProcess} contient une methode abstraite \lstinline{init}
+		qu'il est nécessaire de redéfinir dans votre classe :
+		\begin{lstlisting}
+public void init(String[] args)
+		\end{lstlisting}
+		Cette méthode permet d'initialiser chaque processus à l'aide des arguments qui lui sont
+		passés en paramètre. Elle peut être utile comme point de départ d'un algorithme où bien
+		simplement pour le paramètrer.
+		L'étape suivante sera de créer les différentes classes de message nécessaires au bon
+		fonctionnement de votre algorithme.
+
+		\subsubsection{Créer des classes de message}
+		Chaque classe de message doit étendre la classe \lstinline{Message} et l'ensemble de son
+		contenu doit être \lstinline{Serializable}. De cette manière il sera possible de les envoyer
+		via Ppi et de les réceptionner à l'aide de gestionnaires de messages. Il est conseillé de
+		créer une classe par type de message applicatif et ainsi de créer un gestionnaire par type
+		de message.
+
+		\subsubsection{Définir des gestionnaires de messages}
+		Pour définir un gestionnaire de message, rien de plus simple. Ajoutez à votre classe
+		héritant de \lstinline{NodeProcess} une fonction pernant en paramètre un objet d'une des
+		classes de message que vous venez de définir et ajoutez-y l'annotation
+		\lstinline{@MessageHandler} :
+		\begin{lstlisting}
+@MessageHandler
+public void handlerTestMessage(TestMessage msg) {}
+		\end{lstlisting}
+
+		Il ne doit y avoir qu'un seul gestionnaire de message par classe de message, sinon le
+		premier trouvé sera choisi par Ppi.
+
+		\subsubsection{Méthodes à dispositions}
+
+		\subsection{Lancer Ppi}
+		\subsection{Décrire un scénario}
+		\subsubsection{Introduction}
+		Afin de décrire un scenario, l'utilisateur devra spécifier en premier lieu le nombre de noeuds demandés, puis préciser sur quelle API le scénario devra être exécuté, et enfin les événements et leur date qui devront être appelés.
 		\newline
 		Sachant que MPI travaille sur de vraies machine et que le temps d'arrivée des messages est inconnu, on ne promet pas l'éxécution exacte du scénario demandé.
 			\newline
@@ -310,25 +348,39 @@ public class ExampleNodeProcess extends NodeProcess {
 			Afin de demander l'éxecution d'un scénario, il faut aussi étendre la class NodeProcess et y 
 			implanter les fonctions qui font office de events, et dont on peut programmer l'appel avec délais données.
 			Pour le faire, il faut un fichier au format Json avec le format suivant.
-			\subsection{Format}
+			\subsubsection{Exemple de scénario}
 			\begin{lstlisting}
-				{"Off":[{
-					"node":0,
-					"start":100
-					}],
-				"events":[{
-					"args":[{"val":"MonArgument1","type":"String"},{"val":4,"type":"Integer"}]
-					"FunctionName":"End",
-					"Node":1,
-					"Delay":900},
-					{{
-						"args": [],
-						"FunctionName": "doSomething",
-						"Node": 2,
-						"Delay": 300
-					}],
-					"On" { "node":0, "start":10000}]}
+{
+	"Off": [
+		{
+			"node": 0,
+			"start": 100
+		}
+	],
+	"events": [
+		{
+			"args": [
+				{ "val": "MonArgument1", "type": "String" },
+				{ "val": 4, "type": "Integer" }
+			],
+			"FunctionName": "End",
+			"Node": 1,
+			"Delay": 900
+		},
+		{
+			"args": [],
+			"FunctionName": "doSomething",
+			"Node": 2,
+			"Delay": 300
+		}
+	],
+	"On": {
+		"node": 0,
+		"start": 10000
+	}
+}
 			\end{lstlisting}
+			\subsubsection{Détails}
 			Les Json object nommé "off","on" et "events" font office de conteneurs pour les différents appels demandés,
 			chaqu'un contient une liste des événements, par exemple {\color{magenta} "off"} sa liste contient un sous objet qui définit
 			\newline
