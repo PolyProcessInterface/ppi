@@ -23,6 +23,7 @@ ppi.iml
 *.fdb_latexmk
 *.fls
 *.synctex.gz
+*.toc
 Rapport_carnet/**/*.pdf
 Rapport_carnet/**/*.png
 
