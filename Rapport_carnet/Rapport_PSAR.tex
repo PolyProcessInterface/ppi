@@ -12,6 +12,7 @@
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
+\hyphenation{GitHub}
 
 \lstset{frame=tb,
   language=Java,
@@ -398,8 +399,67 @@ ne doit pas être utilisée directement. Cette fonction permet donc de lancer un
 \bigskip
 \end{minipage}
 
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}
+public abstract void exit()
+\end{lstlisting}
+Arrête l'éxécution pour le n\oe ud courrant.
+\bigskip
+\end{minipage}
 
 		\subsection{Lancer Ppi}
+		Un \lstinline{.jar} executable est téléchargeable pour chaque version dans la section \textit{releases}
+		de GitHub\footnote{\href{https://github.com/Atlaoui/ParallelProgramingInterface/releases/}{https://github.com/Atlaoui/ParallelProgramingInterface/releases/}}
+		ainsi qu'à chaque build sur la branche \lstinline{master} dans les artefacts du
+		build\footnote{\href{https://github.com/Atlaoui/ParallelProgramingInterface/actions?query=workflow\%3Abuild+branch\%3Amaster}{https://github.com/Atlaoui/ParallelProgramingInterface/actions?query=workflow\%3Abuild+branch\%3Amaster}}.
+		Ce \lstinline{.jar} permettra de compiler vos classes pour ensuite pouvoir les éxécuter.
+		\begin{lstlisting}
+javac -cp ppi.jar ExampleNodeProcess
+		\end{lstlisting}
+
+		\subsubsection{Depuis un shell}
+		\noindent\begin{minipage}{\linewidth}
+		Ppi dispose d'une interface en ligne de commande dont voici la page d'aide :
+		\begin{lstlisting}
+Usage: ppi [-hV] [--np=<number>] [-s=<path>] <process-class> <runner-class>
+            [<args>...]
+       <process-class>     Fully qualified name of the class to use as process
+       <runner-class>      Fully qualified name of the class to use as runner
+       [<args>...]         Args to pass to the processes
+   -h, --help              Display a help message
+       --np=<number>       Number of processus in the network
+                                Default: 4
+   -s, --scenario=<path>   Path to the scenario file
+   -V, --version           Print version info
+		\end{lstlisting}
+		\end{minipage}
+		Et voici un exemple d'utilisation du \lstinline{.jar} executable. Il n'est pas nécessaires
+		d'ajouter la classe du processus à exécuter si elle se trouve dans le répertoire courant
+		car elle sera dynamiquement chargée :
+		\begin{lstlisting}
+java -jar ppi.jar ExampleNodeProcess org.sar.ppi.peersim.PeerSimRunner --np=4
+		\end{lstlisting}
+
+		\subsubsection{Depuis un programme Java}
+		Afin de simplifier l'usage depuis un programme java un ensemble de fonctions
+		\lstinline{main} de plus haut niveau que le \lstinline{main} standard a été ajouté. Il est
+		composé de la fonction suivante ainsi que de plusieurs déclinaisons de cette fonction
+		ommettant chacune un certain nombre de paramètres optionnels :
+		\begin{lstlisting}
+public static void main(
+	Class<? extends NodeProcess> pClass,
+	Runner runner,
+	String[] args,
+	int nbProcs,
+	File scenario
+) throws PpiException
+		\end{lstlisting}
+		Dans ce cas d'utilisation il suffit d'exécuter votre classe à l'aide de la commande java en
+		ajoutant le \lstinline{.jar} au classpath :
+		\begin{lstlisting}
+java -cp .:ppi.jar ExampleNodeProcess
+		\end{lstlisting}
+
 		\subsection{Décrire un scénario}
 		\subsubsection{Introduction}
 		Afin de décrire un scenario, l'utilisateur devra spécifier en premier lieu le nombre de noeuds demandés, puis préciser sur quelle API le scénario devra être exécuté, et enfin les événements et leur date qui devront être appelés.
