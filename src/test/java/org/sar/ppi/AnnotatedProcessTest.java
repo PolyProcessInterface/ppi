@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Assume;
 import org.junit.Test;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.communication.MessageHandler;
 import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 
@@ -12,7 +14,7 @@ import org.sar.ppi.peersim.PeerSimRunner;
  */
 public class AnnotatedProcessTest extends NodeProcess {
 
-	public static class ExampleMessage extends Message{
+	public static class ExampleMessage extends Message {
 	
 		private static final long serialVersionUID = 1L;
 		private String s;
@@ -39,7 +41,7 @@ public class AnnotatedProcessTest extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
 		}
@@ -48,15 +50,13 @@ public class AnnotatedProcessTest extends NodeProcess {
 	@Test
 	public void MpiAnnotatedProcessTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new MpiRunner());
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimAnnotatedProcessTest() {
-		String[] args = { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new PeerSimRunner());
 		assertTrue(true);
 	}
 }

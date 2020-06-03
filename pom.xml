@@ -14,8 +14,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.version>3.8.1</maven.compiler.version>
+    <picocli.version>4.3.2</picocli.version>
     <mpi.path>/usr/local/lib</mpi.path>
     <peersim.path>/usr/local/lib</peersim.path>
+    <main.class>${project.groupId}.Ppi</main.class>
   </properties>
 
   <dependencies>
@@ -49,6 +52,18 @@
       <scope>system</scope>
       <systemPath>${peersim.path}/peersim-1.0.5.jar</systemPath>
     </dependency>
+    <!-- CLI options -->
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
+      <version>${picocli.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli-codegen</artifactId>
+      <version>${picocli.version}</version>
+      <scope>provided</scope>
+    </dependency>
     <!-- Description API -->
     <dependency>
       <groupId>com.googlecode.json-simple</groupId>
@@ -65,16 +80,33 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <!-- Compiler plugin options -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <version>${maven.compiler.version}</version>
         <configuration>
+          <!-- Show all warnings -->
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
-          <compilerArgument>-Xlint:all</compilerArgument>
+          <compilerArgs>
+            <arg>-Xlint:all,-processing</arg>
+          </compilerArgs>
+          <!-- Compile CLI annotation at compile time rather than runtime -->
+          <annotationProcessorPaths>
+            <path>
+              <groupId>info.picocli</groupId>
+              <artifactId>picocli-codegen</artifactId>
+              <version>${picocli.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
       <!-- Unit tests runner -->
@@ -102,9 +134,7 @@
         <version>3.3.0</version>
         <configuration>
           <archive>
-            <manifest>
-              <mainClass>org.sar.ppi.Ppi</mainClass>
-            </manifest>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>
           <descriptors>
             <descriptor>${basedir}/assembly.xml</descriptor>
@@ -122,4 +152,5 @@
       </plugin>
     </plugins>
   </build>
+
 </project>

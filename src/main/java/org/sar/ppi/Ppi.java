@@ -5,13 +5,42 @@ import java.net.URLClassLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Callable;
+
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
+import picocli.CommandLine.Help.Visibility;
 
 /**
  * Ppi Main class.
  */
-public class Ppi {
-	
+@Command(name = "ppi", versionProvider = ManifestVersionProvider.class)
+public class Ppi implements Callable<Integer> {
+
 	public static ClassLoader loader = ClassLoader.getSystemClassLoader();
+	
+	@Option(names = { "--np" }, paramLabel = "<number>", description = "Number of processus in the network", showDefaultValue = Visibility.ALWAYS)
+	static int nbProcs = 4;
+	
+	@Option(names = { "-s", "--scenario" }, paramLabel = "<path>", description = "Path to the scenario file")
+	static File scenario = null;
+
+	@Parameters(paramLabel = "<process-class>", description = "Fully qualified name of the class to use as process", index = "0")
+	static String pClassName;
+
+	@Parameters(paramLabel = "<runner-class>", description = "Fully qualified name of the class to use as runner", index = "1")
+	static String rClassName;
+
+	@Parameters(paramLabel = "<args>", arity = "0..*", description = "Args to pass to the processes", index = "2..*")
+	static String[] args = new String[0];
+
+	@Option(names = { "-h", "--help" }, usageHelp = true, description = "Display a help message")
+	protected boolean help = false;
+
+	@Option(names = {"-V", "--version"}, versionHelp = true, description = "Print version info")
+	protected boolean version = false;
 
 	/**
 	 * The main to call to run the app. Usage:
@@ -21,19 +50,18 @@ public class Ppi {
 	 * which should then call Ppi.main().
 	 *
 	 * @param args cli args.
-	 * @throws PpiException on every internal error (TODO more Exceptions)
 	 */
-	public static void main(String[] args) throws PpiException {
+	public static void main(String[] args) {
+		System.exit(new CommandLine(new Ppi()).execute(args));
+	}
+
+	/**
+	 * Process to execute after the CLI args parsing.
+	 */
+	@Override
+	public Integer call() {
 		Class<? extends NodeProcess> processClass;
 		Runner runner;
-		int nbProcs = 5;
-		String scenario = null;
-
-		if (args.length < 2 || args.length > 4) {
-			System.out.println("Usage: ppirun <process-class-name> <runner-class-name> [<nb-proc> [<scenario>]]");
-			return;
-		}
-		String pClassName = args[0];
 		try {
 			processClass = Class.forName(pClassName).asSubclass(NodeProcess.class);
 		} catch (ClassNotFoundException e) {
@@ -41,46 +69,78 @@ public class Ppi {
 				loader = new URLClassLoader(new URL[] { new File(System.getProperty("user.dir")).toURI().toURL() }, loader);
 				processClass = loader.loadClass(pClassName).asSubclass(NodeProcess.class);
 			} catch (ClassCastException | ClassNotFoundException | IOException t) {
-				throw new PpiException("Could not find the process class " + args[0], t);
+				return exitWithError(1, "Could not find the process class %s", pClassName);
 			}
 		} catch (ClassCastException e) {
-			throw new PpiException("The class " + pClassName + " does not extend NodeProcess", e);
+			return exitWithError(2, "The class %s does not extend NodeProcess", pClassName);
 		}
 		try {
-			Class<? extends Runner> rClass = Class.forName(args[1]).asSubclass(Runner.class);
+			Class<? extends Runner> rClass = Class.forName(rClassName).asSubclass(Runner.class);
 			runner = rClass.newInstance();
 		} catch (ReflectiveOperationException e) {
-			throw new PpiException("Failed to intanciate the Runner", e);
+			return exitWithError(3, "Failed to intanciate the Runner %s", rClassName);
 		}
-		if (args.length >= 3) {
-			try {
-				nbProcs = new Integer(args[2]);
-			} catch (NumberFormatException e) {
-				throw new PpiException("Not a valid number for <nb-proc> param", e);
-			}
+		try {
+			main(processClass, runner, args, nbProcs, scenario);
+		} catch (PpiException e) {
+			return exitWithError(5, e.getMessage());
 		}
-		if (args.length >= 4) {
-			scenario = args[3];
-		}
-		main(processClass, runner, nbProcs, scenario);
+		return 0;
+	}
+
+	/**
+	 * Higher level main only required parameters for easier from java invocations.
+	 * @param pClass        the class to execute by Ppi.
+	 * @param runner        the runner to use for this execution.
+	 * @throws PpiException if pClass instanciation fails.
+	 */
+	public static void main(Class<? extends NodeProcess> pClass, Runner runner) throws PpiException {
+		main(pClass, runner, new String[0], nbProcs, scenario);
+	}
+
+	/**
+	 * Higher level main without optional parameters for easier from java invocations.
+	 * @param pClass        the class to execute by Ppi.
+	 * @param runner        the runner to use for this execution.
+	 * @param args          the args to pass to the processes.
+	 * @throws PpiException if pClass instanciation fails.
+	 */
+	public static void main(Class<? extends NodeProcess> pClass, Runner runner, String[] args) throws PpiException {
+		main(pClass, runner, args, nbProcs, scenario);
+	}
+
+	/**
+	 * Higher level main without optional parameters for easier from java invocations.
+	 * @param pClass        the class to execute by Ppi.
+	 * @param runner        the runner to use for this execution.
+	 * @param args          the args to pass to the processes.
+	 * @param nbProcs       the number of processes to run.
+	 * @throws PpiException if pClass instanciation fails.
+	 */
+	public static void main(Class<? extends NodeProcess> pClass, Runner runner, String[] args, int nbProcs) throws PpiException {
+		main(pClass, runner, args, nbProcs, scenario);
 	}
 
 	/**
 	 * Higher level main for easier from java invocations.
-	 *
-	 * @param pClass the class to execute by Ppi.
-	 * @param runner the runner to use for this execution.
-	 * @param nbProcs the number of processes to run.
-	 * @param scenario the name of the scenario file.
+	 * @param pClass        the class to execute by Ppi.
+	 * @param runner        the runner to use for this execution.
+	 * @param args          the args to pass to the processes.
+	 * @param nbProcs       the number of processes to run.
+	 * @param scenario      the name of the scenario file.
 	 * @throws PpiException if pClass instanciation fails.
 	 */
-	public static void main(Class<? extends NodeProcess> pClass, Runner runner, int nbProcs, String scenario)
+	public static void main(Class<? extends NodeProcess> pClass, Runner runner, String[] args, int nbProcs, File scenario)
 			throws PpiException {
 		try {
-			runner.run(pClass, nbProcs, scenario);
+			runner.run(pClass, args, nbProcs, scenario);
 		} catch (ReflectiveOperationException e) {
 			throw new PpiException("Failed to intantiate the process class " + pClass.getName(), e);
 		}
 	}
 
+	private int exitWithError(int code, String message, Object... params) {
+		System.err.printf(message + "\nuse --help for help\n", params);
+		return code;
+	}
 }

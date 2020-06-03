@@ -4,12 +4,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Assume;
 import org.junit.Test;
+import org.sar.ppi.communication.Message;
 import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 
 public class NodeProcessTest extends NodeProcess {
 
-	public static class ExampleMessage extends Message{
+	public static class ExampleMessage extends Message {
 	
 		private static final long serialVersionUID = 1L;
 		private String s;
@@ -36,7 +37,7 @@ public class NodeProcessTest extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			//System.err.println("SENDING FIRST MESSAGE");
 			infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
@@ -48,15 +49,13 @@ public class NodeProcessTest extends NodeProcess {
 	@Test
 	public void MpiExample() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = { AnnotatedProcessTest.class.getName(), MpiRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new MpiRunner());
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimExample() {
-		String[] args = { AnnotatedProcessTest.class.getName(), PeerSimRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new PeerSimRunner());
 		assertTrue(true);
 	}
 }

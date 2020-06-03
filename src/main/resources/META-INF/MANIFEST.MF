@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Implementation-Title: ${project.artifactId}
+Implementation-Version: ${project.version}
+Build-Jdk-Spec: ${maven.compiler.target}
+Created-By: Maven Archiver ${maven.compiler.version}
+Build-Jdk: ${java.version}
+Main-Class: ${main.class}

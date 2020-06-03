@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Assume;
 import org.junit.Test;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.communication.MessageHandler;
 import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 
@@ -12,7 +14,7 @@ import org.sar.ppi.peersim.PeerSimRunner;
  */
 public class WaitTest extends NodeProcess {
 
-	public static class ExampleMessage extends Message{
+	public static class ExampleMessage extends Message {
 	
 		private static final long serialVersionUID = 1L;
 		private String s;
@@ -33,10 +35,10 @@ public class WaitTest extends NodeProcess {
 	public void helloN(){
 		try {
 			infra.wait( () -> msgReceived >= N );
+			System.out.println(infra.getId()+" Hello !");
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			System.out.println(infra.getId()+" Interrupted while waiting !");
 		}
-		System.out.println(infra.getId()+" Hello !");
 	}
 	
 	@MessageHandler
@@ -56,7 +58,7 @@ public class WaitTest extends NodeProcess {
 	}
 
 	@Override
-	public void start() {
+	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
 		}
@@ -65,15 +67,13 @@ public class WaitTest extends NodeProcess {
 	@Test
 	public void MpiAnnotatedProcessTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = { WaitTest.class.getName(), MpiRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new MpiRunner());
 		assertTrue(true);
 	}
 
 	@Test
 	public void PeersimWaitNotifyTest() {
-		String[] args = { WaitTest.class.getName(), PeerSimRunner.class.getName() };
-		Ppi.main(args);
+		Ppi.main(this.getClass(), new PeerSimRunner());
 		assertTrue(true);
 	}
 }

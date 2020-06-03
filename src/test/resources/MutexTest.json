@@ -1,62 +1,64 @@
 {
-	"Call_1": {
-		"args": [],
-		"FunctionName": "doSomething",
-		"Node": 1,
-		"Delay": 1
-	},
-	"Call_2": {
-		"args": [],
-		"FunctionName": "doSomething",
-		"Node": 2,
-		"Delay": 1
-	},
-	"Call_3": {
-		"args": [],
-		"FunctionName": "doSomething",
-		"Node": 3,
-		"Delay": 1
-	},
-	"Call_4": {
-		"args": [],
-		"FunctionName": "doSomething",
-		"Node": 4,
-		"Delay": 1
-	},
-	"Call_5": {
-		"args": [],
-		"FunctionName": "doSomething",
-		"Node": 5,
-		"Delay": 1
-	},
-	"Call_6": {
-		"args": [],
-		"FunctionName": "doSomething",
-		"Node": 1,
-		"Delay": 1000
-	},
-	"Call_7": {
-		"args": [],
-		"FunctionName": "doSomething",
-		"Node": 2,
-		"Delay": 1000
-	},
-	"Call_8": {
-		"args": [],
-		"FunctionName": "doSomething",
-		"Node": 3,
-		"Delay": 1000
-	},
-	"Call_9": {
-		"args": [],
-		"FunctionName": "doSomething",
-		"Node": 4,
-		"Delay": 1000
-	},
-	"Call_10": {
-		"args": [],
-		"FunctionName": "doSomething",
-		"Node": 5,
-		"Delay": 1000
-	}
+	"events": [
+		{
+			"args": [],
+			"FunctionName": "doSomething",
+			"Node": 1,
+			"Delay": 1
+		},
+		{
+			"args": [],
+			"FunctionName": "doSomething",
+			"Node": 2,
+			"Delay": 1
+		},
+		{
+			"args": [],
+			"FunctionName": "doSomething",
+			"Node": 3,
+			"Delay": 1
+		},
+		{
+			"args": [],
+			"FunctionName": "doSomething",
+			"Node": 4,
+			"Delay": 1
+		},
+		{
+			"args": [],
+			"FunctionName": "doSomething",
+			"Node": 5,
+			"Delay": 1
+		},
+		{
+			"args": [],
+			"FunctionName": "doSomething",
+			"Node": 1,
+			"Delay": 5000
+		},
+		{
+			"args": [],
+			"FunctionName": "doSomething",
+			"Node": 2,
+			"Delay": 5000
+		},
+		{
+			"args": [],
+			"FunctionName": "doSomething",
+			"Node": 3,
+			"Delay": 5000
+		},
+		{
+			"args": [],
+			"FunctionName": "doSomething",
+			"Node": 4,
+			"Delay": 5000
+		},
+		{
+			"args": [],
+			"FunctionName": "doSomething",
+			"Node": 5,
+			"Delay": 5000
+		}
+	]
 }

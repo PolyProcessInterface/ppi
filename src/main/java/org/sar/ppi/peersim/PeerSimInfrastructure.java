@@ -1,10 +1,11 @@
 package org.sar.ppi.peersim;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import org.sar.ppi.*;
-import org.sar.ppi.simulator.peersim.SchedEvent;
+import org.sar.ppi.communication.AppEvents.AppEvent;
+import org.sar.ppi.communication.AppEvents.SchedEvent;
+import org.sar.ppi.communication.Message;
 import peersim.config.Configuration;
 import peersim.core.Network;
 import peersim.core.Node;
@@ -19,6 +20,8 @@ import peersim.transport.Transport;
 public class PeerSimInfrastructure extends Infrastructure implements EDProtocol , NodeInitializer {
 
 	private static final String PAR_TRANSPORT="transport";
+
+	private static String[] args;
 
 	private final int pid_transport; // id du protocole de transport
 
@@ -50,6 +53,10 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		pid_transport=Configuration.getPid(prefix+"."+PAR_TRANSPORT);
 		running=true;
 		currentNode=0;  
+	}
+
+	public static void setArgs(String[] pargs) {
+		args = pargs;
 	}
 
 	/**
@@ -107,7 +114,7 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	/** {@inheritDoc} */
 	@Override
 	public void initialize(Node node) {
-		this.process.start();
+		this.process.init(args.clone());
 	}
 
 	/** {@inheritDoc} */
@@ -115,28 +122,19 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	public void processEvent(Node host, int pid, Object event) {
 		if(pid!=my_pid) throw new IllegalArgumentException("Inconsistency on protocol id");
 		//a mettre dans process message ici juste pour les teste
-		if(event instanceof SchedEvent){
-			SchedEvent shed = (SchedEvent) event;
-			String name = shed.getFuncName();
-			for(Method m : process.getClass().getMethods()){
-				if(m.getName().equals(name)) {
-					serialThreadRun(() -> {
-						try {
-							m.invoke(process,shed.getArgs());
-						} catch (IllegalAccessException | InvocationTargetException e) {
-							e.printStackTrace();
-						}
-					});
-				}
-			}
+		if (event instanceof AppEvent){
+			if(event instanceof SchedEvent && process.getIs_down())
+				return;
+			AppEvent ev = (AppEvent) event;
+			ev.run();
 			return;
 		}
 
-		if (event instanceof Message) {
+		if  (event instanceof Message && !process.getIs_down()){
 			// System.out.println("Thread" + Thread.currentThread().getId());
 			serialThreadRun(() -> process.processMessage((Message) event));
 			
-		} else {
+		} else if(!process.getIs_down()){
 			throw new IllegalArgumentException("Unknown event for this protocol");
 		}
 	}

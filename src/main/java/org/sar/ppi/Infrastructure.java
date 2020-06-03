@@ -1,6 +1,10 @@
 package org.sar.ppi;
 
+import org.sar.ppi.communication.Message;
+
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -17,6 +21,8 @@ public abstract class Infrastructure {
 	protected Thread mainThread;
 	protected Thread nextThread;
 	protected Map<BooleanSupplier, Thread> threads = new ConcurrentHashMap<>();
+	protected Set<Thread> runningThreads = new HashSet<>();
+
 
 	/**
 	 * Constructor for Infrastructure.
@@ -56,6 +62,23 @@ public abstract class Infrastructure {
 	public abstract int size();
 
 	/**
+	 * deploy the current node so he can recive msg
+	 */
+	public void deploy(){ process.setIs_down(false); }
+
+	/**
+	 * undeploy the current node (turn it of)
+	 */
+	public void undeploy() { process.setIs_down(true); }
+
+	/**
+	 *
+	 * @return
+	 * the current process linked to this infra
+	 */
+	public NodeProcess getProcess() { return process; }
+
+	/**
 	 * Run a new thread that will start immediately. The current thread
 	 * will wait for it to end or to wait before continuing its process.
 	 *
@@ -64,9 +87,11 @@ public abstract class Infrastructure {
 	public void serialThreadRun(Runnable method) {
 		Thread t = new Thread(() -> {
 			synchronized (lock) {
+				runningThreads.add(Thread.currentThread());
 				method.run();
 				nextThread = mainThread;
 				lock.notifyAll();
+				runningThreads.remove(Thread.currentThread());
 			}
 		});
 		synchronized (lock) {
@@ -78,8 +103,9 @@ public abstract class Infrastructure {
 					lock.wait();
 					serialThreadScheduler();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					t.interrupt();
+					serialThreadScheduler();
+					return;
 				}
 			}
 		}
@@ -93,14 +119,17 @@ public abstract class Infrastructure {
 		synchronized (lock) {
 			for (BooleanSupplier condition : threads.keySet()) {
 				if (condition.getAsBoolean()) {
-					nextThread = threads.get(condition);
+					Thread thread = threads.get(condition);
+					nextThread = thread;
 					lock.notifyAll();
 					while (Thread.currentThread() != nextThread) {
 						try {
 							lock.wait();
+							if (!runningThreads.contains(thread)) {
+								thread.join();
+							}
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							return;
 						}
 					}
 				}
@@ -110,7 +139,7 @@ public abstract class Infrastructure {
 
 	/**
 	 * Wait until the condition is true. This function can not be used in
-	 * {@link org.sar.ppi.NodeProcess#start()}.
+	 * {@link org.sar.ppi.NodeProcess#init(String[])}.
 	 *
 	 * @param condition a lambda which returns a boolean.
 	 * @throws java.lang.InterruptedException if the process has been interrupted while waiting.
@@ -123,7 +152,12 @@ public abstract class Infrastructure {
 				nextThread = mainThread;
 				while (Thread.currentThread() != nextThread) {
 					lock.notifyAll();
-					lock.wait();
+					try {
+						lock.wait();
+					} catch (InterruptedException e) {
+						threads.remove(condition);
+						throw new InterruptedException();
+					}
 				}
 				System.out.printf("%d Stopped waiting\n", this.getId());
 				threads.remove(condition);

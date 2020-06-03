@@ -1,10 +1,20 @@
 package org.sar.ppi;
 
-import org.sar.ppi.mpi.SchedMessage;
+import org.sar.ppi.communication.AppMessage.AppMessage;
+import org.sar.ppi.communication.AppMessage.SchedMessage;
+import org.sar.ppi.communication.AppMessage.ShedBreakMessage;
+import org.sar.ppi.communication.AppMessage.ShedOnMessage;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.communication.MessageHandler;
+import org.sar.ppi.communication.MessageHandlerException;
+import org.sar.ppi.communication.Tasks.SchedDeploy;
+import org.sar.ppi.communication.Tasks.ScheduledBreakDown;
+import org.sar.ppi.communication.Tasks.ScheduledFunction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Timer;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Node Process Abstract class.
@@ -12,7 +22,9 @@ import java.util.Timer;
 public abstract class NodeProcess {
 
 	protected Infrastructure infra;
-	protected Timer timer = new Timer();
+	protected Timer timer;
+
+	protected AtomicBoolean is_down = new AtomicBoolean(false);
 	/**
 	 * Setter for the field <code>infra</code>.
 	 *
@@ -29,11 +41,11 @@ public abstract class NodeProcess {
 	 */
 	public void processMessage(Message message) {
 		//System.err.println("Starting to process a message from " + message.getIdsrc() + " to " + message.getIddest());
-		if(message instanceof SchedMessage) {
-			SchedMessage shed = (SchedMessage) message;
-			timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),this),shed.getDelay());
+		if(message instanceof AppMessage) {
+			processAppMessage(message);
 			return;
 		}
+
 		Method[] methods = this.getClass().getMethods();
 		for (Method method : methods) {
 			Class<?>[] params = method.getParameterTypes();
@@ -54,10 +66,23 @@ public abstract class NodeProcess {
 		}
 	}
 
+	private void processAppMessage(Message message) {
+		//mpi
+		if(message instanceof SchedMessage && !is_down.get()) {
+			SchedMessage shed = (SchedMessage) message;
+			timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),this,this.infra),shed.getDelay());
+		}
+		if(message instanceof ShedBreakMessage)
+			timer.schedule(new ScheduledBreakDown(this),((ShedBreakMessage) message).getDelay());
+
+		if(message instanceof ShedOnMessage)
+			timer.schedule(new SchedDeploy(this.infra),((ShedOnMessage) message).getDelay());
+	}
+
 	/**
-	 * Start execution sequence for the current node.
+	 * Start init sequence for the current node.
 	 */
-	public abstract void start();
+	public abstract void init(String[] args);
 	
 	/**
 	 * Needed for peersim. Return a new intance of the current class by default.
@@ -86,8 +111,24 @@ public abstract class NodeProcess {
 	 * @return a {@link java.util.Timer} object.
 	 */
 	public Timer getTimer() {
+		if(timer==null){
+			timer=new Timer(true);
+			return timer;
+		}
 		return timer;
 	}
+
+	public void setIs_down(boolean val) {
+
+		/*if(val){
+			stopSched();
+			timer =  new Timer(true);
+		}*/
+		System.out.println("Is down = "+val);
+		is_down.set(val);
+	}
+
+	public boolean getIs_down() { return is_down.get(); }
 
 	/** {@inheritDoc} */
 	@Override
