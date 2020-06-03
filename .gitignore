@@ -24,6 +24,7 @@ ppi.iml
 *.fls
 *.synctex.gz
 *.toc
+*.out
 Rapport_carnet/**/*.pdf
 Rapport_carnet/**/*.png
 

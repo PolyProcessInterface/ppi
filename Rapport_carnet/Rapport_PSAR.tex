@@ -7,6 +7,7 @@
 \usepackage{color}
 \usepackage{geometry}
 \usepackage{array}
+\usepackage{hyperref}
 \geometry{hmargin=2.5cm,vmargin=3cm}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -349,6 +350,54 @@ public void handlerTestMessage(TestMessage msg) {}
 		premier trouvé sera choisi par Ppi.
 
 		\subsubsection{Méthodes à dispositions}
+		Les méthodes mises à disposition par Ppi correspondent à l'ensemble des fonctions publiques
+		de la classe abstraite \lstinline{Infrastructure} dont une instance est accessible via la
+		propriété \lstinline{infra}. Voicu la liste des fonctions qu'elle contient, également
+		consultable en ligne au format javadoc\footnote{\href{https://atlaoui.github.io/ParallelProgramingInterface/org/sar/ppi/Infrastructure.html}{https://atlaoui.github.io/ParallelProgramingInterface/org/sar/ppi/Infrastructure.html}} :
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}
+public int getId()
+\end{lstlisting}
+Permet de récupérer l'id du processus courant.
+\bigskip
+\end{minipage}
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}
+public abstract int size()
+\end{lstlisting}
+Retourne le nombre de n\oe uds dans l'infrastructure.
+\bigskip
+\end{minipage}
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}
+public abstract void send(Message message)
+\end{lstlisting}
+Permet d'envoyer un message via Ppi.
+\bigskip
+\end{minipage}
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}
+public void wait(BooleanSupplier condition) throws InterruptedException
+\end{lstlisting}
+Attends tant que la condition passée en paramètre n'est pas évalué à vrai. Ilk est recommandé de
+passer une lambda en parammètre.
+\bigskip
+\end{minipage}
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}
+public void serialThreadRun(Runnable method)
+\end{lstlisting}
+Afin de garder la propriété de reproductibilité de certaines infrastructures, l'API thread de Java
+ne doit pas être utilisée directement. Cette fonction permet donc de lancer un thread qui sera
+éxécuté en série et dans lequel on peut utiliser la fonction \lstinline{wait} de Ppi décrite ci-dessus.
+\bigskip
+\end{minipage}
+
 
 		\subsection{Lancer Ppi}
 		\subsection{Décrire un scénario}
