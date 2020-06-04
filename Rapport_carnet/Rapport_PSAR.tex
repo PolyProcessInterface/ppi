@@ -462,14 +462,19 @@ java -cp .:ppi.jar ExampleNodeProcess
 
 		\subsection{Décrire un scénario}
 		\subsubsection{Introduction}
-		Afin de décrire un scenario, l'utilisateur devra spécifier en premier lieu le nombre de noeuds demandés, puis préciser sur quelle API le scénario devra être exécuté, et enfin les événements et leur date qui devront être appelés.
-		\newline
-		Sachant que MPI travaille sur de vraies machine et que le temps d'arrivée des messages est inconnu, on ne promet pas l'éxécution exacte du scénario demandé.
-			\newline
-			\newline
-			Afin de demander l'éxecution d'un scénario, il faut aussi étendre la class NodeProcess et y 
-			implanter les fonctions qui font office de events, et dont on peut programmer l'appel avec délais données.
-			Pour le faire, il faut un fichier au format Json avec le format suivant.
+		La fonctionnalité de description de scénario permet de programmer des événements qui se
+		déclencheront au cours de l'éxécution du programme. Un scénario peut être décrit à l'aide
+		d'un fichier \lstinline{JSON} contenant les événements et la date à laquelle ils devront
+		être appelés, en unités de temps Ppi dont la durée est dépendante de l'infrastructure.
+
+		Sachant que MPI travaille sur des processus distincts et que le temps de transmission des
+		messages est inconnu, on ne garantit pas l'exactitude des dates de déclenchement des
+		événements.
+		\bigskip
+
+			Les événements appellent des fonctions présentes dans votre classe héritant de
+			\lstinline{NodeProcess} et il est possible de leur passer des arguments comme on peut le
+			voir dans l'exemple suivant.
 			\subsubsection{Exemple de scénario}
 			\begin{lstlisting}
 {
@@ -496,27 +501,33 @@ java -cp .:ppi.jar ExampleNodeProcess
 			"Delay": 300
 		}
 	],
-	"On": {
-		"node": 0,
-		"start": 10000
-	}
+	"On": [
+		{
+			"node": 0,
+			"start": 10000
+		}
+	]
 }
 			\end{lstlisting}
 			\subsubsection{Détails}
-			Les Json object nommé "off","on" et "events" font office de conteneurs pour les différents appels demandés,
-			chaqu'un contient une liste des événements, par exemple {\color{magenta} "off"} sa liste contient un sous objet qui définit
-			\newline
-			{\color{magenta} "node"} qui indique le noeud sur lequel à la date {\color{magenta} "start"} le noeud arrêtera de répondre au message
-			l'inverse {\color{magenta} "On"} réactive le noeud et permet à eux deux de simuler une panne.
-			\newline
-			\newline
-			l'objet {\color{magenta} "events"} représente l'appel d'une fonction utilisateur, l'élément {\color{magenta} "args"} de cet objet représente les arguments de la fonction qui
-			doivent être donnés dans le meme ordre que ceux de la fonction. Il faudra aussi spécifier le type de chaque arguments ainsi que sa valeur.
-			\newline
+			Les tableaux Json \lstinline{"Off"}, \lstinline{"On"} et \lstinline{"events"} contiennent
+			les listes des différents appels demandés.
+			Chacun contient une liste d'événements, par exemple \lstinline{"Off"} est une liste
+			d'objet qui définissent \lstinline{"node"}, le noeud concerné et \lstinline{"start"}, la
+			date à laquelle le noeud arrêtera de répondre aux messages.
+			De la même manière \lstinline{"On"} réactive le noeud. Ces listes permettent à elles
+			deux de simuler une panne.
+			\bigskip
+
+			L'objet \lstinline{"events"} représente une liste d'appel de fonctions utilisateur.
+			L'élément \lstinline{"args"} des objets qu'elle contient désigne les arguments qui
+			devront être passés à la fonction. Il faudra donc spécifier le type de chaque arguments
+			ainsi que sa valeur.
+
 			Notons que les types des arguments acceptés sont les types de base de java.
-			Enfin la clé {\color{magenta} "FunctionName"} représente le nom de la fonction à appeler.
-			\newline
-			\newline
+			Enfin la clé \lstinline{"FunctionName"} représente le nom de la fonction à appeler.
+			\bigskip
+
 			Pour aider la construction du fichier de configuration nous proposons les primitives de la class ProtocolTools suivante:
 			\newline
 			Pour construire un appel de fonction
