@@ -540,7 +540,7 @@ java -cp .:ppi.jar ExampleNodeProcess
 			\subsubsection{Exemple de scénario}
 			\begin{lstlisting}
 {
-	"Off": [
+	"undeploy": [
 		{
 			"node": 0,
 			"start": 100
@@ -563,7 +563,7 @@ java -cp .:ppi.jar ExampleNodeProcess
 			"Delay": 300
 		}
 	],
-	"On": [
+	"deploy": [
 		{
 			"node": 0,
 			"start": 10000
@@ -572,12 +572,12 @@ java -cp .:ppi.jar ExampleNodeProcess
 }
 			\end{lstlisting}
 			\subsubsection{Détails}
-			Les tableaux Json \lstinline{"Off"}, \lstinline{"On"} et \lstinline{"events"} contiennent
+			Les tableaux Json \lstinline{"undeploy"}, \lstinline{"deploy"} et \lstinline{"events"} contiennent
 			les listes des différents appels demandés.
-			Chacun contient une liste d'événements, par exemple \lstinline{"Off"} est une liste
+			Chacun contient une liste d'événements, par exemple \lstinline{"undeploy"} est une liste
 			d'objet qui définissent \lstinline{"node"}, le noeud concerné et \lstinline{"start"}, la
 			date à laquelle le noeud arrêtera de répondre aux messages.
-			De la même manière \lstinline{"On"} réactive le noeud. Ces listes permettent à elles
+			De la même manière \lstinline{"deploy"} réactive le noeud. Ces listes permettent à elles
 			deux de simuler une panne.
 			\bigskip
 

@@ -38,7 +38,7 @@ public class PredefinedScenarioTest extends NodeProcess{
 
 
     public void callMe (String arg1, Integer arg2){
-        System.out.println(infra.getId() + "arg1 = " + arg1 + " arg2 = " + arg2);
+        System.out.println("CallMe is caled for the node "+infra.getId());
         try {
             Thread.sleep(1);
         } catch (InterruptedException e) {
@@ -50,6 +50,30 @@ public class PredefinedScenarioTest extends NodeProcess{
 
     }
 
+
+    @Test
+    public void MpiScenario() {
+             Assume.assumeTrue(Environment.mpirunExist());
+             Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3 , new File(fileName));
+              assertTrue(true);
+              System.out.println("Teste Sceneario from Json mpi ok");
+    }
+
+    @Test
+    public void PeersimScenario() {
+          Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3 , new File(fileName));
+          assertTrue(true);
+          System.out.println("Teste Sceneario from Json Peersim ok");
+    }
+    @AfterClass
+    public static void  after(){
+        try {
+            Files.deleteIfExists(Paths.get(fileName));
+            System.out.println("End Scenario Test");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @BeforeClass
     @SuppressWarnings("unchecked")
@@ -89,30 +113,6 @@ public class PredefinedScenarioTest extends NodeProcess{
             filew.close();
 
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void MpiScenario() {
-             Assume.assumeTrue(Environment.mpirunExist());
-             Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3 , new File(fileName));
-              assertTrue(true);
-              System.out.println("Teste Sceneario from Json mpi ok");
-    }
-
-    @Test
-    public void PeersimScenario() {
-          Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3 , new File(fileName));
-          assertTrue(true);
-          System.out.println("Teste Sceneario from Json Peersim ok");
-    }
-    @AfterClass
-    public static void  after(){
-        try {
-            Files.deleteIfExists(Paths.get(fileName));
-            System.out.println("End Scenario Test");
         } catch (IOException e) {
             e.printStackTrace();
         }
