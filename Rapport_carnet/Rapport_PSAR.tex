@@ -315,17 +315,8 @@ public class ExampleNodeProcess extends NodeProcess {
 			\begin{lstlisting}
 			   public class WaitTest extends NodeProcess {
 				   public static class ExampleMessage extends Message {
-					   private static final long serialVersionUID = 1L;
-					   private String s;
-					
-					   public ExampleMessage(int src, int dest, String s) {
-						   super(src, dest);
-						   this.s = s;
-					   }
-			   
-					   public String getS() {
-						   return s;
-					   }
+					// constructeur + getters
+					...
 				   }
 				   
 				   private final int N = 2;
