@@ -231,7 +231,7 @@ public class ExampleNodeProcess extends NodeProcess {
 			\hspace*{-2.2cm} \includegraphics[width=20cm]{uml/uml_mpi_2.png}
 
 			\newpage
-			\subsection*{Main}
+			\subsection*{Main/Exécution : Ppi}
 			\vspace{3mm}
 			\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/uml_main.png}
 
@@ -305,7 +305,80 @@ public class ExampleNodeProcess extends NodeProcess {
 			\newline
 			Dans un second temps, la class Timer n'utilise qu'un seul Thread et par conséquent si deux évènements sont trop proches, le second évènement va attendre la fin de l'exécution du premier pour s'exécuter.
 
-			\subsection{Fonction de wait dans l'infrastructure}		
+			\subsection{Fonction wait dans l'infrastructure}	
+			Nous avons également implanté une primitive \textbf{wait} dans notre infrastructure. Cette primitive offre à l'utilisateur la possiblité de mettre en attente un ou plusieurs noeuds sur une condition précise.
+			Les noeuds en attente reprennent leur exécution quand la condition passé en argument devient vraie.
+			\newline
+			\newline
+			Un exemple d'utilisation de la primitive \textbf{wait} est d'afficher une information sur la sortie standard seulement
+			après la réception d'un nombre N de message : 
+			\begin{lstlisting}
+			   public class WaitTest extends NodeProcess {
+				   public static class ExampleMessage extends Message {
+					   private static final long serialVersionUID = 1L;
+					   private String s;
+					
+					   public ExampleMessage(int src, int dest, String s) {
+						   super(src, dest);
+						   this.s = s;
+					   }
+			   
+					   public String getS() {
+						   return s;
+					   }
+				   }
+				   
+				   private final int N = 2;
+				   private int msgReceived = 0;
+						   
+				   public void helloN(){
+					   try {
+						   infra.wait( () -> msgReceived >= N );
+						   System.out.println(infra.getId()+" Hello !");
+					   } catch (InterruptedException e) {
+						   System.out.println(infra.getId()+" Interrupted while waiting !");
+					   }
+				   }
+				   
+				   @MessageHandler
+				   public void processExampleMessage(ExampleMessage message) {
+					   int host = infra.getId();
+					   System.out.printf("%d Received '%s' from %d.\n", host, message.getS(), message.getIdsrc());
+					   msgReceived++;
+					   int dest = (host + 1) % infra.size();
+					   
+					   if (host != 0 && msgReceived == 1) {
+						   infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+						   if(host==2) helloN();
+					   } else {
+						   infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+						   infra.exit();
+					   }
+				   }
+			   
+				   @Override
+				   public void init(String[] args) {
+					   if (infra.getId() == 0) {
+						   infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
+					   }
+				   }
+			   
+				   @Test
+				   public void MpiAnnotatedProcessTest() {
+					   Assume.assumeTrue(Environment.mpirunExist());
+					   Ppi.main(this.getClass(), new MpiRunner());
+					   assertTrue(true);
+				   }
+			   
+				   @Test
+				   public void PeersimWaitNotifyTest() {
+					   Ppi.main(this.getClass(), new PeerSimRunner());
+					   assertTrue(true);
+				   }
+			   }
+			\end{lstlisting}
+			
+			
 			\subsection{Tests plus poussés des invariants}
 			\subsection{Test d'exclusion mutuelle}
 			\subsection{Scénario de panne}
@@ -314,7 +387,7 @@ public class ExampleNodeProcess extends NodeProcess {
 		\section{Prise en main de notre API}
 
 		\subsection{Programmer un algorithme}
-		Pour programmer un algorithme à l'aide de Ppi il faut créer un classe qui étend la classe abstraite \lstinline{NodeProcess}. Par la suite l'ensemble des méthodes disponible seront accessibles par l'intermédiaire de la propriété \lstinline{infra}.
+		Pour programmer un algorithme à l'aide de Ppi il faut créer une classe qui étend la classe abstraite \lstinline{NodeProcess}. Par la suite l'ensemble des méthodes disponible seront accessibles par l'intermédiaire de la propriété \lstinline{infra}.
 
 		\subsubsection{Etendre le classe \lstinline{NodeProcess}}
 		La classe abstraite \lstinline{NodeProcess} contient une methode abstraite \lstinline{init}
@@ -382,7 +455,7 @@ Permet d'envoyer un message via Ppi.
 \begin{lstlisting}
 public void wait(BooleanSupplier condition) throws InterruptedException
 \end{lstlisting}
-Attends tant que la condition passée en paramètre n'est pas évalué à vrai. Ilk est recommandé de
+Attendre tant que la condition passée en paramètre n'est pas évaluée à vrai. Il est recommandé de
 passer une lambda en parammètre.
 \bigskip
 \end{minipage}
