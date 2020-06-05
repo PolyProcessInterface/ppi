@@ -261,17 +261,6 @@ public class ExampleNodeProcess extends NodeProcess {
 			Nous avons, cependant, dû ajouter une boucle  afin d'adapter le fonctionnement de MPI à celui de PeerSim.
 			\subsection{Implantation vers PeerSim}
 			Dans le cas de PeerSim, l'implantation de notre API consistait principalement à effectuer un Adapter avec l'API déjà existante de PeerSim, et donc la part la plus importante du travail était de comprendre le fonctionnement des quelques classes de PeerSim nécessaires pour faire le lien entre les deux API. Il a aussi fallu adapter certaines de nos classes pour PeerSim, par exemple rendre notre NodeProcess clonable. 
-			\subsection{API pour un scenario}
-			L'utilisateur aura aussi accès à une API permettant de décrire un scenario où il devra spécifier les méthodes qui devront être appeler à un temps donné ou encore 
-			la panne d'un nœud. 
-			\newline
-			Si pour Peersim, elle utilise la procédure d'ajout d'événement et ainsi l'évènement est déclenché à la bonne date.
-			\newline
-			Pour Mpi nous avons utilisé la class Timer de java afin d'avoir pour chaque processus Mpi un démon qui exécutera l'évènement spécifié, les évènements peuvent cependant avoir un décalage.
-			\newline
-			En premier lieu, chaque évènement est dépendant de l'horloge du processus sur lequel il va être exécuté ou plus précisément l'heure à laquelle ce dernier va démarrer car chaque processus reçoit le fichier de spécification du scénario et y prend que les évênements qui le concernent.
-			\newline
-			Dans un second temps, la class Timer n'utilise qu'un seul Thread et par conséquent si deux évènements sont trop proches, le second évènement va attendre la fin de l'exécution du premier pour s'exécuter.
 
 			\subsection{Fonction wait dans l'infrastructure}	
 			Nous avons également implanté une primitive \textbf{wait} dans notre infrastructure. Cette primitive offre à l'utilisateur la possiblité de mettre en attente un ou plusieurs noeuds sur une condition précise.
@@ -344,8 +333,82 @@ Par exemple nous avons vérifié que le déterminisme des éxecutions de Peersim
 aléatoire méneraient exactement au même résultats et affichages. Nous avons aussi fait un test d'exclusion mutuelle concernant aussi bien Peersim que MPI, 
 à l'aide de l'algorithme de Naimi Trehel.
 
-			\subsection{Scénario de panne}
-Exemple de scénario introduisant une panne.
+\subsection{API pour un scenario}
+L'utilisateur aura aussi accès à une API permettant de décrire un scenario où il devra spécifier les méthodes qui devront être appeler à un temps donné ou encore 
+la panne d'un nœud. 
+\newline
+Si pour Peersim, elle utilise la procédure d'ajout d'événement et ainsi l'évènement est déclenché à la bonne date.
+\newline
+Pour Mpi nous avons utilisé la class Timer de java afin d'avoir pour chaque processus Mpi un démon qui exécutera l'évènement spécifié, les évènements peuvent cependant avoir un décalage.
+\newline
+En premier lieu, chaque évènement est dépendant de l'horloge du processus sur lequel il va être exécuté ou plus précisément l'heure à laquelle ce dernier va démarrer car chaque processus reçoit le fichier de spécification du scénario et y prend que les évênements qui le concernent.
+\newline
+Dans un second temps, la class Timer n'utilise qu'un seul Thread et par conséquent si deux évènements sont trop proches, le second évènement va attendre la fin de l'exécution du premier pour s'exécuter.
+\newline
+Exemple de scénario introduisant une panne pour le noeud 0 et le termine aprés 5000 milliseconde.
+\begin{lstlisting}
+public class NodeBreakDownTest extends NodeProcess {
+static String fileName = System.getProperty("user.dir") + "/testeJson.json";
+public static class ExampleMessage extends Message {/*...*/}
+}
+
+@MessageHandler
+public void ExempleMsg(ExampleMessage message) {
+int host = infra.getId();
+System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
+if (host != 0) {
+int dest = (host + 1) % infra.size();
+infra.send(new ExampleMessage(infra.getId(), dest, "Hello"));
+infra.exit();
+}else {
+System.err.println(" not the right path");
+}
+}
+
+public void End() {
+System.out.println("End of sequence");
+infra.exit();
+}
+
+@Override
+public void init(String[] args) {
+if (infra.getId() == 0) {
+infra.send(new ExampleMessage(infra.getId(), 1, "Hello"));
+}
+}
+
+@Test
+public void MpitesteProtocolBreakDown() {
+Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3, new File(fileName));
+assertTrue(true);
+}
+
+@Test
+public void PeersimtesteProtocolBreakDown() {
+Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3, new File(fileName));
+assertTrue(true);
+}
+
+@BeforeClass
+@SuppressWarnings("unchecked")
+public static void createJsonTeste() {
+FileWriter filew = new FileWriter(fileName);
+JSONObject toWrite = new JSONObject();
+JSONArray array = new JSONArray();
+long delay =300;
+int node = 0;
+JSONObject B1 = ProtocolTools.StateBuilder(node, delay);
+array.add(B1);
+toWrite.put("undeploy", array);
+delay = 500;
+array = new JSONArray();
+List<Object> objects = new ArrayList<>();
+array.add(ProtocolTools.eventBuilder("End", 0, 5000, objects));
+a fin de terminer 0
+toWrite.put("events", array);
+filew.write(toWrite.toString());
+}
+\end{lstlisting}
 			\subsection{Répartition des tâches}
 			\begin{tabular}{|c|c|c|}
 				\hline
