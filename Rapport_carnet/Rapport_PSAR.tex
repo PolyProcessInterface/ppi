@@ -340,9 +340,13 @@ public class ExampleNodeProcess extends NodeProcess {
 			
 			
 			\subsection{Tests plus poussés des invariants}
-En plus de tester chacune des fonctionnalités ajoutées au projet, il nous fallait aussi vérifier 
-			\subsection{Test d'exclusion mutuelle}
+En plus de tester chacune des fonctionnalités ajoutées au projet, il nous fallait aussi vérifier que certains invariants étaient respectés.
+Par exemple nous avons vérifié que le déterminisme des éxecutions de Peersim était bien conservé, et donc que deux éxecutions d'une même graine
+aléatoire méneraient exactement au même résultats et affichages. Nous avons aussi fait un test d'exclusion mutuelle concernant aussi bien Peersim que MPI, 
+à l'aide de l'algorithme de Naimi Trehel.
+
 			\subsection{Scénario de panne}
+Exemple de scénario introduisant une panne.
 			\subsection{Répartition des tâches}
 			\begin{tabular}{|c|c|c|}
 				\hline
@@ -352,11 +356,13 @@ En plus de tester chacune des fonctionnalités ajoutées au projet, il nous fall
 				\hline
 				Proposer une API générique & 24/02 & Tous\\[1mm]
 				\hline
-				Implanter l'API pour MPI et pour PeerSim & 02/03 & Tous \\[1mm]
+				Implanter l'API pour MPI & 02/03 & Nicolas et Tarik \\[1mm]
+				\hline
+				Implanter l'API pour PeerSim & 02/03 & Kimmeng et Max \\[1mm]
 				\hline
 				Créer une classe abstraite Message & 09/03 & Tous\\[1mm]
 				\hline
-				Unifier le lancement de l'application & 09/03 & Tous\\[1mm]
+				Unifier le lancement de l'application & 09/03 & Nicolas\\[1mm]
 				\hline
 				Rédiger le carnet de bord & 16/03 & Tous\\[1mm]
 				\hline
@@ -364,13 +370,15 @@ En plus de tester chacune des fonctionnalités ajoutées au projet, il nous fall
 				\hline 
 				Implanter l'aiguillage automatique des messages & 23/03 & Tous\\[1mm]
 				\hline
-				Ajouter la fonctionnalité de description de scenario & 30/03 & Tous\\[1mm]
+				Ajouter la fonctionnalité de description de scenario & 30/03 & Tarik\\[1mm]
 				\hline
-				Ajouter des fonctionnalités de wait/notify & 20/04 & Tous\\[1mm]
+				Ajouter des fonctionnalités de wait/notify & 25/05 & Nicolas et Kimmeng\\[1mm]
+				\hline
+				Ajouter des tests plus poussés sur les invariants & 25/05 & Tarik et Max\\[1mm]
 				\hline 
 				Rédiger le rapport final & 08/06 & Tous\\[1mm]
 				\hline
-				Soutenance finale & 11/06 & Tous\\[1mm]
+				Soutenance finale & 12/06 & Tous\\[1mm]
 				\hline
 			\end{tabular}	
 		
@@ -620,8 +628,7 @@ java -cp .:ppi.jar ExampleNodeProcess
 		
 		\newpage
 		\section{Conclusion}
-		\subsection{Rappel des objectifs}
-		\subsection{Axes principaux de travail}
+		\subsection{Rappel des objectifs et axes principaux de travail}
 		\subsection{Axes d'amélioration possibles et ouverture}
 		
 		
