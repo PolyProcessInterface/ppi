@@ -6,6 +6,7 @@ import mpi.Comm;
 import mpi.MPI;
 import mpi.MPIException;
 import mpi.Status;
+import org.sar.ppi.communication.AppMessage.AppMessage;
 import org.sar.ppi.communication.AppMessage.SchedMessage;
 import org.sar.ppi.communication.AppMessage.ShedBreakMessage;
 import org.sar.ppi.communication.AppMessage.ShedOnMessage;
@@ -64,7 +65,7 @@ public class MpiInfrastructure extends Infrastructure {
 				get_my_tasks(scenario.getAbsolutePath());
 			while (running.get() || !sendQueue.isEmpty()) {
 				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
-				if (s != null) {
+				if (s != null ) {
 					recvMpi(s.getSource(), s.getTag());
 				}
 				Message m = sendQueue.poll();
@@ -74,14 +75,14 @@ public class MpiInfrastructure extends Infrastructure {
 			}
 			for (Thread t : threads.values()) {
 				t.interrupt();
-				System.out.printf("%d Interrupted waiting thread %d\n", getId(), t.getId());
+			//	System.out.printf("%d Interrupted waiting thread %d\n", getId(), t.getId());
 				t.join();
-				System.out.printf("%d Joined waiting thread %d\n", getId(), t.getId());
+		//		System.out.printf("%d Joined waiting thread %d\n", getId(), t.getId());
 			}
 			executor.interrupt();
-			System.out.printf("%d Interrupted MpiProcess thread\n", getId());
+		//	System.out.printf("%d Interrupted MpiProcess thread\n", getId());
 			executor.join();
-			System.out.printf("%d Joined MpiProcess thread\n", getId());
+		//	System.out.printf("%d Joined MpiProcess thread\n", getId());
 			MPI.Finalize();
 		} catch (MPIException e) {
 			throw new PpiException("Init fail.", e);
@@ -106,7 +107,8 @@ public class MpiInfrastructure extends Infrastructure {
 			byte [] tab = new byte[sizeMsg];
 			comm.recv(tab, sizeMsg, MPI.BYTE, source, tag);
 			Message msg = RetriveMessage(tab);
-			recvQueue.add(msg);
+			if(!process.getIs_down() && ! (msg instanceof AppMessage))
+				recvQueue.add(msg);
 		} catch (MPIException e) {
 			throw new PpiException("Receive from" + source + "failed", e);
 		}
@@ -152,17 +154,13 @@ public class MpiInfrastructure extends Infrastructure {
 		running.set(false);
 	}
 
-	public void get_my_tasks(String path){
+	private void get_my_tasks(String path){
 		HashMap<String,List<Object[]>> map = ProtocolTools.readProtocolJSON(path);
 		List<Object[]> l_call = map.get("events");
 		int num_node;
 		for(Object[] func : l_call){
 		    System.out.println(22);
 			num_node=(int)func[1];
-			if(process==null)
-				System.out.println("process null");
-			if(process.getTimer() == null)
-				System.out.println("MERDE");
 			if(num_node==currentNode)
 				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process,this),(long)func[2]);
 		}

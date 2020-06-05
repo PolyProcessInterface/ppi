@@ -38,7 +38,7 @@ public class PredefinedScenarioTest extends NodeProcess{
 
 
     public void callMe (String arg1, Integer arg2){
-        System.out.println(infra.getId() + "arg1 = " + arg1 + " arg2 = " + arg2);
+        System.out.println("callMe by "+infra.getId());
         try {
             Thread.sleep(1);
         } catch (InterruptedException e) {
