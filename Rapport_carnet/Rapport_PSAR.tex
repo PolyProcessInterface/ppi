@@ -182,39 +182,7 @@ public class ExampleNodeProcess extends NodeProcess {
 	}
 }
 				\end{lstlisting}
-		\section{Les étapes de réalisation}
-			
-			\subsection{Répartition des tâches}
-			\begin{tabular}{|c|c|c|}
-				\hline
-				Tâche & Date d'échéance & Fait par\\[1mm]
-				\hline
-		  		Se familiariser avec MPI et Peersim & 17/02 & Tous\\[1mm]
-				\hline
-				Proposer une API générique & 24/02 & Tous\\[1mm]
-				\hline
-				Implanter l'API pour MPI et pour PeerSim & 02/03 & Tous \\[1mm]
-				\hline
-				Créer une classe abstraite Message & 09/03 & Tous\\[1mm]
-				\hline
-				Unifier le lancement de l'application & 09/03 & Tous\\[1mm]
-				\hline
-				Rédiger le carnet de bord & 16/03 & Tous\\[1mm]
-				\hline
-				Rédiger le pre-rapport & 23/03 & Tous\\[1mm]
-				\hline 
-				Implanter l'aiguillage automatique des messages & 23/03 & Tous\\[1mm]
-				\hline
-				Ajouter la fonctionnalité de description de scenario & 30/03 & Tous\\[1mm]
-				\hline
-				Ajouter des fonctionnalités de wait/notify & 20/04 & Tous\\[1mm]
-				\hline 
-				Rédiger le rapport final & 08/06 & Tous\\[1mm]
-				\hline
-				Soutenance finale & 11/06 & Tous\\[1mm]
-				\hline
-			\end{tabular}			
-			\newpage			
+		\section{Les étapes de réalisation}			
 			\subsection{Définition API générique}
 			\subsection*{API Peersim}
 			\vspace{5mm}
@@ -307,11 +275,12 @@ public class ExampleNodeProcess extends NodeProcess {
 
 			\subsection{Fonction wait dans l'infrastructure}	
 			Nous avons également implanté une primitive \textbf{wait} dans notre infrastructure. Cette primitive offre à l'utilisateur la possiblité de mettre en attente un ou plusieurs noeuds sur une condition précise.
-			Les noeuds en attente reprennent leur exécution quand la condition passé en argument devient vraie.
+			Les noeuds en attente reprennent leur exécution quand la condition passée en argument devient vraie.
 			\newline
 			\newline
 			Un exemple d'utilisation de la primitive \textbf{wait} est d'afficher une information sur la sortie standard seulement
-			après la réception d'un nombre N de message : 
+			après la réception d'un nombre N de message :
+			\newpage
 			\begin{lstlisting}
 			   public class WaitTest extends NodeProcess {
 				   public static class ExampleMessage extends Message {
@@ -371,8 +340,39 @@ public class ExampleNodeProcess extends NodeProcess {
 			
 			
 			\subsection{Tests plus poussés des invariants}
+En plus de tester chacune des fonctionnalités ajoutées au projet, il nous fallait aussi vérifier 
 			\subsection{Test d'exclusion mutuelle}
 			\subsection{Scénario de panne}
+			\subsection{Répartition des tâches}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				Tâche & Date d'échéance & Fait par\\[1mm]
+				\hline
+		  		Se familiariser avec MPI et Peersim & 17/02 & Tous\\[1mm]
+				\hline
+				Proposer une API générique & 24/02 & Tous\\[1mm]
+				\hline
+				Implanter l'API pour MPI et pour PeerSim & 02/03 & Tous \\[1mm]
+				\hline
+				Créer une classe abstraite Message & 09/03 & Tous\\[1mm]
+				\hline
+				Unifier le lancement de l'application & 09/03 & Tous\\[1mm]
+				\hline
+				Rédiger le carnet de bord & 16/03 & Tous\\[1mm]
+				\hline
+				Rédiger le pre-rapport & 23/03 & Tous\\[1mm]
+				\hline 
+				Implanter l'aiguillage automatique des messages & 23/03 & Tous\\[1mm]
+				\hline
+				Ajouter la fonctionnalité de description de scenario & 30/03 & Tous\\[1mm]
+				\hline
+				Ajouter des fonctionnalités de wait/notify & 20/04 & Tous\\[1mm]
+				\hline 
+				Rédiger le rapport final & 08/06 & Tous\\[1mm]
+				\hline
+				Soutenance finale & 11/06 & Tous\\[1mm]
+				\hline
+			\end{tabular}	
 		
 		\newpage
 		\section{Prise en main de notre API}
