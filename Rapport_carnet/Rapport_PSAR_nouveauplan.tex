@@ -59,8 +59,10 @@
 
 
 		\section{Introduction et motivations}
+
 			\subsection{Les applications réparties}
 			\large{ Avant de commencer, il est important de définir ce qu’est une application répartie. Dans notre cas, nous pouvons voir une application répartie comme un ensemble d’entités logicielles, de composants qui peuvent être développés dans différents langages de programmation, s’exécutant sur plusieurs sites et qui sont reliés entre eux par une interface ou un réseau de communication.}
+
 			\subsection{Les difficultés à programmer une application répartie}
 			\large { Aujourd’hui la programmation d’applications réparties est devenue une réalité du monde informatique, cette forme de programmation permet d'augmenter la disponibilité des applications et de diminuer leur temps d'exécution. Cependant, réaliser une application répartie reste une tâche délicate. En effet, nous devons prendre en compte la maintenabilité et la réutilisabilité des programmes. De plus, les accès concurrents peuvent créer des erreurs et des sources d'incohérence. C’est pourquoi il est très important de montrer que ces programmes fonctionnent bien avec des tests unitaires tout en respectant le cahier des charges.}
 
@@ -68,12 +70,12 @@
 
 			%TODO
 			%Même exemple en MPI et Peersim
-			\subsection{Exemple d'un anneau en MPI}
-   			
+			\subsection{Les API existantes}
+			\large{Nous allons donc commencer par vous montrer les différences et similitudes qui existent entre deux implémentations d'un anneau, dont les noeuds se communiquent circulairement un entier, en commençant par le noeud d'identifiant 0. Ces deux implémentations sont en deux API différentes : MPI puis Peersim, qui ont servi de base à notre projet.}
 
-		\vspace*{5mm}
-                {\bfseries Implémentation en MPI}
-		\begin{lstlisting}
+			\subsubsection{Exemple d'un anneau implémenté avec une API de plateforme réelle : MPI}
+			\large{Dans cet exemple, nous pouvons observer plusieurs méthodes indispensables fournies par MPI, comme le déploiement par MPI.Init, l'émission et la réception de message par send et rcv, et la fin d'un noeud par MPI.Finalize. Nous allons le comparer à son équivalent en Peersim pour y trouver de multiples points communs.}
+			\begin{lstlisting}
 public class RingMpi {
 
 	public static void main(String[] args) {
@@ -84,7 +86,7 @@ public class RingMpi {
 			int neighbour = (rank + 1) % size;
 			int hellotag = 1;
 			Integer msg = 0;
-            Status status;
+           		Status status;
             
 			if (rank == 0) {
 				comm.send(msg, 0, MPI.INT, neighbour, hellotag);
@@ -93,77 +95,123 @@ public class RingMpi {
 				status = comm.recv(msg, 0, MPI.INT, MPI.ANY_SOURCE, hellotag);
 				comm.send(msg, 0, MPI.INT, neighbour, hellotag);
             }
-            
-			System.out.println(rank + " Received hello from " + status.getSource());
+			System.out.println("Noeud "+ rank + " : a recu "+ msg +" de "+status.getSource());
 			MPI.Finalize();
 		}
 	}
 }
-                \end{lstlisting}
-			\subsection{Exemple d'un anneau en Peersim}
-				
-		{\bfseries Implémentation en PeerSim}
-		\begin{lstlisting}
+                	\end{lstlisting}
+			\subsubsection{Exemple d'un anneau implémenté avec une API de simulation : Peersim}
+				\large{Dans ce second exemple, nous pouvons observer certaines méthodes ayant leur équivalent en MPI, comme celle d'initialisation, la méthode processEvent qui effectue l'aiguillage des messages, et la méthode receiveRingMessage qui est effectuée lors de la réception d'un message. Il y a aussi des méthodes qui sont indispensables au fonctionnement de Peersim mais absentes dans MPI, comme la méthode clone.}
+				\begin{lstlisting}
 
-public class HelloProtocol implements EDProtocol {
-	//Declarations d'attributs et fonctions retirees pour la clarte du code
-	...
-	//Un noeud souhaite faire sa diffusion du message a son voisin
-	public void direVoisin(Node host) {
-		Transport tr= (Transport) host.getProtocol(pid_transport);
-		Node dest=Network.get((int) ((host.getID()+1)%Network.size()));
-		Message mess= new Message(host.getID(),(host.getID()+1)%Network.size(),my_pid, new ArrayList<>(myList));
-		tr.send(host, dest, mess, my_pid);
+public class RingProtocol implements EDProtocol {
 
-		deja_dit_voisin=true;
+	private static final String PAR_TRANSPORT="transport";
+
+	private final int pid_transport;
+
+	private final int my_pid; // identifiant du protocole
+	private int myInt; 		// entier propre a chaque noeud
+	private boolean deja_dit_voisin; // indique si message deja envoye
+
+	public RingProtocol(String prefix) {
+
+		System.out.println("prefix= "+prefix);
+		String tmp[]=prefix.split("\\.");
+		my_pid=Configuration.lookupPid(tmp[tmp.length-1]);
+		pid_transport=Configuration.getPid(prefix+"."+PAR_TRANSPORT);
+		deja_dit_voisin=false;
+		myInt=0;
 	}
 
-	//Traitement a effectuer lorsqu'on recoit un HelloMessage
-	private void receiveHelloMessage(Node host, HelloMessage mess) {
-		System.out.println("Noeud "+ host.getID() + " : a recu Hello de "+mess.getIdsrc()+ " sa liste = "+mess.getInfo());
+	public Object clone() {
+		RingProtocol ap= null;
+		try {
+			ap=(RingProtocol) super.clone();
+			ap.myInt=this.myInt;
+		}catch(CloneNotSupportedException e) {} // NEVER HAPPENS
+		return ap;
+	}
+
+	//Lance l'anneau depuis le noeud d'ID 0
+	public void initialisation(Node host) {
+		if(host.getID()==0) {
+			direVoisin(host);
+		}
+	}
+
+	//La methode de Peersim a implementer
+	@Override
+	public void processEvent(Node host, int pid, Object event) {
+		// TODO Auto-generated method stub
+		if(pid!=my_pid) throw new IllegalArgumentException("Incoherence sur l'id de protocole");
+		if(event instanceof RingMessage) {
+			receiveRingMessage(host,(RingMessage) event);
+		}else {
+			throw new IllegalArgumentException("Evenement inconnu pour ce protocole");
+		}
+	}
+
+	//Traitement a effectuer lorsqu'on recoit un RingMessage
+	private void receiveRingMessage(Node host, RingMessage mess) {
+		System.out.println("Noeud "+ host.getID() + " : a recu "+mess.getInfo() +" de "+mess.getIdsrc());
+		myInt=mess.getInfo();
 		if(!deja_dit_voisin) {
 			direVoisin(host);
 		}
 	}
+
+	//Un noeud souhaite faire sa diffusion du message a son voisin
+	private void direVoisin(Node host) {
+		Transport tr= (Transport) host.getProtocol(pid_transport);
+		Node dest=Network.get((int) ((host.getID()+1)%Network.size()));
+		Message mess= new RingMessage(host.getID(),(host.getID()+1)%Network.size(),my_pid,myInt+1);
+		tr.send(host, dest, mess, my_pid);
+
+		deja_dit_voisin=true;
+	}
 }
-                \end{lstlisting}
-                \vspace*{5mm}
+               		\end{lstlisting}
 
 
-
-			%TODO
-			%Ensuite on explique la nécessité de l'API générique
-			%Quelles problématiques sont en commun entre MPI et Peersim : réception de message, aiguillage, déploiement
-			\subsection{API générique : avantages, modèle de programmation(ici événementiel)}
+			%Ensuite on explique la nécessité de l'API générique			
+			\subsection{Création d'une API générique}
 				Le but de notre projet est de produire une API générique sur un modèle de programmation événementielle afin de faciliter le développement de futures applications réparties, en permettant de s'abstraire du support d'éxécution au niveau du code métier. \par
 Pouvoir éxécuter le même code métier aussi bien sur une plateforme réelle que sur un simulateur permet au développeur d'une application répartie de passer de l'un à l'autre, sans risquer d'en  modifier son comportement en adaptant le code. \newline Il peut donc profiter des avantages d'un simulateur, comme la vision globale du système et le déterminisme des séquences d'éxécution  sans crainte d'y introduire de nouveaux bugs. \par
  
 			\newpage
 			%TODO
-			%Même exemple que précédemment mais avec l'API générique 
-			\subsection{Aperçu de l'implémentation d'un anneau avec l'API générique}
+			%Même exemple que précédemment mais avec l'API générique
+			%Quelles problématiques sont en commun entre MPI et Peersim : réception de message, aiguillage, déploiement 
+			\subsection{Aperçu de l'implémentation d'un anneau avec notre API générique}
+				\large{Voici un exemple du même anneau que celui des deux exemples précédents, on y retrouve une méthode init() correspondant aux méthodes MPI.Init() et initialisation(),
+une méthode processRingMessage, annotée par @MessageHandler, contenant le code à effectuer lors de la réception d'un message. Quant à l'aiguillage, il est ici transparent puisqu'on l'effectue dans la méthode parente NodeProcess.}
 				\begin{lstlisting}
-public class ExampleNodeProcess extends NodeProcess {
+public class RingExample extends NodeProcess {
 
-	public static class ExampleMessage extends Message{
+	public static class RingMessage extends Message {
+	
 		private static final long serialVersionUID = 1L;
-		public String content;
-		public ExampleMessage(int src, int dest, String content) {
+		private int content;
+		public RingMessage(int src, int dest, int c) {
 			super(src, dest);
-			this.content = content;
+			this.content = c;
 		}
+
+		public int getContent() {
+			return content;
+		}
+
 	}
 
 	@MessageHandler
-	public void processExampleMessage(ExampleMessage message) {
+	public void processRingMessage(RingMessage message) {
 		int host = infra.getId();
-		System.out.printf(
-			"%d Received '%s' from %d\n",
-			host, message.content, message.getIdsrc()
-		);
+		System.out.println("Noeud "+ host + " a recu " + message.getContent() + " de " + message.getIdsrc());
 		if (host != 0) {
 			int dest = (host + 1) % infra.size();
-			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));
+			infra.send(new RingMessage(infra.getId(), dest, message.getContent()+1));
 		}
 		infra.exit();
 	}
@@ -171,10 +219,11 @@ public class ExampleNodeProcess extends NodeProcess {
 	@Override
 	public void init(String[] args) {
 		if (infra.getId() == 0) {
-			infra.send(new ExampleMessage(infra.getId(), 1, "bonjour"));
+			infra.send(new RingMessage(infra.getId(), 1, 0));
 		}
 	}
-}
+
+}			
 				\end{lstlisting}
 
 
@@ -184,13 +233,12 @@ public class ExampleNodeProcess extends NodeProcess {
 		%A relire et reformuler
 		\section{Méthode de développement d'applications réparties existantes}
 			\subsection{API pour une plateforme réelle}
-			L'API de MPI est avant tout une norme pour le passage de messages entre différents ordinateurs ou au sein d'un même ordinateur.
-			Elle est énormément utilisée pour la communication sur des architectures distribuées.
-			Dans notre cas, elle s'est révélée extrêmement intéressante car MPI a été implémentée sur presque toutes les architectures ainsi elle 
-			a été adaptée pour chacune de la façon la plus optimale. Cependant les tests et le debug sur celle-ci restent difficiles dû a l'impossibilité 
-			d'avoir un contrôle sur les évenements qui apparaissent, contrairement à PeerSim.
+				L'API de MPI est avant tout une norme pour le passage de messages entre différents ordinateurs ou au sein d'un même ordinateur.
+				Elle est énormément utilisée pour la communication dans des architectures distribuées.
+				Dans notre cas, elle s'est révélée extrêmement intéressante car MPI a été implémenté sur presque toutes les architectures, ainsi elle  a été adaptée pour chacune de la façon la plus optimale. 
+				Cependant les tests et le debug sur celle-ci restent difficiles dû a l'impossibilité d'avoir un contrôle sur les évenements qui apparaissent, contrairement à Peersim.
 			
-			\subsection{API simulation à évenements discrets}
+			\subsection{API de simulation à évenements discrets}
 				Qu'entend-on par \textit{simulation à événements discrets}? C'est une simulation dont le temps évolue seulement lorsqu'un événement survient sur un noeud, et donc de même l'état du système ne peut être modifié qu'à ces moments là.
 
 				On distingue donc deux entités : les noeuds, et les événements qui sont caractérisés par une date de délivrance, un noeud destinataire, et des données.

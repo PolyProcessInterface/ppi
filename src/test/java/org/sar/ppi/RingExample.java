@@ -5,33 +5,34 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Assume;
 import org.junit.Test;
 import org.sar.ppi.communication.Message;
+import org.sar.ppi.communication.MessageHandler;
 import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 
-public class NodeProcessTest extends NodeProcess {
+public class RingExample extends NodeProcess {
 
-	public static class ExampleMessage extends Message {
+	public static class RingMessage extends Message {
 	
 		private static final long serialVersionUID = 1L;
-		private String s;
-		public ExampleMessage(int src, int dest, String s) {
+		private int content;
+		public RingMessage(int src, int dest, int c) {
 			super(src, dest);
-			this.s = s;
+			this.content = c;
 		}
 
-		public String getS() {
-			return s;
+		public int getContent() {
+			return content;
 		}
 
 	}
 
-	@Override
-	public void processMessage(Message message) {
+	@MessageHandler
+	public void processRingMessage(RingMessage message) {
 		int host = infra.getId();
-		System.out.println("Thread"+ Thread.currentThread().getId() +" "+ host + " Received hello from "  + message.getIdsrc());
+		System.out.println("Noeud "+ host + " a reçu " + message.getContent() + " de " + message.getIdsrc());
 		if (host != 0) {
 			int dest = (host + 1) % infra.size();
-			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+			infra.send(new RingMessage(infra.getId(), dest, message.getContent()+1));
 		}
 		infra.exit();
 	}
@@ -39,10 +40,7 @@ public class NodeProcessTest extends NodeProcess {
 	@Override
 	public void init(String[] args) {
 		if (infra.getId() == 0) {
-			//System.err.println("SENDING FIRST MESSAGE");
-			infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
-		}else {
-			//System.err.println("NOT SENDING FIRST MESSAGE BECAUSE ID ==   "+infra.getId());
+			infra.send(new RingMessage(infra.getId(), 1, 0));
 		}
 	}
 
