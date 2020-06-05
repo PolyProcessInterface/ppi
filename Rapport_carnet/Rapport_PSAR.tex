@@ -335,7 +335,6 @@ public class ExampleNodeProcess extends NodeProcess {
 					   Ppi.main(this.getClass(), new PeerSimRunner());
 					   assertTrue(true);
 				   }
-			   }
 			\end{lstlisting}
 			
 			
@@ -476,7 +475,7 @@ public abstract void exit()
 Arrête l'éxécution pour le n\oe ud courrant.
 \bigskip
 \end{minipage}
-
+		\newpage
 		\subsection{Lancer Ppi}
 		Un \lstinline{.jar} executable est téléchargeable pour chaque version dans la section \textit{releases}
 		de GitHub\footnote{\href{https://github.com/Atlaoui/ParallelProgramingInterface/releases/}{https://github.com/Atlaoui/ParallelProgramingInterface/releases/}}
@@ -529,7 +528,7 @@ public static void main(
 		\begin{lstlisting}
 java -cp .:ppi.jar ExampleNodeProcess
 		\end{lstlisting}
-
+		\newpage
 		\subsection{Décrire un scénario}
 		\subsubsection{Introduction}
 		La fonctionnalité de description de scénario permet de programmer des événements qui se
@@ -610,9 +609,10 @@ java -cp .:ppi.jar ExampleNodeProcess
 			\end{lstlisting}
 
 			Enfin, pour lancer l'exécution du scénario, il faut juste ajouter le nombre de processus et le chemin vers le fichier Json au runneur souhaité.
+		\newpage		
 		\subsection{Comment écrire son propre adapter pour un autre support}
 
-		\newpage
+		
 		\section{Plan de validation}
 		\subsection{Tests de validation}
 		Pour chaque fonctionnalité ajoutée nous ajoutons un test et nous nous assurons que les tests précédents fonctionnent toujours.
