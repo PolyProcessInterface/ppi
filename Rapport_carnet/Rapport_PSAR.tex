@@ -666,7 +666,9 @@ java -cp .:ppi.jar ExampleNodeProcess
 			\begin{lstlisting}
 				public static JSONObject eventBuilder(String funcName , int node, long delay, List<Object> args);
 			\end{lstlisting}
-			Pour construire un appel de fonction
+			Pour construire un évenement deploy ou undeploy 
+			\newline
+			(dépendra du nom de l'objet qui le contiendra)
 			\begin{lstlisting}
 				public static JSONObject StateBuilder(int node, long start_at);
 			\end{lstlisting}
@@ -692,7 +694,15 @@ java -cp .:ppi.jar ExampleNodeProcess
 		\newpage
 		\section{Conclusion}
 		\subsection{Rappel des objectifs et axes principaux de travail}
+		Les objectifs mis en place ...
 		\subsection{Axes d'amélioration possibles et ouverture}
+		Les amélioration au quelle nous avons pensez sont les suivante :
+		\newline
+		1-Changer le Scheduler TimerTask par SchedularConfigurer ou @Scheduled.
+		\newline
+		     TimerTask ne s'est pas révélée etre la solution la plus adequate a notre utilisation est le changer pourrais augmenter la fiabiliter de l'éxecution du scénario coté Mpi
+		\newline
+		2-Abstraire la quasi totalité du fichier de configuration de Peersim
 		
 		
 \end{document}
