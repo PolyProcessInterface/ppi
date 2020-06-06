@@ -253,6 +253,8 @@ public class RingExample extends NodeProcess {
 			\subsection{Schema en UML full générique}
 			\subsection{Les méthodes de l'interface}
 			\subsection{La fonctionnalité de scénario}
+			Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre de les exécuter sur les deux infrastructures sous-jacents,
+			afin de l'utiliser, il suffit de définir un fichier JSON et d'ajouter le chemin vers ce dernier. (Plus de détails en annexe)
 
 
 		\section{Présentation des deux implémentations}
@@ -261,7 +263,21 @@ public class RingExample extends NodeProcess {
 				\subsubsection{Schema UML peersim + generique et explications}
 				\subsubsection{Les problèmes à implanter cet adapter : multithreading et wait}
 				\subsubsection{Scenario en Peersim}
-			
+				\hspace*{5cm} \includegraphics[width=60mm]{uml/scenPuml.png}
+				\newline
+				Peersim ayant déjà une fonctionnalité qui permet de définir un ou plusieurs évènements qui peuvent être définis avec un délai de livraison donné à l'aide de la class \verb|EDSimulator|,
+				l'implantation de notre fonctionnalité de scénario vers peersim repose entièrement sur elle.
+				En effet la class \verb|EDSimulator| a une fonction \verb|add|
+				\begin{lstlisting}
+				static void add(long delay, java.lang.Object event, Node node, int pid)
+				\end{lstlisting}
+				qui permet de programmer un événement qui va être délivré sur un nœud donné. 
+				\newline
+				Nous avons utilisé celle-ci afin de délivrer les évènements définis dans le fichier JSON, au début de l'application si on choisi le runner de \verb|PeersimRunner| va 
+				les lire et les ajouter dans la file des évènements de Peersim, ainsi nous avons définis une interface \verb|AppEvent| qui représente un événement de l'application et une fois 
+				que le nœud le reçoit il exécute la méthode run de l'interface dont les instructions correspondront à l'évènement, par exemple le \verb|run()| la class \verb|ShedEvent| 
+				correspendra à l'appel d'une fonction définie par l'utilisateur et  \verb|OnEvent|/\verb|OffEvent| à la fin et début d'une panne.
+		
 			%TODO
 			\subsection{MPI}
 				\subsubsection{Schema UML MPI + generique et explications}

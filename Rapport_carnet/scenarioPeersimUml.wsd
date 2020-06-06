@@ -1,0 +1,14 @@
+@startuml test2
+interface AppEvent {
+    +void run()
+}
+AppEvent <|.. OffEvent
+AppEvent <|.. OnEvent
+AppEvent <|.. ShedEvent
+class OffEvent {
+}
+class OnEvent {
+}
+class ShedEvent {
+}
+@enduml

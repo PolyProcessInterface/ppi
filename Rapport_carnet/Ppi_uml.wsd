@@ -1,4 +1,4 @@
-@startuml
+@startuml teste
 interface MessageHandler [[java:org.sar.ppi.MessageHandler]] {
 }
 abstract class NodeProcess [[java:org.sar.ppi.NodeProcess]] {
