@@ -283,8 +283,18 @@ public class RingExample extends NodeProcess {
 				\subsubsection{Schema UML MPI + generique et explications}
 				\subsubsection{Les problèmes à implanter cet adapter : passer au modèle événementiel}
 				\subsubsection{Scenario en MPI}
-		
-
+				\hspace*{5cm} \includegraphics[width=80mm]{uml/scenMpiuml.png}
+				\newline
+				Pour l'implémentation sous MPI nous avons utiliser la class \verb|Timer| pour planifier un évenements des tache sur un noeud donner.
+				\newline
+				Nous avions commencer par implanter un processus suppléementaire qui ce lancez a chaque demande de simulation et qui ce charger d'envoyer des 
+				message applicatif distinger par l'interface \verb|AppMessage| , ainsi chaque processus qui recois un message qui étander cette interface , créer la class 
+				qui étander la class \verb|TimerTask| et l'inserer dans sont timer afin quelle soit éxecuter en temps voulus.
+				\newline
+				Cependant cette implémentation c'est révéler etre plus compliquer a mettre en place car elle devais etre faite a la construction des processus et fue donc abondonner.
+				\newline
+				A la place des l'utilisation de l'option scénario avec le le runneur mpi touts les process recoive le chemin vers le fichier JSON le lise et crée les class correspendante
+				au evenements 
 		
 				
 		

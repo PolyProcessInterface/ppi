@@ -12,3 +12,18 @@ class OnEvent {
 class ShedEvent {
 }
 @enduml
+
+@startuml teste2
+interface TimerTask {
+    +void run()
+}
+TimerTask <|.. ScheduledBreakDown
+TimerTask <|.. ScheduledDeploy
+TimerTask <|.. ScheduledFunction
+class ScheduledBreakDown {
+}
+class ScheduledDeploy {
+}
+class ScheduledFunction {
+}
+@enduml
