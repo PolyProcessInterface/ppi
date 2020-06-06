@@ -61,17 +61,37 @@
 		\section{Introduction et motivations}
 
 			\subsection{Les applications réparties}
-			\large{ Avant de commencer, il est important de définir ce qu’est une application répartie. Dans notre cas, nous pouvons voir une application répartie comme un ensemble d’entités logicielles, de composants qui peuvent être développés dans différents langages de programmation, s’exécutant sur plusieurs sites et qui sont reliés entre eux par une interface ou un réseau de communication.}
+			Avant de commencer, il est important de définir ce qu’est une application répartie. Dans notre cas, nous pouvons voir une application répartie comme un ensemble d’entités logicielles, de composants qui peuvent être développés dans différents langages de programmation, s’exécutant sur plusieurs sites et qui sont reliés entre eux par une interface ou un réseau de communication.
 
 			\subsection{Les difficultés à programmer une application répartie}
-			\large { Aujourd’hui la programmation d’applications réparties est devenue une réalité du monde informatique, cette forme de programmation permet d'augmenter la disponibilité des applications et de diminuer leur temps d'exécution. Cependant, réaliser une application répartie reste une tâche délicate. En effet, nous devons prendre en compte la maintenabilité et la réutilisabilité des programmes. De plus, les accès concurrents peuvent créer des erreurs et des sources d'incohérence. C’est pourquoi il est très important de montrer que ces programmes fonctionnent bien avec des tests unitaires tout en respectant le cahier des charges.}
+			 Aujourd’hui la programmation d’applications réparties est devenue une réalité du monde informatique, cette forme de programmation permet d'augmenter la disponibilité des applications et de diminuer leur temps d'exécution. Cependant, réaliser une application répartie reste une tâche délicate. En effet, nous devons prendre en compte la maintenabilité et la réutilisabilité des programmes. De plus, les accès concurrents peuvent créer des erreurs et des sources d'incohérence. C’est pourquoi il est très important de montrer que ces programmes fonctionnent bien avec des tests unitaires tout en respectant le cahier des charges.
 
 
+			\subsection{Méthodes de développement d'applications réparties existantes}
 
-			%TODO
-			%Même exemple en MPI et Peersim
-			\subsection{Les API existantes}
-			\large{Nous allons donc commencer par vous montrer les différences et similitudes qui existent entre deux implémentations d'un anneau, dont les noeuds se communiquent circulairement un entier, en commençant par le noeud d'identifiant 0. Ces deux implémentations sont en deux API différentes : MPI puis Peersim, qui ont servi de base à notre projet.}
+				Nous allons donc nous focaliser sur deux API servant au développement d'applications réparties : Message Passing Interface en tant qu'API pour une plateforme réelle, et Peersim en tant qu'API pour un simulateur à événements discrets, qui ont servi de base à notre projet.
+
+				\subsubsection{Une API pour plateforme réelle : \textit{MPI}}
+					L'API de MPI est avant tout une norme pour le passage de messages entre différents ordinateurs ou au sein d'un même ordinateur.
+					Elle est énormément utilisée pour la communication dans des architectures distribuées, et donc adaptée sur de nombreuses architectures et ce de manière optimale, c'est pourquoi notre choix s'est porté sur MPI en tant qu'API pour une plateforme réelle.
+					Cependant les tests et le debug sur celle-ci restent difficiles dû a l'impossibilité d'avoir un contrôle sur les évenements qui apparaissent, c'est donc pour parer à ces problèmes que l'on souhaite utiliser des simulateurs, comme par exemple Peersim, pour tester nos applications.
+				
+				
+				\subsubsection{Une API de simulation à événements discrets : \textit{Peersim}}
+					Qu'entend-on par \textit{simulation à événements discrets}? C'est une simulation dont le temps évolue seulement lorsqu'un événement survient sur un noeud, et donc de même l'état du système ne peut être modifié qu'à ces moments là.
+
+					On distingue donc deux entités : les noeuds, et les événements qui sont caractérisés par une date de délivrance, un noeud destinataire, et des données.
+
+					Les principaux avantages d'un tel type de simulation sont : son déterminisme et donc une capacité à reproduire des bugs, et une charge de calcul réduite aux événements qu'on décide de simuler. Toutefois, il faut savoir trouver un équilibre entre une simulation trop simpliste et une simulation trop précise ralentie par trop d'événements.
+
+					Dans notre cas, nous nous sommes dirigés vers PeerSim comme simulateur à événements discrets, car il est codé en Java et possède une API relativement simple d'utilisation.
+
+					PeerSim est utilisé pour créer des nœuds et simuler une architecture pair-à-pair en générant des protocoles et des événements qui sont définis par l'utilisateur. Une éxécution est toujours ce qui permet d'accélérer le débug d'une application répartie avant son déploiement ou de reproduire une séquence d'événements qui a provoqué un bug sur une application déja existante.
+
+			
+			\newpage
+			\subsection{Premier aperçu de ces deux API}
+			\large{Nous allons donc commencer par vous montrer les différences et similitudes qui existent entre deux implémentations d'un anneau, dont les noeuds se communiquent circulairement un entier, en commençant par le noeud d'identifiant 0. }
 
 			\subsubsection{Exemple d'un anneau implémenté avec une API de plateforme réelle : MPI}
 			\large{Dans cet exemple, nous pouvons observer plusieurs méthodes indispensables fournies par MPI, comme le déploiement par MPI.Init, l'émission et la réception de message par send et rcv, et la fin d'un noeud par MPI.Finalize. Nous allons le comparer à son équivalent en Peersim pour y trouver de multiples points communs.}
@@ -101,14 +121,15 @@ public class RingMpi {
 	}
 }
                 	\end{lstlisting}
+			
+			\newpage
 			\subsubsection{Exemple d'un anneau implémenté avec une API de simulation : Peersim}
-				\large{Dans ce second exemple, nous pouvons observer certaines méthodes ayant leur équivalent en MPI, comme celle d'initialisation, la méthode processEvent qui effectue l'aiguillage des messages, et la méthode receiveRingMessage qui est effectuée lors de la réception d'un message. Il y a aussi des méthodes qui sont indispensables au fonctionnement de Peersim mais absentes dans MPI, comme la méthode clone.}
+				Dans ce second exemple, nous pouvons observer certaines méthodes ayant leur équivalent en MPI, comme celle d'initialisation, la méthode processEvent qui effectue l'aiguillage des messages, et la méthode receiveRingMessage qui est effectuée lors de la réception d'un message. Il y a aussi des méthodes qui sont indispensables au fonctionnement de Peersim mais absentes dans MPI, comme la méthode clone.
 				\begin{lstlisting}
 
 public class RingProtocol implements EDProtocol {
 
 	private static final String PAR_TRANSPORT="transport";
-
 	private final int pid_transport;
 
 	private final int my_pid; // identifiant du protocole
@@ -141,7 +162,7 @@ public class RingProtocol implements EDProtocol {
 		}
 	}
 
-	//La methode de Peersim a implementer
+	//La methode de l'interface EDProtocol de Peersim a implementer
 	@Override
 	public void processEvent(Node host, int pid, Object event) {
 		// TODO Auto-generated method stub
@@ -174,19 +195,15 @@ public class RingProtocol implements EDProtocol {
 }
                		\end{lstlisting}
 
-
-			%Ensuite on explique la nécessité de l'API générique			
+		
 			\subsection{Création d'une API générique}
 				Le but de notre projet est de produire une API générique sur un modèle de programmation événementielle afin de faciliter le développement de futures applications réparties, en permettant de s'abstraire du support d'éxécution au niveau du code métier. \par
 Pouvoir éxécuter le même code métier aussi bien sur une plateforme réelle que sur un simulateur permet au développeur d'une application répartie de passer de l'un à l'autre, sans risquer d'en  modifier son comportement en adaptant le code. \newline Il peut donc profiter des avantages d'un simulateur, comme la vision globale du système et le déterminisme des séquences d'éxécution  sans crainte d'y introduire de nouveaux bugs. \par
  
 			\newpage
-			%TODO
-			%Même exemple que précédemment mais avec l'API générique
-			%Quelles problématiques sont en commun entre MPI et Peersim : réception de message, aiguillage, déploiement 
 			\subsection{Aperçu de l'implémentation d'un anneau avec notre API générique}
-				\large{Voici un exemple du même anneau que celui des deux exemples précédents, on y retrouve une méthode init() correspondant aux méthodes MPI.Init() et initialisation(),
-une méthode processRingMessage, annotée par @MessageHandler, contenant le code à effectuer lors de la réception d'un message. Quant à l'aiguillage, il est ici transparent puisqu'on l'effectue dans la méthode parente NodeProcess.}
+				Voici un exemple du même anneau que celui des deux exemples précédents, on y retrouve une méthode init() correspondant aux méthodes MPI.Init() et initialisation(),
+une méthode processRingMessage, annotée par @MessageHandler, contenant le code à effectuer lors de la réception d'un message. Quant à l'aiguillage, il est ici transparent puisqu'on l'effectue dans la méthode parente NodeProcess.
 				\begin{lstlisting}
 public class RingExample extends NodeProcess {
 
@@ -229,25 +246,7 @@ public class RingExample extends NodeProcess {
 
 
 
-		%TODO
-		%A relire et reformuler
-		\section{Méthode de développement d'applications réparties existantes}
-			\subsection{API pour une plateforme réelle}
-				L'API de MPI est avant tout une norme pour le passage de messages entre différents ordinateurs ou au sein d'un même ordinateur.
-				Elle est énormément utilisée pour la communication dans des architectures distribuées.
-				Dans notre cas, elle s'est révélée extrêmement intéressante car MPI a été implémenté sur presque toutes les architectures, ainsi elle  a été adaptée pour chacune de la façon la plus optimale. 
-				Cependant les tests et le debug sur celle-ci restent difficiles dû a l'impossibilité d'avoir un contrôle sur les évenements qui apparaissent, contrairement à Peersim.
-			
-			\subsection{API de simulation à évenements discrets}
-				Qu'entend-on par \textit{simulation à événements discrets}? C'est une simulation dont le temps évolue seulement lorsqu'un événement survient sur un noeud, et donc de même l'état du système ne peut être modifié qu'à ces moments là.
-
-				On distingue donc deux entités : les noeuds, et les événements qui sont caractérisés par une date de délivrance, un noeud destinataire, et des données.
-
-				Les principaux avantages d'un tel type de simulation sont : son déterminisme et donc une capacité à reproduire des bugs, et une charge de calcul réduite aux événements qu'on décide de simuler. Toutefois, il faut savoir trouver un équilibre entre une simulation trop simpliste et une simulation trop précise ralentie par trop d'événements.
-
-				Dans notre cas, nous nous sommes dirigés vers PeerSim comme simulateur à événements discrets, car il est codé en Java et possède une API relativement simple d'utilisation.
-
-				PeerSim est utilisé pour créer des nœuds et simuler une architecture pair-à-pair en générant des protocoles et des événements qui sont définis par l'utilisateur. Une éxécution est toujours ce qui permet d'accélérer le débug d'une application répartie avant son déploiement ou de reproduire une séquence d'événements qui a provoqué un bug sur une application déja existante.
+		
                 
          	%TODO
 		\section{Présentation de l'API générique}
