@@ -3,7 +3,6 @@ package org.sar.ppi;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.BeforeClass;
@@ -20,6 +19,8 @@ import org.sar.ppi.tools.ProtocolTools;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,7 +100,7 @@ public class NodeBreakDownTest extends NodeProcess {
             JSONObject toWrite = new JSONObject();
             JSONArray array = new JSONArray();
             //off
-            long delay =300;
+            long delay =1;
             int node = 0;
             JSONObject B1 = ProtocolTools.StateBuilder(node, delay);
             array.add(B1);
@@ -122,11 +123,11 @@ public class NodeBreakDownTest extends NodeProcess {
 
     @AfterClass
     public static void  after(){
-        /*try {
+        try {
             Files.deleteIfExists(Paths.get(fileName));
             System.out.println("End node down Test");
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 }
