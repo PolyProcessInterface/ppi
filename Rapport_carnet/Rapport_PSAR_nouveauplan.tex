@@ -242,13 +242,52 @@ public class RingExample extends NodeProcess {
 
 }			
 				\end{lstlisting}
-
-
-
-
-		
-                
 				\newpage
+				\subsubsection{Exemple d'un anneau lancer avec fichier de scénario}
+				Ci-dessous un exemple du même algorithme que dans l'exemple précédent mais lancé par une instruction lue dans le fichier \verb|fileName|,ainsi que 
+				la création de celui-ci.
+				\begin{lstlisting}
+public class HelloRingScenarioTest extends NodeProcess{
+    static String fileName = System.getProperty("user.dir") + "/testeJson.json";
+    public static class ExampleMessage extends Message {/*...*/}
+
+    @MessageHandler
+    public void ExempleMsg(NodeBreakDownTest.ExampleMessage message) {
+        int host = infra.getId();
+        System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
+        int dest = (host + 1) % infra.size();
+        infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(), dest, "Hello"));
+        infra.exit();
+    }
+
+    public void FirstToSend(){
+        System.out.printf("%d : First to send well be \n",infra.getId());
+        infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(),(infra.getId() + 1) % infra.size(), "Hello"));
+    }
+
+    @Override
+	public void init(String[] args) {/*Rien a metre ici*/}
+	
+    @BeforeClass
+    @SuppressWarnings("unchecked")
+    public static void createJsonTeste() {
+		//exemple de construction d'un fichier scenario
+        try (FileWriter filew = new FileWriter(fileName)){
+            JSONObject toWrite = new JSONObject();
+            JSONArray array = new JSONArray();
+            int node =  (int) (Math.random() * 3);
+            array.add(ProtocolTools.eventBuilder("FirstToSend", node, 1000, new ArrayList<>()));//un appel de fonction
+            toWrite.put("events", array);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+				\end{lstlisting}
+
+
+				\newpage
+                
+			
 				\section{Présentation de l'API générique}
 				L'idée pricipale est de produire une API générique permettant d'abstraire le support d'exécution au niveau du code métier, c'est-à-dire produire une couche logicielle afin de pouvoir exécuter de façon transparente le même code sur un simulateur (\verb|PeerSim|) et sur une infrastructure réelle (\verb|MPI|).					
 				\subsection{Schéma UML des classes génériques}
@@ -355,8 +394,10 @@ Pour représenter un événement de l'application, nous avons défini donc une i
 				\subsubsection{Schéma UML MPI}
 				\vspace{1mm}
 				\hspace*{-2.1cm} \includegraphics[width=19.5cm]{uml/mpi1.png}
-
+				Le diagramme ci-dessus montre la structure interne de l'implémentation vers MPI, dont le cœur est la Class \verb|MpiInfrastructure|
+				et qui se charge de toutes les communications avec Mpi.
 				\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/mpi2.png}
+				Ci-dessus, l'abstraction du lancement MPI afin de permettre à l'utilisateur de lancer l'application sans avoir à utiliser \verb|mpirun|
 				\subsubsection{Les difficultés pour implanter l'adapter : passer au modèle événementiel}
 				\subsubsection{Scenario en MPI}
 				\vspace{5mm}
