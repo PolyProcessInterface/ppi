@@ -328,9 +328,12 @@ public class RingExample extends NodeProcess {
 					\hspace*{-3.2cm} \includegraphics[width=20cm]{uml/peersim2.png}
 
 				\subsubsection{Les problèmes à implanter cet adapter : multithreading et wait}
+				
 				\subsubsection{Scenario en Peersim}
+				\vspace{5mm}
 				\hspace*{5cm} \includegraphics[width=60mm]{uml/scenPuml.png}
-				\newline
+				
+				\vspace{5mm}
 				Peersim ayant déjà une fonctionnalité qui permet de définir un ou plusieurs évènements qui peuvent être définis avec un délai de livraison donné à l'aide de la class \verb|EDSimulator|,
 				l'implantation de notre fonctionnalité de scénario vers peersim repose entièrement sur elle.
 				En effet la class \verb|EDSimulator| a une fonction \verb|add|
@@ -560,7 +563,7 @@ Usage: ppi [-hV] [--np=<number>] [-s=<path>] <process-class> <runner-class>
    -s, --scenario=<path>   Path to the scenario file
    -V, --version           Print version info
 		\end{lstlisting}
-		\end{minipage}
+		\end{minipage} 
 		Et voici un exemple d'utilisation du \lstinline{.jar} executable. Il n'est pas nécessaires
 		d'ajouter la classe du processus à exécuter si elle se trouve dans le répertoire courant
 		car elle sera dynamiquement chargée :
