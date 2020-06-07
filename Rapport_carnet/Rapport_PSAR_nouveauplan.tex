@@ -327,7 +327,7 @@ public class RingExample extends NodeProcess {
 
 					\hspace*{-3.2cm} \includegraphics[width=20cm]{uml/peersim2.png}
 
-				\subsubsection{Les problèmes à implanter cet adapter : multithreading et wait}
+				\subsubsection{Les difficultés pour implanter l'adapter : multithreading et wait}
 				
 				\subsubsection{Scenario en Peersim}
 				\vspace{5mm}
@@ -356,7 +356,7 @@ public class RingExample extends NodeProcess {
 				\hspace*{-2.1cm} \includegraphics[width=19.5cm]{uml/mpi1.png}
 
 				\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/mpi2.png}
-				\subsubsection{Les problèmes à implanter cet adapter : passer au modèle événementiel}
+				\subsubsection{Les difficultés pour implanter l'adapter : passer au modèle événementiel}
 				\subsubsection{Scenario en MPI}
 				\vspace{5mm}
 				\hspace*{4cm} \includegraphics[width=80mm]{uml/scenMPIuml.png}
@@ -412,7 +412,7 @@ public class RingExample extends NodeProcess {
 
 
 		\section{Annexe : répartition des tâches}
-			\begin{tabular}{|c|c|c|}
+			\hspace*{-0.8cm}\begin{tabular}{|c|c|c|}
 				\hline
 				Tâche & Date d'échéance & Fait par\\[1mm]
 				\hline
@@ -483,63 +483,13 @@ public void handlerTestMessage(TestMessage msg) {}
 
 		Il ne doit y avoir qu'un seul gestionnaire de message par classe de message, sinon le
 		premier trouvé sera choisi par Ppi.
+		\newline
+		\newline
+		\newline
+		\textbf{NB:} Les méthodes mises à disposition pour l'utilisateur sont décrites dans la partie 2.2.
+		Elles sont également consultable en ligne au format javadoc\footnote{\href{https://atlaoui.github.io/ParallelProgramingInterface/org/sar/ppi/Infrastructure.html}{https://atlaoui.github.io/ParallelProgramingInterface/org/sar/ppi/Infrastructure.html}}
 
-		\subsubsection{Méthodes à dispositions}
-		Les méthodes mises à disposition par Ppi correspondent à l'ensemble des fonctions publiques
-		de la classe abstraite \lstinline{Infrastructure} dont une instance est accessible via la
-		propriété \lstinline{infra}. Voicu la liste des fonctions qu'elle contient, également
-		consultable en ligne au format javadoc\footnote{\href{https://atlaoui.github.io/ParallelProgramingInterface/org/sar/ppi/Infrastructure.html}{https://atlaoui.github.io/ParallelProgramingInterface/org/sar/ppi/Infrastructure.html}} :
 
-\noindent\begin{minipage}{\linewidth}
-\begin{lstlisting}
-public int getId()
-\end{lstlisting}
-Permet de récupérer l'id du processus courant.
-\bigskip
-\end{minipage}
-
-\noindent\begin{minipage}{\linewidth}
-\begin{lstlisting}
-public abstract int size()
-\end{lstlisting}
-Retourne le nombre de n\oe uds dans l'infrastructure.
-\bigskip
-\end{minipage}
-
-\noindent\begin{minipage}{\linewidth}
-\begin{lstlisting}
-public abstract void send(Message message)
-\end{lstlisting}
-Permet d'envoyer un message via Ppi.
-\bigskip
-\end{minipage}
-
-\noindent\begin{minipage}{\linewidth}
-\begin{lstlisting}
-public void wait(BooleanSupplier condition) throws InterruptedException
-\end{lstlisting}
-Attendre tant que la condition passée en paramètre n'est pas évaluée à vrai. Il est recommandé de
-passer une lambda en parammètre.
-\bigskip
-\end{minipage}
-
-\noindent\begin{minipage}{\linewidth}
-\begin{lstlisting}
-public void serialThreadRun(Runnable method)
-\end{lstlisting}
-Afin de garder la propriété de reproductibilité de certaines infrastructures, l'API thread de Java
-ne doit pas être utilisée directement. Cette fonction permet donc de lancer un thread qui sera
-éxécuté en série et dans lequel on peut utiliser la fonction \lstinline{wait} de Ppi décrite ci-dessus.
-\bigskip
-\end{minipage}
-
-\noindent\begin{minipage}{\linewidth}
-\begin{lstlisting}
-public abstract void exit()
-\end{lstlisting}
-Arrête l'éxécution pour le n\oe ud courrant.
-\bigskip
-\end{minipage}
 		\newpage
 		\subsection{Lancer Ppi}
 		Un \lstinline{.jar} executable est téléchargeable pour chaque version dans la section \textit{releases}
