@@ -243,50 +243,7 @@ public class RingExample extends NodeProcess {
 }			
 				\end{lstlisting}
 				\newpage
-				\subsubsection{Exemple d'un anneau lancer avec fichier de scénario}
-				Ci-dessous un exemple du même algorithme que dans l'exemple précédent mais lancé par une instruction lue dans le fichier \verb|fileName|,ainsi que 
-				la création de celui-ci.
-				\begin{lstlisting}
-public class HelloRingScenarioTest extends NodeProcess{
-    static String fileName = System.getProperty("user.dir") + "/testeJson.json";
-    public static class ExampleMessage extends Message {/*...*/}
-
-    @MessageHandler
-    public void ExempleMsg(NodeBreakDownTest.ExampleMessage message) {
-        int host = infra.getId();
-        System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
-        int dest = (host + 1) % infra.size();
-        infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(), dest, "Hello"));
-        infra.exit();
-    }
-
-    public void FirstToSend(){
-        System.out.printf("%d : First to send well be \n",infra.getId());
-        infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(),(infra.getId() + 1) % infra.size(), "Hello"));
-    }
-
-    @Override
-	public void init(String[] args) {/*Rien a metre ici*/}
-	
-    @BeforeClass
-    @SuppressWarnings("unchecked")
-    public static void createJsonTeste() {
-		//exemple de construction d'un fichier scenario
-        try (FileWriter filew = new FileWriter(fileName)){
-            JSONObject toWrite = new JSONObject();
-            JSONArray array = new JSONArray();
-            int node =  (int) (Math.random() * 3);
-            array.add(ProtocolTools.eventBuilder("FirstToSend", node, 1000, new ArrayList<>()));//un appel de fonction
-            toWrite.put("events", array);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-				\end{lstlisting}
-
-
-				\newpage
-                
+				
 			
 				\section{Présentation de l'API générique}
 				L'idée pricipale est de produire une API générique permettant d'abstraire le support d'exécution au niveau du code métier, c'est-à-dire produire une couche logicielle afin de pouvoir exécuter de façon transparente le même code sur un simulateur (\verb|PeerSim|) et sur une infrastructure réelle (\verb|MPI|).					
@@ -351,8 +308,49 @@ public class HelloRingScenarioTest extends NodeProcess{
 					\subsection{La fonctionnalité de scénario}
 					Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre de les exécuter sur les deux infrastructures sous-jacentes,
 					afin de l'utiliser, il suffit de définir un fichier JSON et d'ajouter le chemin vers ce dernier (nous verrons cela plus en détail en annexe).
-		
-		
+					\newpage
+					\subsubsection{Exemple d'un anneau lancer avec fichier de scénario}
+				Ci-dessous un exemple du même algorithme que dans l'exemple précédent mais lancé par une instruction lue dans le fichier \verb|fileName|,ainsi que 
+				la création de celui-ci.
+				\begin{lstlisting}
+public class HelloRingScenarioTest extends NodeProcess{
+    static String fileName = System.getProperty("user.dir") + "/testeJson.json";
+    public static class ExampleMessage extends Message {/*...*/}
+
+    @MessageHandler
+    public void ExempleMsg(NodeBreakDownTest.ExampleMessage message) {
+        int host = infra.getId();
+        System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
+        int dest = (host + 1) % infra.size();
+        infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(), dest, "Hello"));
+        infra.exit();
+    }
+
+    public void FirstToSend(){
+        System.out.printf("%d : First to send well be \n",infra.getId());
+        infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(),(infra.getId() + 1) % infra.size(), "Hello"));
+    }
+
+    @Override
+	public void init(String[] args) {/*Rien a metre ici*/}
+	
+    @BeforeClass
+    @SuppressWarnings("unchecked")
+    public static void createJsonTeste() {
+		//exemple de construction d'un fichier scenario
+        try (FileWriter filew = new FileWriter(fileName)){
+            JSONObject toWrite = new JSONObject();
+            JSONArray array = new JSONArray();
+            int node =  (int) (Math.random() * 3);
+            array.add(ProtocolTools.eventBuilder("FirstToSend", node, 1000, new ArrayList<>()));//un appel de fonction
+            toWrite.put("events", array);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+				\end{lstlisting}
+				\newpage
+					
 
 				\section{Présentation des deux Adapters}
 				
