@@ -248,19 +248,79 @@ public class RingExample extends NodeProcess {
 
 		
                 
-         	%TODO
-		\section{Présentation de l'API générique}
-			\subsection{Schema en UML full générique}
-			\subsection{Les méthodes de l'interface}
-			\subsection{La fonctionnalité de scénario}
-			Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre de les exécuter sur les deux infrastructures sous-jacents,
-			afin de l'utiliser, il suffit de définir un fichier JSON et d'ajouter le chemin vers ce dernier. (Plus de détails en annexe)
+				\newpage
+				\section{Présentation de l'API générique}
+					\subsection{Schema UML des classes génériques}
+					\vspace{7mm}
+					\hspace*{-1cm} \includegraphics[width=22cm]{uml/generique.png}
+					
+					\vspace{15mm}
+					Nous avons commencé par définir une classe abstraite \verb|NodeProcess| qui représente un processus à exécuter et une autre classe abstraite \verb|Infrastructure| qui contient toutes les méthodes que nos deux API (\verb|MPI| et \verb|PeerSim|) devront implanter, cette classe abstraite permet également d'abstraire l'infrastructure sur laquelle \verb|NodeProcess| est exécutée.
+					\newline
+					\newline
+					Le lancement de \verb|MPI| et de \verb|PeerSim| est complètement différent, c’est pourquoi il est primordial que les deux lancements soient unifiés pour permettre un développement plus rapide et sûr. 
+					\newline
+					Pour remédier à cette situation, notre solution consiste à créer une interface \verb|Runner| qui permet d’instancier les exécutions des deux API avec les mêmes arguments. Il suffit donc d’instancier \verb|MPIRunner| et/ou \verb|PeerSimRunner| avec en argument le nom de la classe qui hérite \verb|NodeProcess|, le nom de la classe du \verb|Runner| et (facultatifs) le nombre de processus ainsi qu’un scénario et appeler la classe \verb|Ppi| (notre classe \emph{main}) en lui fournissant les arguments décrits précédemment.
+		
+					\newpage
+					\subsection{Primitives offertes et explications}
+					Les primitives mises à disposition correspondent à l'ensemble des méthodes publiques de la classe abstraite \verb|Infrastructure| dont une instance est accessible via la propriété \emph{infra}.
+					\newline
+					Voici la liste des primitives offertes par notre API générique : 
+					\newline
+					
+					\begin{lstlisting}
+						void send(Message message)
+					\end{lstlisting}
+					Envoyer un message à un noeud.
+					
+					\begin{lstlisting}
+						int getId()
+					\end{lstlisting}
+					Récupérer l'id du processus courant.
+		
+					\begin{lstlisting}
+						abstract void exit()
+					\end{lstlisting}
+					Arrêter l'exécution du processus courant.
+		
+					\begin{lstlisting}
+						abstract int size()
+					\end{lstlisting}
+					Retourne le nombre de noeud dans l'infrastructure.
+		
+					\begin{lstlisting}
+						int deploy()
+					\end{lstlisting}
+					Déployer le noeud courant.
+					\begin{lstlisting}
+						int undeploy()
+					\end{lstlisting}
+					Annuler le déploiement du noeud courant.
+		
+					\begin{lstlisting}
+						void serialThreadRun(Runnable method)
+					\end{lstlisting}
+					Lancer un thread qui sera exécuter en série et dans lequel on peut utiliser la primitive \emph{wait}.
+		
+					\begin{lstlisting}
+						void wait(BooleanSupplier condition)
+					\end{lstlisting}
+					Attendre tant que la condition passée en argument n'est pas évaluée à vraie. Il est recommander de passer une lambda retournant un booléen en paramètre.
+		
+					\subsection{La fonctionnalité de scénario}
+					Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre de les exécuter sur les deux infrastructures sous-jacents,
+					afin de l'utiliser, il suffit de définir un fichier JSON et d'ajouter le chemin vers ce dernier (nous verrons cela plus en détails en annexe).
+		
+		
 
-
-		\section{Présentation des deux implémentations}
-			%TODO
-			\subsection{Peersim}
-				\subsubsection{Schema UML peersim + generique et explications}
+				\section{Présentation des deux Adapters}
+				\subsection{Adapter Peersim}
+					\subsubsection{Schema UML Peersim et explications}
+					\vspace{5mm}
+					\hspace*{-1.3cm} \includegraphics[width=18cm]{uml/peersim1.png}
+					\vspace{5mm}
+					\hspace*{-3.2cm} \includegraphics[width=21cm]{uml/peersim2.png}
 				\subsubsection{Les problèmes à implanter cet adapter : multithreading et wait}
 				\subsubsection{Scenario en Peersim}
 				\hspace*{5cm} \includegraphics[width=60mm]{uml/scenPuml.png}
@@ -279,8 +339,13 @@ public class RingExample extends NodeProcess {
 				correspendra à l'appel d'une fonction définie par l'utilisateur et  \verb|OnEvent|/\verb|OffEvent| à la fin et début d'une panne.
 		
 			%TODO
-			\subsection{MPI}
-				\subsubsection{Schema UML MPI + generique et explications}
+			\subsection{Adapter MPI}
+				\subsubsection{Schema UML MPI et explications}
+				\vspace{5mm}
+				\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/mpi1.png}
+
+				\vspace{5mm}
+				\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/mpi2.png}
 				\subsubsection{Les problèmes à implanter cet adapter : passer au modèle événementiel}
 				\subsubsection{Scenario en MPI}
 				\hspace*{5cm} \includegraphics[width=80mm]{uml/scenMpiuml.png}
