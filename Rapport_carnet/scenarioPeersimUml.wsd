@@ -1,29 +1,29 @@
-@startuml test2
-interface AppEvent {
+@startuml scenPuml
+interface AppEvent #fec89a{
     +void run()
 }
 AppEvent <|.. OffEvent
 AppEvent <|.. OnEvent
 AppEvent <|.. ShedEvent
-class OffEvent {
+class OffEvent #fec89a{
 }
-class OnEvent {
+class OnEvent #fec89a{
 }
-class ShedEvent {
+class ShedEvent #fec89a{
 }
 @enduml
 
-@startuml teste2
-interface TimerTask {
+@startuml scenMPIuml
+interface TimerTask #White{
     +void run()
 }
 TimerTask <|.. ScheduledBreakDown
 TimerTask <|.. ScheduledDeploy
 TimerTask <|.. ScheduledFunction
-class ScheduledBreakDown {
+class ScheduledBreakDown #7bf1a8{
 }
-class ScheduledDeploy {
+class ScheduledDeploy #7bf1a8{
 }
-class ScheduledFunction {
+class ScheduledFunction #7bf1a8{
 }
 @enduml
