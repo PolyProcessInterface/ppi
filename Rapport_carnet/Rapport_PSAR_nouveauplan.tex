@@ -250,7 +250,7 @@ public class RingExample extends NodeProcess {
                 
 				\newpage
 				\section{Présentation de l'API générique}
-				L'idée pricipale du projet est de produire une API générique permettant d'abstraire le support d'exécution au niveau du code métier, c'est-à-dire produire une couche logicielle afin de pouvoir exécuter de façon transparente le même code sur un simulateur (\verb|PeerSim|) et sur une infrastructure réelle (\verb|MPI|).					
+				L'idée pricipale est de produire une API générique permettant d'abstraire le support d'exécution au niveau du code métier, c'est-à-dire produire une couche logicielle afin de pouvoir exécuter de façon transparente le même code sur un simulateur (\verb|PeerSim|) et sur une infrastructure réelle (\verb|MPI|).					
 				\subsection{Schema UML des classes génériques}
 					\vspace{2mm}
 					\hspace*{-1cm} \includegraphics[width=22cm]{uml/generique.png}
@@ -320,11 +320,12 @@ public class RingExample extends NodeProcess {
 				\subsection{Adapter Peersim}
 				L'implantation de notre API du côté de \verb|PeerSim| consiste principalement à effectuer un Adapter avec l'API déjà existante de \verb|PeerSim|. Il fallait donc comprendre le fonctionnement des classes de \verb|PeerSim| nécessaires pour faire le lien entre les deux API,  
 				et également adapter une certaines de nos classes pour \verb|PeerSim|, par exemple rendre \verb|NodeProcess| clonable. 
+				\newline
+				Ainsi, la classe \verb|PeerSiminfrastructure| fait le lien entre notre API générique et l'API de \verb|PeerSim|.
 					\subsubsection{Schema UML Peersim et explications}
-					\vspace{1.2mm}
-					\hspace*{-1.3cm} \includegraphics[width=18cm]{uml/peersim1.png}
-					\vspace{1.5mm}
-					\hspace*{-3.2cm} \includegraphics[width=21cm]{uml/peersim2.png}
+					\hspace*{-1.3cm} \includegraphics[width=17cm]{uml/peersim1.png}
+
+					\hspace*{-3.2cm} \includegraphics[width=20cm]{uml/peersim2.png}
 
 				\subsubsection{Les problèmes à implanter cet adapter : multithreading et wait}
 				\subsubsection{Scenario en Peersim}
@@ -343,19 +344,21 @@ public class RingExample extends NodeProcess {
 				que le nœud le reçoit il exécute la méthode run de l'interface dont les instructions correspondront à l'évènement, par exemple le \verb|run()| la class \verb|ShedEvent| 
 				correspendra à l'appel d'une fonction définie par l'utilisateur et  \verb|OnEvent|/\verb|OffEvent| à la fin et début d'une panne.
 		
-			%TODO
+			\newpage
 			\subsection{Adapter MPI}
-			
+			Dans le cas de \verb|MPI|, pour implanter l'Adapter, nous avons commencé par implanter un algorithme simple (un anneau). Puis, une fois que nous avons compris l'essentiel de \verb|MPI|, nous avons étendu la classe \verb|Infrastructure|, ainsi la classe \verb|MpiInfrastructure| nous permet de communiquer avec l'API \verb|MPI|. 
+			Nous avons, cependant, dû ajouter une boucle afin d'adapter le fonctionnement de \verb|MPI| à celui de \verb|PeerSim|.
 				\subsubsection{Schema UML MPI et explications}
-				\vspace{5mm}
-				\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/mpi1.png}
+				\vspace{1mm}
+				\hspace*{-2.1cm} \includegraphics[width=19.5cm]{uml/mpi1.png}
 
-				\vspace{5mm}
 				\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/mpi2.png}
 				\subsubsection{Les problèmes à implanter cet adapter : passer au modèle événementiel}
 				\subsubsection{Scenario en MPI}
+				\vspace{5mm}
 				\hspace*{4cm} \includegraphics[width=80mm]{uml/scenMPIuml.png}
-				\newline
+				
+				\vspace{5mm}
 				Pour l'implémentation sous MPI nous avons utiliser la class \verb|Timer| pour planifier un évenements des tache sur un noeud donner.
 				\newline
 				Nous avions commencer par implanter un processus suppléementaire qui ce lancez a chaque demande de simulation et qui ce charger d'envoyer des 
