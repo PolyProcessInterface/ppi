@@ -256,12 +256,12 @@ public class RingExample extends NodeProcess {
 					\hspace*{-1cm} \includegraphics[width=22cm]{uml/generique.png}
 					
 					\vspace{8mm}
-					Nous avons commencé par définir une classe abstraite \verb|NodeProcess| qui représente un processus à exécuter et une autre classe abstraite \verb|Infrastructure| qui contient toutes les méthodes que nos deux API (\verb|MPI| et \verb|PeerSim|) devront implanter, cette classe abstraite permet également d'abstraire l'infrastructure sur laquelle \verb|NodeProcess| est exécutée.
+					Nous avons commencé par définir une classe abstraite \verb|NodeProcess| qui représente un processus à exécuter et une autre classe abstraite \verb|Infrastructure| qui contient toutes les méthodes que nous devrons implanter pour les deux API (\verb|MPI| et \verb|PeerSim|), cette classe abstraite permet également d'abstraire l'infrastructure sur laquelle \verb|NodeProcess| est exécutée.
 					\newline
 					\newline
 					Le lancement de \verb|MPI| et de \verb|PeerSim| est complètement différent, c’est pourquoi il est primordial que les deux lancements soient unifiés pour permettre un développement plus rapide et sûr. 
 					\newline
-					Pour remédier à cette situation, notre solution consiste à créer une interface \verb|Runner| qui permet d’instancier les exécutions des deux API avec les mêmes arguments. Il suffit donc d’instancier \verb|MPIRunner| et/ou \verb|PeerSimRunner| avec en argument le nom de la classe qui hérite \verb|NodeProcess|, le nom de la classe du \verb|Runner| et (facultatifs) le nombre de processus ainsi qu’un scénario et appeler la classe \verb|Ppi| (notre classe \emph{main}) en lui fournissant les arguments décrits précédemment.
+					Pour remédier à cette situation, notre solution consiste à créer une interface \verb|Runner| qui permet d’instancier les exécutions des deux API avec les mêmes arguments. Il suffit donc d’instancier \verb|MPIRunner| et/ou \verb|PeerSimRunner| avec en argument le nom de la classe qui hérite de \verb|NodeProcess|, le nom de la classe du \verb|Runner| , et, si on le souhaite, le nombre de processus ainsi qu’un scénario, puis finalement d'appeler la classe \verb|Ppi| (notre classe \emph{main}) en lui fournissant les arguments décrits précédemment.
 		
 					\newpage
 					\subsection{Primitives offertes}
@@ -310,8 +310,8 @@ public class RingExample extends NodeProcess {
 					Attendre tant que la condition passée en argument n'est pas évaluée à vraie. Il est recommander de passer une lambda retournant un booléen en paramètre.
 		
 					\subsection{La fonctionnalité de scénario}
-					Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre de les exécuter sur les deux infrastructures sous-jacents,
-					afin de l'utiliser, il suffit de définir un fichier JSON et d'ajouter le chemin vers ce dernier (nous verrons cela plus en détails en annexe).
+					Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre de les exécuter sur les deux infrastructures sous-jacentes,
+					afin de l'utiliser, il suffit de définir un fichier JSON et d'ajouter le chemin vers ce dernier (nous verrons cela plus en détail en annexe).
 		
 		
 
@@ -319,7 +319,7 @@ public class RingExample extends NodeProcess {
 				
 				\subsection{Adapter Peersim}
 				L'implantation de notre API du côté de \verb|PeerSim| consiste principalement à effectuer un Adapter avec l'API déjà existante de \verb|PeerSim|. Il fallait donc comprendre le fonctionnement des classes de \verb|PeerSim| nécessaires pour faire le lien entre les deux API,  
-				et également adapter une certaines de nos classes pour \verb|PeerSim|, par exemple rendre \verb|NodeProcess| clonable. 
+				et également adapter certaines de nos classes pour \verb|PeerSim|, par exemple rendre \verb|NodeProcess| clonable. 
 				\newline
 				Ainsi, la classe \verb|PeerSiminfrastructure| fait le lien entre notre API générique et l'API de \verb|PeerSim|.
 					\subsubsection{Schéma UML Peersim}
@@ -342,10 +342,11 @@ public class RingExample extends NodeProcess {
 				\end{lstlisting}
 				qui permet de programmer un événement qui va être délivré sur un nœud donné. 
 				\newline
-				Nous avons utilisé celle-ci afin de délivrer les évènements définis dans le fichier JSON, au début de l'application si on choisi le runner de \verb|PeersimRunner| va 
-				les lire et les ajouter dans la file des évènements de Peersim, ainsi nous avons définis une interface \verb|AppEvent| qui représente un événement de l'application et une fois 
-				que le nœud le reçoit il exécute la méthode run de l'interface dont les instructions correspondront à l'évènement, par exemple le \verb|run()| la class \verb|ShedEvent| 
-				correspendra à l'appel d'une fonction définie par l'utilisateur et  \verb|OnEvent|/\verb|OffEvent| à la fin et début d'une panne.
+				Nous avons utilisé celle-ci afin de délivrer les évènements définis dans le fichier JSON, au début de l'application si on choisit le runner de \verb|PeersimRunner| , celui-ci va 
+				les lire et les ajouter dans la file des évènements de Peersim.
+Pour représenter un événement de l'application, nous avons défini donc une interface \verb|AppEvent|,
+				Lorsqu'un le nœud reçoit un tel événement, il exécute la méthode run de l'interface dont les instructions correspondront à l'évènement, par exemple la méthode \verb|run()| la class \verb|SchedEvent| 
+				correspondra à l'appel d'une fonction définie par l'utilisateur et  \verb|OnEvent|/\verb|OffEvent| à la fin et début d'une panne.
 		
 			\newpage
 			\subsection{Adapter MPI}
@@ -362,16 +363,15 @@ public class RingExample extends NodeProcess {
 				\hspace*{4cm} \includegraphics[width=80mm]{uml/scenMPIuml.png}
 				
 				\vspace{5mm}
-				Pour l'implémentation sous MPI nous avons utiliser la class \verb|Timer| pour planifier un évenements des tache sur un noeud donner.
+				Pour l'implémentation sous MPI nous avons utilisé la classe \verb|Timer| pour planifier un évenement sur un noeud donné.
 				\newline
-				Nous avions commencer par implanter un processus suppléementaire qui ce lancez a chaque demande de simulation et qui ce charger d'envoyer des 
-				message applicatif distinger par l'interface \verb|AppMessage| , ainsi chaque processus qui recois un message qui étander cette interface , créer la class 
-				qui étander la class \verb|TimerTask| et l'inserer dans sont timer afin quelle soit éxecuter en temps voulus.
+				Nous avions commencé par implanter un processus supplémentaire qui ce lançait à chaque demande de simulation et qui se chargeait d'envoyer des 
+				messages applicatifs distingués par l'interface \verb|AppMessage| , ainsi chaque processus qui recoit un message étendant cette interface , créer la classe 
+				qui étend la classe \verb|TimerTask| et l'insère dans son timer afin qu'elle soit éxecutée en temps voulu.
 				\newline
-				Cependant cette implémentation c'est révéler etre plus compliquer a mettre en place car elle devais etre faite a la construction des processus et fue donc abondonner.
+				Cependant cette implémentation c'est révélée être plus compliqueée à mettre en place car elle devait être faite à la construction des processus et fut donc abondonnée.
 				\newline
-				A la place des l'utilisation de l'option scénario avec le le runneur mpi touts les process recoive le chemin vers le fichier JSON le lise et crée les class correspendante
-				au evenements 
+				A la place, dès l'utilisation de l'option scénario avec le le MpiRunner tous les processus reçoivent le chemin vers le fichier JSON, le lisent, et créent les classes correspondantes aux événements. 
 		
 				
 		
