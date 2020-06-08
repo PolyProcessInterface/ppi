@@ -348,8 +348,29 @@ public abstract void exit()
 					\bigskip
 					\end{minipage}
 
-					Un exemple d'utilisation de la primitive \emph{wait} est d'afficher une information sur la sortie standard seulement
-					après la réception d'un nombre N de message :
+					\subsection{la fonctionalité de \emph{guard}}
+					L'un des gros intérêts de notre API est la possibilité de faire des
+					\emph{guards}. Il s'agit tout simplement de permettre au processus d'attendre
+					sur une condition avant de continuer son exécution. Son utilisation se résume à
+					la fonction \lstinline{wait} qui prend un \lstinline{BooleanSupplier}.
+					En paramètre, il est donc possible de passer une \emph{lambda}, laquelle sera
+					évaluée régulièrement pour vérifier si son résultat est vrai.
+					Un fois que c'est le cas l'exécution peut reprendre son cours.
+
+					Cette fonctionnalité est pertinente dans notre cas d'utilisation car c'est de
+					cette manière que sont, la plupart du temps, représentés les algorithmes
+					distribués.
+					Ainsi un algorithme n'a pas besoin d'adaptation de la part du programmer pour
+					passer de la conception à la réalisation.
+
+					Pour faire fonctionner cette fonctionalité, un \emph{thread} est lancé pour le
+					traitement de chaque événement. De cette manière il nous est possible de
+					facilement sauvegarder le contexte d'exécution du process au moment de son appel
+					à \lstinline{wait} et également de facilement lui faire reprendre son cours.
+
+					Voici un exemple d'utilisation de la primitive \lstinline{wait} qui permet
+					d'afficher une information sur la sortie standard seulement après la réception
+					d'un nombre N de message :
 					\newpage
 					\begin{lstlisting}
 public class WaitExample extends NodeProcess {
