@@ -201,7 +201,6 @@ public class RingProtocol implements EDProtocol {
 }
 				\end{lstlisting}
 
-		
 			\subsection{Création d'une API générique}
 				Le but de notre projet est de produire une API générique sur un modèle de programmation événementielle afin de faciliter le développement de futures applications réparties, en permettant de s'abstraire du support d'éxécution au niveau du code métier. \par
 Pouvoir éxécuter le même code métier aussi bien sur une plateforme réelle que sur un simulateur permet au développeur d'une application répartie de passer de l'un à l'autre, sans risquer d'en  modifier son comportement en adaptant le code. \newline Il peut donc profiter des avantages d'un simulateur, comme la vision globale du système et le déterminisme des séquences d'éxécution  sans crainte d'y introduire de nouveaux bugs. \par
@@ -464,6 +463,9 @@ toWrite.put("events", array);
 	\newline
 	Voici un diagramme de séquence illustrant ceci :
 
+	\vspace{10mm}
+	\hspace*{-0.7cm} \includegraphics[width=17cm]{uml/diagseq.png}
+	\newpage
 						\subsubsection{La fonctionnalité de scénario en Peersim}
 						\vspace{5mm}
 						\hspace*{5cm} \includegraphics[width=60mm]{uml/scenPuml.png}
