@@ -257,9 +257,15 @@ public class RingExample extends NodeProcess {
 					\newline
 					Le lancement de \verb|MPI| et de \verb|PeerSim| est complètement différent, c’est pourquoi il est primordial que les deux lancements soient unifiés pour permettre un développement plus rapide et sûr. 
 					\newline
-					Pour remédier à cette situation, notre solution consiste à créer une interface \verb|Runner| qui permet d’instancier les exécutions des deux API avec les mêmes arguments. Il suffit donc d’instancier \verb|MPIRunner| et/ou \verb|PeerSimRunner| avec en argument le nom de la classe qui hérite de \verb|NodeProcess|, le nom de la classe du \verb|Runner| , et, si on le souhaite, le nombre de processus ainsi qu’un scénario, puis finalement d'appeler la classe \verb|Ppi| (notre classe \emph{main}) en lui fournissant les arguments décrits précédemment.
+					Pour remédier à cette situation, notre solution consiste à créer une interface \verb|Runner| qui permet de lancer les exécutions des deux API avec les mêmes arguments. C'est la classe \verb|Ppi|
+					(notre classe \emph{main}) qui se charge d'appeler la méthode \verb|run| du
+					\verb|Runner| en lui transmettant ses arguments. La classe \verb|Ppi| prend en
+					paramètre le nom de la classe qui hérite de \verb|NodeProcess|, le nom de la classe
+					du \verb|Runner| et (facultatifs) des arguments à passer aux processus,
+					le nombre de processus ainsi qu’un scénario.
+					Selon qu'elle ait été appelée depuis la CLI ou depuis Java, elle se chargera ou
+					non d'instancier le \verb|Runner| qu'elle a reçu en paramètre avant de l'exécuter.
 		
-					\newpage
 					\subsection{Primitives offertes}
 					Les primitives mises à disposition correspondent à l'ensemble des méthodes publiques de la classe abstraite \verb|Infrastructure| dont une instance est accessible via la propriété \emph{infra}.
 					\newline
@@ -459,7 +465,46 @@ public class RingExample extends NodeProcess {
 				et qui se charge de toutes les communications avec MPI.
 				\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/mpi2.png}
 				Ci-dessus, l'abstraction du lancement MPI afin de permettre à l'utilisateur de lancer l'application sans avoir à utiliser \verb|mpirun|.
-				\subsubsection{Les difficultés pour implanter l'adapter : passer au modèle événementiel}
+
+				\subsubsection{Passer au modèle événementiel}
+				Le modèle de notre API étant événementiel, il a fallu, pour réaliser l'adapter MPI,
+				adapter l'infrastrcutre de MPI àce modeèle.
+
+				Nous avont donc ajouté à MPI une boucle d'événements chargée de recevoir et
+				d'envoyer des messages MPI. Cette boucle a deux intérêts principaux.
+				Le premier est de mettre l'infrastructure MPI au niveau de celle de PeerSim qui
+				intègre de base une gestion des événements. En effet grâce à cette boucle il est
+				possible de masquer le traitement des récéptions et de déclencher un événement à
+				chaque message reçu.
+
+				Son intérêt est de palier à une faiblesse de MPI, la gestion de threads
+				multiples. En effet, MPI dispose de plusieurs modes pour les programmes
+				multithreads qui ont chacun leurs inconvénients. Le mode \lstinline{SERIALIZED}
+				permet à plusieurs threads d'appeler
+				des primitives MPI à condition qu'il n'y en ait qu'un à la fois. Le mode
+				\lstinline{MULTIPLE} permet l'appel par plusieurs threads sans restrictions mais
+				semble ne pas être stable et n'est pas activé par défaut. Enfin le mode
+				\lstinline{FUNNELED} nécessite qu'un seul thread ne fasse des appels MPI.
+				Nous avons finalement préféré le mode \lstinline{FUNNELED} au mode
+				\lstinline{SERIALIZED} car nous avions déjà un thread dédié au traitement des
+				messages.
+
+				\subsubsection{Transmettre des objets Java}
+				Pour transmettre des objets Java via MPI nous nous sommes appuiés sur la sérialisation
+				intégrée à Java. L'ensemble des propriétés des messages doivent donc être sérialisables.
+				Nous transformons ensuite le stream en tableau d'octet que nous envoyons en 2 temps via MPI.
+				En effet MPI doit connaitre la taille d'un message avant sa récéption.
+				Nous envoyons donc pour chaque objet Java un premier message MPI contenant un entier
+				décrivant la taille du tableau d'octet, qui est ensuite envoyé dans un second message.
+
+				\subsubsection{Lancement du processus mpirun}
+				Pour lancer une infrastructure MPI la commande \lstinline{mpirun} doit être lancée
+				dans un sous processus. De plus cette commande lancera elle même antant de nouveaux
+				processus Java que demandé. Nous avons donc du ajouter un deuxième \lstinline{Runner}
+				pour MPI. Le premier permettant de lancer la commande \lstinline{mpirun}, qui elle
+				va à nouveau appeler le \lstinline{main} de \lstinline{Ppi} pour chaque processus,
+				mais cette faois avec le \lstinline{SubRunner}.
+
 				\subsubsection{Scenario en MPI}
 				\vspace{5mm}
 				\hspace*{4cm} \includegraphics[width=80mm]{uml/scenMPIuml.png}
@@ -468,7 +513,7 @@ public class RingExample extends NodeProcess {
 				Pour l'implémentation sous MPI nous avons utilisé la classe \verb|Timer| pour planifier un événement sur un noeud donné.
 				\newline
 				Nous avions commencé par implanter un processus supplémentaire qui ce lançait à chaque demande de simulation et qui se chargeait d'envoyer des 
-				messages applicatifs distingués par l'interface \verb|AppMessage| , ainsi chaque processus qui recoit un message étendant cette interface , crée la classe 
+				messages applicatifs distingués par l'interface \verb|AppMessage|, ainsi chaque processus qui recoit un message étendant cette interface, crée la classe 
 				qui étend la classe \verb|TimerTask| et l'insère dans son timer afin qu'elle soit éxécutée en temps voulu.
 				\newline
 				Cependant cette implémentation c'est révélée être plus compliqueée à mettre en place car elle devait être faite à la construction des processus et fut donc abondonnée.
