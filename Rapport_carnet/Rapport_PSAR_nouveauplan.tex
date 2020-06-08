@@ -403,41 +403,37 @@ public class WaitTest extends NodeProcess {
 						Ci-dessous un exemple du même algorithme que dans l'exemple précédent mais lancé par une instruction lue dans le fichier \verb|fileName|,ainsi que 
 						la création de ce fichier JSON.
 						\begin{lstlisting}
-public class RingScenarioTest extends NodeProcess{
-	static String fileName = System.getProperty("user.dir") + "/testJson.json";
-	public static class RingMessage extends Message {/*Meme classe que dans l'exemple precedent*/}
-
-	@MessageHandler
-	public void processRingMessage(RingMessage message) {
-		int host = infra.getId();
-		System.out.printf("Noeud "+ host + " a recu " + message.getContent() + " de " + message.getIdsrc());
-		int dest = (host + 1) % infra.size();
-		infra.send(new RingMessage(infra.getId(), dest, message.getContent()+1));
-		infra.exit();
-    }
-
-	public void FirstToSend(){
-        	infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(),(infra.getId() + 1) % infra.size(), 0));
-    }
-
-	@Override
-	public void init(String[] args) {/*Rien a metre ici*/}
-
-	@BeforeClass
-	@SuppressWarnings("unchecked")
-	public static void createJsonTest() {
-		//exemple de construction d'un fichier scenario
-        	try (FileWriter filew = new FileWriter(fileName)){
-            		JSONObject toWrite = new JSONObject();
-            		JSONArray array = new JSONArray();
-            		int node =  0; // Le node d'id 0 executera la methode FirstToSend
-            		array.add(ProtocolTools.eventBuilder("FirstToSend", node, 1000, new ArrayList<>()));/ /un appel de fonction
-            		toWrite.put("events", array);
-       		} catch (IOException e) {
-            		e.printStackTrace();
-        	}
-    	}
-						\end{lstlisting}
+							public class RingScenarioTest extends NodeProcess{
+								static String fileName = System.getProperty("user.dir") + "/testJson.json";
+								public static class RingMessage extends Message {/*Meme que l'exemple precedent*/}
+								@MessageHandler
+								public void processRingMessage(RingMessage message) {
+									int host = infra.getId();
+									System.out.printf("Noeud "+ host + " a recu " + message.getContent() + " de " + message.getIdsrc());
+									int dest = (host + 1) % infra.size();
+									infra.send(new RingMessage(infra.getId(), dest, message.getContent()+1));
+									infra.exit();
+								}
+								public void FirstToSend(){
+										infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(),(infra.getId() + 1) % infra.size(), 0));
+								}
+								@Override
+								public void init(String[] args) {/*Rien a metre ici*/}
+							\end{lstlisting}
+							
+							Ci-dessou le scénario utiliser dans cette exemple ainsi que la façon fournis par l'API pour la construction du fichier JSON.
+							\begin{lstlisting}
+								@BeforeClass
+								public static void createJsonTest() {
+									//exemple de construction d'un fichier scenario
+									FileWriter filew = new FileWriter(fileName))
+									JSONObject toWrite = new JSONObject();
+									JSONArray array = new JSONArray();
+									int node =  0; // Le node d'id 0 executera la methode FirstToSend
+									array.add(ProtocolTools.eventBuilder("FirstToSend", node, 1000, new ArrayList<>()));/ /un appel de fonction
+									toWrite.put("events", array);
+									}
+													\end{lstlisting}
 						\newpage
 							
 		
