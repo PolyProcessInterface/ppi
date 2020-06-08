@@ -65,7 +65,7 @@ public class MpiInfrastructure extends Infrastructure {
 			while (running.get() || !sendQueue.isEmpty()) {
 				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
 				if (s != null) {
-					recvMpi(s.getSource(), s.getTag());
+					recvMpi(s.getCount(MPI.BYTE), s.getSource(), s.getTag());
 				}
 				Message m = sendQueue.poll();
 				if (m != null) {
@@ -98,13 +98,10 @@ public class MpiInfrastructure extends Infrastructure {
 	 * @param tag the MPI tag of the message.
 	 * @throws org.sar.ppi.PpiException on MpiException.
 	 */
-	protected void recvMpi(int source, int tag) throws PpiException {
+	protected void recvMpi(int size, int source, int tag) throws PpiException {
 		try {
-			int[] sizeMsgTab = new int[1];
-			comm.recv(sizeMsgTab, 1, MPI.INT, source, tag);
-			int sizeMsg = sizeMsgTab[0];
-			byte [] tab = new byte[sizeMsg];
-			comm.recv(tab, sizeMsg, MPI.BYTE, source, tag);
+			byte [] tab = new byte[size];
+			comm.recv(tab, size, MPI.BYTE, source, tag);
 			Message msg = RetriveMessage(tab);
 			recvQueue.add(msg);
 		} catch (MPIException e) {
@@ -121,8 +118,6 @@ public class MpiInfrastructure extends Infrastructure {
 	protected void sendMpi(Message message) throws PpiException {
 		try {
 			byte[] tab = ParseMessage(message);
-			int[] sizes = {tab.length};
-			comm.send(sizes, 1, MPI.INT, message.getIddest(), 1);
 			comm.send(tab, tab.length, MPI.BYTE, message.getIddest(), 1);
 		} catch (MPIException e) {
 			throw new PpiException("Send to" + message.getIddest() + "failed", e);
@@ -232,7 +227,7 @@ public class MpiInfrastructure extends Infrastructure {
 	 *
 	 * @param path path of the scenario file.
 	 */
-	private  void launchSimulation(String path){
+	private void launchSimulation(String path){
 		HashMap<String,List<Object[]>> map = ProtocolTools.readProtocolJSON(path);
 		List<Object[]> l_call = map.get("Calls");
 		int num_node;
