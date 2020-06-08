@@ -484,6 +484,8 @@ static void add(long delay, java.lang.Object event, Node node, int pid)
 		Pour représenter un événement de l'application, nous avons défini donc une interface \verb|AppEvent|,
 						Lorsqu'un le nœud reçoit un tel événement, il exécute la méthode run de l'interface dont les instructions correspondront à l'évènement, par exemple la méthode \verb|run()| la class \verb|SchedEvent| 
 						correspondra à l'appel d'une fonction définie par l'utilisateur et  \verb|OnEvent|/\verb|OffEvent| à la fin et début d'une panne.
+						Cependant, la notion événementielle n'est pas synchronisé entre notre API et Peersim c'est à dire que si, par exemple, on lance un algorithme lors de l'implémentation de la fonction \verb|init()| celui-ci 
+						va s'exécuter indépendamment de la boucle des évènements de peersim, bien sûr ce problème n'existe pas si toutes les instructions sont dans le fichier JSON.
 			
 			\newpage
 			\subsection{L'adapter vers MPI}
