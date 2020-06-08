@@ -418,12 +418,117 @@ Pour représenter un événement de l'application, nous avons défini donc une i
 			%TODO
 			%Comment montrer que cela fonctionne bien, tests unitaires, respect du cahier des charges, l'algo Naimi Trehel nous permet  de tester l'ensemble des fonctionnalités (+ test deploy/undeploy?)
 			\subsection{Tests de validation}
-			Pour chaque fonctionnalité ajoutée nous ajoutons un test et nous nous assurons que les tests précédents fonctionnent toujours.
+			Pour chaque fonctionnalité ajoutée nous ajoutons un test et nous nous assurons que les tests précédents fonctionnent toujours , dans un second temps les nouvelle fonctionaliter sont implanter dans des branch séparer sur GitHub 
+			lors de la fusion d'une  branche avec la branch master GitHub repasse les teste ainsi ont s'assure que le développement et la mise d'une autre branche qui aurais était créer en parallel ne perturbe pas le fonctionnement l'une de l'autre.
+			\newline
 			\newline
 			La classe BasicTest est la toute première classe de tests que nous avons implémenté, elle s'assure que les fonctionnalités de base de notre API
 			send/receive et le format de description de scénario restent fonctionnels malgré les nouveaux ajouts.
-
-			Plusieurs algorithmes distribués seront implantés et testé unitairement dont celui de l'anneau et au moins une exclusion mutuelle.
+			Nous avons implanter l'algorithme de Naimi-Trehel afin de tester notre implementation du de la fonctionaliter wait , ainsi que celui de l'anneaux pour touts les autres test.
+			\newline
+			Ci-dessous l'algorithme Naimi-Trehel :
+			\begin{lstlisting}
+				public class NaimiTrehel extends NodeProcess {
+					Integer father = 0;
+					Integer next = null;
+					boolean token = false;
+					boolean requesting = false;
+					int nbCS = 0;
+					int nbEnd = 0;// terminaison
+				
+					@Override
+					public void init(String[] args) {
+						if (infra.getId() == father) {
+							father = null;
+							token = true;
+						}
+					}
+				
+					public void doSomething() {
+							infra.wait(() -> requesting == false);
+							request();
+							infra.wait(() -> token == true);
+							cs();
+							release();
+				
+							// terminaison
+							if (nbCS == 2) {
+								System.out.printf("%d Had 2 critical sections\n", infra.getId());
+								infra.send(new End(infra.getId(), 0));
+							}
+					}
+				
+					public void request() {
+						requesting = true;
+						if (father != null) {
+							infra.send(new Request(infra.getId(), father));
+							father = null;
+						}
+						System.out.printf("%d Requested critical section\n", infra.getId());
+					}
+				
+					public void cs() {System.out.printf("%d Entered critical section\n", infra.getId()); nbCS++;}
+				
+					public void release() {
+						requesting = false;
+						System.out.printf("%d left critical section\n", infra.getId());
+						if (next != null) {
+							System.out.printf("%d Send token to %d\n", infra.getId(), next);
+							infra.send(new Token(infra.getId(), next));
+							token = false;
+							next = null;
+						}
+					}
+				
+					@MessageHandler
+					public void processRequest(Request request) {
+						int host = infra.getId();
+						System.out.printf("%d Received request from %d\n", host, request.getIdsrc());
+						if (father == null) {
+							if (requesting == true) {
+								System.out.printf("%d Set %d as next\n", host, request.getIdsrc());
+								next = request.getIdsrc();
+							} else {
+								System.out.printf("%d Send token to %d\n", host, request.getIdsrc());
+								infra.send(new Token(host, request.getIdsrc()));
+								token = false;
+							}
+						} else {
+							System.out.printf("%d Pass request to %d\n", host, father);
+							infra.send(new Request(request.getIdsrc(), father));
+						}
+						father = request.getIdsrc();
+					}
+				
+					@MessageHandler
+					public void processToken(Token t) {
+						int host = infra.getId();
+						System.out.printf("%d Received token from %d\n", host, t.getIdsrc());
+						token = true;
+					}
+				
+					//simple class pour differencier les message
+					public static class Request extends Message {/*...*/}				
+					public static class Token extends Message {/*...*/}
+				
+					// terminaison
+					@MessageHandler
+					public void processEnd(End end) {
+						if (infra.getId() == 0) {
+							nbEnd++;
+							if (nbEnd == 5) {
+								for (int i = 1; i < 6; i++) {
+									infra.send(new End(0, i));
+								}
+								System.out.printf("%d Called exit\n", infra.getId());
+								infra.exit();
+							}
+						} else {
+							System.out.printf("%d Called exit\n", infra.getId());
+							infra.exit();
+						}
+					}	
+			\end{lstlisting}
 		
 			%TODO
 			\subsection{Scénario de validation le jour de la soutenance}
