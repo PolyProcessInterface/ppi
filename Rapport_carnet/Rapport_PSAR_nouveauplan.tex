@@ -267,7 +267,10 @@ public class RingExample extends NodeProcess {
 				\section{Présentation de l'API générique}
 
 				L'idée principale est de produire une API générique permettant d'abstraire le support d'exécution au niveau du code métier, c'est-à-dire produire une couche logicielle afin de pouvoir exécuter de façon transparente le même code sur un simulateur et sur une infrastructure réelle.	
-Nous souhaitions aussi mettre en place une fonctionnalité de description de scénario, permettant de détailler des actions à effectuer à une date précise sur l'infrastructure.
+				\newline
+				Cette API générique est \emph{multithreadé}. L'idée est d'avoir plusieurs piles d'exécution afin de pouvoir implanter une fonctionnalité \emph{wait} qui mettrait un process en attente par exemple.
+				\newline
+				Nous souhaitions aussi mettre en place une fonctionnalité de description de scénario, permettant de détailler des actions à effectuer à une date précise sur l'infrastructure.
 
 				\subsection{Schéma UML des classes génériques}
 					\vspace{5mm}
@@ -350,7 +353,7 @@ public abstract void exit()
 					après la réception d'un nombre N de message :
 					\newpage
 					\begin{lstlisting}
-public class WaitTest extends NodeProcess {
+public class WaitExample extends NodeProcess {
 	public static class ExampleMessage extends Message {}
 
 	private final int N = 2;
@@ -448,11 +451,17 @@ public class WaitTest extends NodeProcess {
 							\hspace*{-1.3cm} \includegraphics[width=17cm]{uml/peersim1.png}
 		
 							\hspace*{-3.2cm} \includegraphics[width=20cm]{uml/peersim2.png}
-		
-						\subsubsection{Une difficulté pour implanter l'adapter : l'ajout du multithreading}
-						L’une des difficultés rencontrées au cours de l’implantation de l’adapter \verb|PeerSim| est de rendre celui-ci \emph{multithreadé} ce qui est une source critique d'indéterminisme.
-						En effet, en principe \verb|PeerSim| tourne sur un seul processus et est déterministe. Par conséquent un processus fait à la fois l’aiguillage et exécution des événement de manière séquentielle, ce qui n’est pas vraiment efficace. Il a donc fallu voir en détail de comment rendre effectif le \emph{multithread} tout en gardant une cohérence sur les données et surtout le déterminisme.  
-						La solution consiste à avoir un \emph{thread} principal qui joue le rôle d’ordonnanceur, celui-ci affectera chaque événement à un \emph{thread} et parallèlement se mettra en attente jusqu’à que le \emph{thread} exécutant l’événement finit son exécution ou qu’il se met en attente.
+						
+							\subsubsection{Ajout du multithreading}
+							L’une des difficultés rencontrées au cours de l’implantation de l’adapter \verb|PeerSim| est de rendre celui-ci \emph{multithreadé} ce qui est une source critique d'indéterminisme.
+	En effet, en principe \verb|PeerSim| tourne sur un seul processus et est déterministe. Par conséquent un processus fait à la fois l’aiguillage et exécution des événement de manière séquentielle, nous ne pouvons donc pas implanter une fonctionnalité telle que \emph{wait} qui mettrai le processus en attente. Il a donc fallu voir en détail de comment rendre effectif le \emph{multithread} tout en gardant une cohérence sur les données et surtout le déterminisme. 
+	\newline
+	\newline
+	La solution consiste à avoir un \emph{thread} pricipale qui joue le rôle de l'ordonnanceur et chaque événement sera dédié à un nouveau \emph{thread}.  et parallèlement le \emph{thread} principale se mettra en attente jusqu’à que le \emph{thread} exécutant l’événement finit son exécution ou qu’il se met en attente sur \emph{infra.wait()}.
+	\newline
+	\newline
+	Voici un diagramme de séquence illustrant ceci :
+
 						\subsubsection{La fonctionnalité de scénario en Peersim}
 						\vspace{5mm}
 						\hspace*{5cm} \includegraphics[width=60mm]{uml/scenPuml.png}
@@ -481,6 +490,7 @@ static void add(long delay, java.lang.Object event, Node node, int pid)
 				\hspace*{-2.1cm} \includegraphics[width=19.5cm]{uml/mpi1.png}
 				Le diagramme ci-dessus montre la structure interne de l'implémentation vers MPI, dont le cœur est la classe \verb|MpiInfrastructure|
 				et qui se charge de toutes les communications avec MPI.
+				\newpage
 				\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/mpi2.png}
 				Ci-dessus, l'abstraction du lancement MPI afin de permettre à l'utilisateur de lancer l'application sans avoir à utiliser \verb|mpirun|.
 
