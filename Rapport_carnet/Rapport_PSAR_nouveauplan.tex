@@ -74,11 +74,11 @@
 				\subsubsection{Une API pour plateforme réelle : \textit{MPI}}
 					L'API de MPI est avant tout une norme pour le passage de messages entre différents ordinateurs ou au sein d'un même ordinateur.
 					Elle est énormément utilisée pour la communication dans des architectures distribuées, et donc adaptée sur de nombreuses architectures et ce de manière optimale, c'est pourquoi notre choix s'est porté sur MPI en tant qu'API pour une plateforme réelle.
-					Cependant les tests et le debug sur celle-ci restent difficiles dû a l'impossibilité d'avoir un contrôle sur les évenements qui apparaissent, c'est donc pour parer à ces problèmes que l'on souhaite utiliser des simulateurs, comme par exemple Peersim, pour tester nos applications.
+					Cependant les tests et le debug sur celle-ci restent difficiles dû a l'impossibilité d'avoir un contrôle sur l'ordre d'éxécution des évenements à cause de l'indéterminisme du réseau. C'est donc pour parer à ces problèmes que l'on souhaite utiliser des simulateurs, comme par exemple Peersim, pour tester nos applications.
 				
 				
 				\subsubsection{Une API de simulation à événements discrets : \textit{Peersim}}
-					Qu'entend-on par \textit{simulation à événements discrets}? C'est une simulation dont le temps évolue seulement lorsqu'un événement survient sur un noeud, et donc de même l'état du système ne peut être modifié qu'à ces moments là.
+					Une simulation à événements discrets est une simulation dont le temps évolue seulement lorsqu'un événement survient sur un noeud.
 
 					On distingue donc deux entités : les noeuds, et les événements qui sont caractérisés par une date de délivrance, un noeud destinataire, et des données.
 
@@ -86,12 +86,12 @@
 
 					Dans notre cas, nous nous sommes dirigés vers PeerSim comme simulateur à événements discrets, car il est codé en Java et possède une API relativement simple d'utilisation.
 
-					PeerSim est utilisé pour créer des nœuds et simuler une architecture pair-à-pair en générant des protocoles et des événements qui sont définis par l'utilisateur. Une éxécution est toujours ce qui permet d'accélérer le débug d'une application répartie avant son déploiement ou de reproduire une séquence d'événements qui a provoqué un bug sur une application déja existante.
+					PeerSim est utilisé pour créer des nœuds et simuler une architecture pair-à-pair en générant des protocoles et des événements qui sont définis par l'utilisateur. Une éxécution est toujours déterministe ce qui permet d'accélérer le débug d'une application répartie avant son déploiement ou de reproduire une séquence d'événements qui a provoqué un bug sur une application déja existante.
 
 			
 			\newpage
 			\subsection{Premier aperçu de ces deux API}
-			Nous allons donc commencer par vous montrer les différences et similitudes qui existent entre deux implémentations d'un anneau, dont les noeuds se communiquent circulairement un entier, en commençant par le noeud d'identifiant 0. 
+			Nous allons donc commencer par vous montrer les différences et similitudes qui existent entre deux implémentations d'un anneau, dont les noeuds se communiquent un entier circulairement, en commençant par le noeud d'identifiant 0. 
 
 			\subsubsection{Exemple d'un anneau implémenté avec une API de plateforme réelle : MPI}
 			Dans cet exemple, nous pouvons observer plusieurs méthodes indispensables fournies par MPI, comme le déploiement par MPI.Init, l'émission et la réception de message par send et rcv, et la fin d'un noeud par MPI.Finalize. Nous allons le comparer à son équivalent en Peersim pour y trouver de multiples points communs.
@@ -165,7 +165,6 @@ public class RingProtocol implements EDProtocol {
 	//La methode de l'interface EDProtocol de Peersim a implementer
 	@Override
 	public void processEvent(Node host, int pid, Object event) {
-		// TODO Auto-generated method stub
 		if(pid!=my_pid) throw new IllegalArgumentException("Incoherence sur l'id de protocole");
 		if(event instanceof RingMessage) {
 			receiveRingMessage(host,(RingMessage) event);
@@ -380,41 +379,40 @@ public class RingExample extends NodeProcess {
 						Ci-dessous un exemple du même algorithme que dans l'exemple précédent mais lancé par une instruction lue dans le fichier \verb|fileName|,ainsi que 
 						la création de celui-ci.
 						\begin{lstlisting}
-		public class HelloRingScenarioTest extends NodeProcess{
-			static String fileName = System.getProperty("user.dir") + "/testeJson.json";
-			public static class ExampleMessage extends Message {/*...*/}
-		
-			@MessageHandler
-			public void ExempleMsg(NodeBreakDownTest.ExampleMessage message) {
-				int host = infra.getId();
-				System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
-				int dest = (host + 1) % infra.size();
-				infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(), dest, "Hello"));
-				infra.exit();
-			}
-		
-			public void FirstToSend(){
-				System.out.printf("%d : First to send well be \n",infra.getId());
-				infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(),(infra.getId() + 1) % infra.size(), "Hello"));
-			}
-		
-			@Override
-			public void init(String[] args) {/*Rien a metre ici*/}
-			
-			@BeforeClass
-			@SuppressWarnings("unchecked")
-			public static void createJsonTeste() {
-				//exemple de construction d'un fichier scenario
-				try (FileWriter filew = new FileWriter(fileName)){
-					JSONObject toWrite = new JSONObject();
-					JSONArray array = new JSONArray();
-					int node =  (int) (Math.random() * 3);
-					array.add(ProtocolTools.eventBuilder("FirstToSend", node, 1000, new ArrayList<>()));//un appel de fonction
-					toWrite.put("events", array);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+public class RingScenarioTest extends NodeProcess{
+	static String fileName = System.getProperty("user.dir") + "/testJson.json";
+	public static class RingMessage extends Message {/*Meme classe que dans l'exemple precedent*/}
+
+	@MessageHandler
+	public void processRingMessage(RingMessage message) {
+		int host = infra.getId();
+		System.out.printf("Noeud "+ host + " a recu " + message.getContent() + " de " + message.getIdsrc());
+		int dest = (host + 1) % infra.size();
+		infra.send(new RingMessage(infra.getId(), dest, message.getContent()+1));
+		infra.exit();
+    }
+
+	public void FirstToSend(){
+        	infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(),(infra.getId() + 1) % infra.size(), 0));
+    }
+
+	@Override
+	public void init(String[] args) {/*Rien a metre ici*/}
+
+	@BeforeClass
+	@SuppressWarnings("unchecked")
+	public static void createJsonTest() {
+		//exemple de construction d'un fichier scenario
+        	try (FileWriter filew = new FileWriter(fileName)){
+            		JSONObject toWrite = new JSONObject();
+            		JSONArray array = new JSONArray();
+            		int node =  0; // Le node d'id 0 executera la methode FirstToSend
+            		array.add(ProtocolTools.eventBuilder("FirstToSend", node, 1000, new ArrayList<>()));/ /un appel de fonction
+            toWrite.put("events", array);
+       		} catch (IOException e) {
+            		e.printStackTrace();
+        	}
+    	}
 						\end{lstlisting}
 						\newpage
 							
@@ -530,7 +528,7 @@ public class RingExample extends NodeProcess {
 			\newline
 			\newline
 			En plus de chacun des tests correspondant à une fonctionnalité que propose notre API, nous avons souhaité vérifier que lorsque du code générique a pour support Peersim, l'éxécution de ce lui-ci reste bien déterministe, puisque c'est bien une des raisons principales du besoin d'éxécuter du code sur un simulateur au départ. Nous avons donc bien pu constater qu'un même code éxécuté avec la même graine aléatoire menait bien à la même trace d'éxécution.\newline 
-			Finalement, nous avons implanté l'algorithme de Naimi-Trehel afin de tester l'ajout du multithreading et notre implementation de la fonctionnalité wait.
+			Finalement, nous avons implanté l'algorithme de Naimi-Trehel afin de tester l'ensemble des fonctionnalités, y compris l'ajout du multithreading et notre implementation de la fonctionnalité wait.
 			\newline
 			Ci-dessous l'algorithme Naimi-Trehel :
 			\begin{lstlisting}
