@@ -106,31 +106,28 @@ Toutefois, il faut savoir trouver un équilibre entre une simulation trop simpli
 			Dans cet exemple, nous pouvons observer plusieurs méthodes indispensables fournies par MPI, comme le déploiement par MPI.Init, l'émission et la réception de message par send et rcv, et la fin d'un noeud par MPI.Finalize. Nous allons le comparer à son équivalent en Peersim pour y trouver de multiples points communs.
 			\begin{lstlisting}
 public class RingMpi {
-
 	public static void main(String[] args) {
-			MPI.Init(args);
-			Comm comm = MPI.COMM_WORLD;
-			int size = comm.getSize();
-			int rank = comm.getRank();
-			int neighbour = (rank + 1) % size;
-			int hellotag = 1;
-			Integer msg = 0;
-           		Status status;
-            
-			if (rank == 0) {
-				comm.send(msg, 0, MPI.INT, neighbour, hellotag);
-				status = comm.recv(msg, 0, MPI.INT, MPI.ANY_SOURCE, hellotag);
-			} else {
-				status = comm.recv(msg, 0, MPI.INT, MPI.ANY_SOURCE, hellotag);
-				comm.send(msg, 0, MPI.INT, neighbour, hellotag);
-            }
-			System.out.println("Noeud "+ rank + " : a recu "+ msg +" de "+status.getSource());
-			MPI.Finalize();
+		MPI.Init(args);
+		Comm comm = MPI.COMM_WORLD;
+		int size = comm.getSize();
+		int rank = comm.getRank();
+		int neighbour = (rank + 1) % size;
+		int hellotag = 1;
+		Integer msg = 0;
+		Status status;
+
+		if (rank == 0) {
+			comm.send(msg, 0, MPI.INT, neighbour, hellotag);
+			status = comm.recv(msg, 0, MPI.INT, MPI.ANY_SOURCE, hellotag);
+		} else {
+			status = comm.recv(msg, 0, MPI.INT, MPI.ANY_SOURCE, hellotag);
+			comm.send(msg, 0, MPI.INT, neighbour, hellotag);
 		}
+		System.out.println("Noeud " + rank + " : a recu " + msg + " de " + status.getSource());
+		MPI.Finalize();
 	}
 }
-                	\end{lstlisting}
-			
+			\end{lstlisting}
 			\newpage
 			\subsubsection{Exemple d'un anneau implémenté avec une API de simulation : Peersim}
 				Dans ce second exemple, nous pouvons observer certaines méthodes ayant leur équivalent en MPI, comme celle d'initialisation, la méthode processEvent qui effectue l'aiguillage des messages, et la méthode receiveRingMessage qui est effectuée lors de la réception d'un message. Il y a aussi des méthodes qui sont indispensables au fonctionnement de Peersim mais absentes dans MPI, comme la méthode clone.
@@ -138,73 +135,71 @@ public class RingMpi {
 
 public class RingProtocol implements EDProtocol {
 
-	private static final String PAR_TRANSPORT="transport";
+	private static final String PAR_TRANSPORT = "transport";
 	private final int pid_transport;
 
 	private final int my_pid; // identifiant du protocole
-	private int myInt; 		// entier propre a chaque noeud
+	private int myInt; // entier propre a chaque noeud
 	private boolean deja_dit_voisin; // indique si message deja envoye
 
 	public RingProtocol(String prefix) {
-		System.out.println("prefix= "+prefix);
-		String tmp[]=prefix.split("\\.");
-		my_pid=Configuration.lookupPid(tmp[tmp.length-1]);
-		pid_transport=Configuration.getPid(prefix+"."+PAR_TRANSPORT);
-		deja_dit_voisin=false;
-		myInt=0;
+
+		System.out.println("prefix= " + prefix);
+		String tmp[] = prefix.split("\\.");
+		my_pid = Configuration.lookupPid(tmp[tmp.length - 1]);
+		pid_transport = Configuration.getPid(prefix + "." + PAR_TRANSPORT);
+		deja_dit_voisin = false;
+		myInt = 0;
 	}
 
 	public Object clone() {
-		RingProtocol ap= null;
+		RingProtocol ap = null;
 		try {
-			ap=(RingProtocol) super.clone();
-			ap.myInt=this.myInt;
-		}catch(CloneNotSupportedException e) {} // NEVER HAPPENS
+			ap = (RingProtocol) super.clone();
+			ap.myInt = this.myInt;
+		} catch (CloneNotSupportedException e) {} // NEVER HAPPENS
 		return ap;
 	}
 
-	//Lance l'anneau depuis le noeud d'ID 0
+	// Lance l'anneau depuis le noeud d'ID 0
 	public void initialisation(Node host) {
-		if(host.getID()==0) {
+		if (host.getID() == 0) {
 			direVoisin(host);
 		}
 	}
 
-	//La methode de l'interface EDProtocol de Peersim a implementer
+	// La methode de l'interface EDProtocol de Peersim a implementer
 	@Override
 	public void processEvent(Node host, int pid, Object event) {
-		if(pid!=my_pid) throw new IllegalArgumentException("Incoherence sur l'id de protocole");
-		if(event instanceof RingMessage) {
-			receiveRingMessage(host,(RingMessage) event);
-		}else {
+		if (pid != my_pid)
+			throw new IllegalArgumentException("Incoherence sur l'id de protocole");
+		if (event instanceof RingMessage) {
+			receiveRingMessage(host, (RingMessage) event);
+		} else {
 			throw new IllegalArgumentException("Evenement inconnu pour ce protocole");
 		}
 	}
 
-
-
-
-
-	//Traitement a effectuer lorsqu'on recoit un RingMessage
+	// Traitement a effectuer lorsqu'on recoit un RingMessage
 	private void receiveRingMessage(Node host, RingMessage mess) {
-		System.out.println("Noeud "+ host.getID() + " : a recu "+mess.getInfo() +" de "+mess.getIdsrc());
-		myInt=mess.getInfo();
-		if(!deja_dit_voisin) {
+		System.out.println("Noeud " + host.getID() + " : a recu " + mess.getInfo() + " de " + mess.getIdsrc());
+		myInt = mess.getInfo();
+		if (!deja_dit_voisin) {
 			direVoisin(host);
 		}
 	}
 
-	//Un noeud souhaite faire sa diffusion du message a son voisin
+	// Un noeud souhaite faire sa diffusion du message a son voisin
 	private void direVoisin(Node host) {
-		Transport tr= (Transport) host.getProtocol(pid_transport);
-		Node dest=Network.get((int) ((host.getID()+1)%Network.size()));
-		Message mess= new RingMessage(host.getID(),(host.getID()+1)%Network.size(),my_pid,myInt+1);
+		Transport tr = (Transport) host.getProtocol(pid_transport);
+		Node dest = Network.get((int) ((host.getID() + 1) % Network.size()));
+		Message mess = new RingMessage(host.getID(), (host.getID() + 1) % Network.size(), my_pid, myInt + 1);
 		tr.send(host, dest, mess, my_pid);
 
-		deja_dit_voisin=true;
+		deja_dit_voisin = true;
 	}
 }
-               		\end{lstlisting}
+				\end{lstlisting}
 
 		
 			\subsection{Création d'une API générique}
@@ -232,9 +227,10 @@ une méthode processRingMessage, annotée par @MessageHandler, contenant le code
 public class RingExample extends NodeProcess {
 
 	public static class RingMessage extends Message {
-	
+
 		private static final long serialVersionUID = 1L;
 		private int content;
+
 		public RingMessage(int src, int dest, int c) {
 			super(src, dest);
 			this.content = c;
@@ -249,10 +245,10 @@ public class RingExample extends NodeProcess {
 	@MessageHandler
 	public void processRingMessage(RingMessage message) {
 		int host = infra.getId();
-		System.out.println("Noeud "+ host + " a recu " + message.getContent() + " de " + message.getIdsrc());
+		System.out.println("Noeud " + host + " a recu " + message.getContent() + " de " + message.getIdsrc());
 		if (host != 0) {
 			int dest = (host + 1) % infra.size();
-			infra.send(new RingMessage(infra.getId(), dest, message.getContent()+1));
+			infra.send(new RingMessage(infra.getId(), dest, message.getContent() + 1));
 		}
 		infra.exit();
 	}
@@ -264,7 +260,7 @@ public class RingExample extends NodeProcess {
 		}
 	}
 
-}			
+}
 				\end{lstlisting}
 				\newpage
 
@@ -299,105 +295,104 @@ Nous souhaitions aussi mettre en place une fonctionnalité de description de sc�
 					Voici la liste des primitives offertes par notre API générique : 
 					\newline
 					
+					\noindent\begin{minipage}{\linewidth}
 					\begin{lstlisting}
-						void send(Message message)
+public int getId()
 					\end{lstlisting}
-					Envoyer un message à un noeud.
-					
+					Permet de récupérer l'id du processus courant.
+					\bigskip
+					\end{minipage}
+
+					\noindent\begin{minipage}{\linewidth}
 					\begin{lstlisting}
-						int getId()
+public abstract int size()
 					\end{lstlisting}
-					Récupérer l'id du processus courant.
-		
+					Retourne le nombre de n\oe uds dans l'infrastructure.
+					\bigskip
+					\end{minipage}
+
+					\noindent\begin{minipage}{\linewidth}
 					\begin{lstlisting}
-						abstract void exit()
+public abstract void send(Message message)
 					\end{lstlisting}
-					Arrêter l'exécution du processus courant.
-		
+					Permet d'envoyer un message via Ppi.
+					\bigskip
+					\end{minipage}
+
+					\noindent\begin{minipage}{\linewidth}
 					\begin{lstlisting}
-						abstract int size()
+public void wait(BooleanSupplier condition) throws InterruptedException
 					\end{lstlisting}
-					Retourne le nombre de noeud dans l'infrastructure.
-		
+					Attendre tant que la condition passée en paramètre n'est pas évaluée à vrai. Il est recommandé de
+					passer une lambda en parammètre.
+					\bigskip
+					\end{minipage}
+
+					\noindent\begin{minipage}{\linewidth}
 					\begin{lstlisting}
-						int deploy()
+public void serialThreadRun(Runnable method)
 					\end{lstlisting}
-					Déployer le noeud courant.
+					Afin de garder la propriété de reproductibilité de certaines infrastructures, l'API thread de Java
+					ne doit pas être utilisée directement. Cette fonction permet donc de lancer un thread qui sera
+					éxécuté en série et dans lequel on peut utiliser la fonction \lstinline{wait} de Ppi décrite ci-dessus.
+					\bigskip
+					\end{minipage}
+
+					\noindent\begin{minipage}{\linewidth}
 					\begin{lstlisting}
-						int undeploy()
+public abstract void exit()
 					\end{lstlisting}
-					Annuler le déploiement du noeud courant.
-		
-					\begin{lstlisting}
-						void serialThreadRun(Runnable method)
-					\end{lstlisting}
-					Lancer un thread qui sera exécuter en série et dans lequel on peut utiliser la primitive \emph{wait}.
-		
-					\begin{lstlisting}
-						void wait(BooleanSupplier condition)
-					\end{lstlisting}
-					Attendre tant que la condition passée en argument n'est pas évaluée à vraie. Il est recommander de passer une lambda retournant un booléen en paramètre.
-					\newline
+					Arrête l'éxécution pour le n\oe ud courrant.
+					\bigskip
+					\end{minipage}
 
 					Un exemple d'utilisation de la primitive \emph{wait} est d'afficher une information sur la sortie standard seulement
 					après la réception d'un nombre N de message :
 					\newpage
 					\begin{lstlisting}
 public class WaitTest extends NodeProcess {
-	public static class ExampleMessage extends Message {
-			// constructeur + getters
-			...
-	}
+	public static class ExampleMessage extends Message {}
+
 	private final int N = 2;
 	private int msgReceived = 0;
-			
-	// affiche "Hello !" sur la console apres N messages recus			   
-	public void helloN(){
-		try {
-			infra.wait( () -> msgReceived >= N );
-			System.out.println(infra.getId()+" Hello !");
-			} catch (InterruptedException e) {
-				System.out.println(infra.getId()+" Interrupted while waiting !");
-			}
-		}
-							
-		// gestionnaire de messages
-		@MessageHandler
-		public void processExampleMessage(ExampleMessage message) {
-			int host = infra.getId();
-			System.out.printf("%d Received '%s' from %d.\n", host, message.getS(), message.getIdsrc());
-			msgReceived++;
-			int dest = (host + 1) % infra.size();
-			if (host != 0 && msgReceived == 1) {
-				infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
-				if(host==2) helloN(); // attendre N messages si l'id du noeud est 2
-			} else {
-				infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
-				infra.exit();
-			}
-		}
-			
-		@Override
-		public void init(String[] args) {
-			if (infra.getId() == 0)
-				infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
-			}
-			
-		// lancement mpi
-		@Test
-		public void MpiAnnotatedProcessTest() {
-			Assume.assumeTrue(Environment.mpirunExist());
-			Ppi.main(this.getClass(), new MpiRunner());
-			assertTrue(true);
-		}
 
-		// lancement peersim
-		@Test
-		public void PeersimWaitNotifyTest() {
-			Ppi.main(this.getClass(), new PeerSimRunner());
-			assertTrue(true);
+	// affiche "Hello !" sur la console apres N messages recus
+	public void helloN() {
+		try {
+////////////////////////////////////////////////////////////////
+////////////////////////// wait ////////////////////////////////
+////////////////////////////////////////////////////////////////
+			infra.wait(() -> msgReceived >= N);
+////////////////////////////////////////////////////////////////
+			System.out.println(infra.getId() + " Hello !");
+		} catch (InterruptedException e) {
+			System.out.println(infra.getId() + " Interrupted while waiting !");
 		}
 	}
+
+	// gestionnaire de messages
+	@MessageHandler
+	public void processExampleMessage(ExampleMessage message) {
+		int host = infra.getId();
+		System.out.printf("%d Received '%s' from %d.\n", host, message.getS(), message.getIdsrc());
+		msgReceived++;
+		int dest = (host + 1) % infra.size();
+		if (host != 0 && msgReceived == 1) {
+			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+			if (host == 2)
+				helloN(); // attendre N messages si l'id du noeud est 2
+		} else {
+			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+			infra.exit();
+		}
+	}
+
+	@Override
+	public void init(String[] args) {
+		if (infra.getId() == 0)
+			infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
+	}
+}
 					\end{lstlisting}
 					\newpage
 							\subsection{La fonctionnalité de scénario}
@@ -471,7 +466,7 @@ public class RingScenarioTest extends NodeProcess{
 						l'implantation de notre fonctionnalité de scénario vers peersim repose entièrement sur elle.
 						En effet la class \verb|EDSimulator| a une fonction \verb|add|
 						\begin{lstlisting}
-						static void add(long delay, java.lang.Object event, Node node, int pid)
+static void add(long delay, java.lang.Object event, Node node, int pid)
 						\end{lstlisting}
 						qui permet de programmer un événement qui va être délivré sur un nœud donné. 
 						\newline
@@ -636,162 +631,167 @@ public class BroadcastOrderTest extends RedirectedTest {
 			\newline
 			Ci-dessous l'algorithme Naimi-Trehel :
 			\begin{lstlisting}
-				public class NaimiTrehel extends NodeProcess {
-					Integer father = 0;
-					Integer next = null;
-					boolean token = false;
-					boolean requesting = false;
-					int nbCS = 0;
-					int nbEnd = 0;// terminaison
-				
-					@Override
-					public void init(String[] args) {
-						if (infra.getId() == father) {
-							father = null;
-							token = true;
-						}
-					}
-				
-					public void doSomething() {
-							infra.wait(() -> requesting == false);
-							request();
-							infra.wait(() -> token == true);
-							cs();
-							release();
-				
-							// terminaison
-							if (nbCS == 2) {
-								System.out.printf("%d Had 2 critical sections\n", infra.getId());
-								infra.send(new End(infra.getId(), 0));
-							}
-					}
-				
-					public void request() {
-						requesting = true;
-						if (father != null) {
-							infra.send(new Request(infra.getId(), father));
-							father = null;
-						}
-						System.out.printf("%d Requested critical section\n", infra.getId());
-					}
-				
-					public void cs() {System.out.printf("%d Entered critical section\n", infra.getId()); nbCS++;}
-				
-					public void release() {
-						requesting = false;
-						System.out.printf("%d left critical section\n", infra.getId());
-						if (next != null) {
-							System.out.printf("%d Send token to %d\n", infra.getId(), next);
-							infra.send(new Token(infra.getId(), next));
-							token = false;
-							next = null;
-						}
-					}
-				
-					@MessageHandler
-					public void processRequest(Request request) {
-						int host = infra.getId();
-						System.out.printf("%d Received request from %d\n", host, request.getIdsrc());
-						if (father == null) {
-							if (requesting == true) {
-								System.out.printf("%d Set %d as next\n", host, request.getIdsrc());
-								next = request.getIdsrc();
-							} else {
-								System.out.printf("%d Send token to %d\n", host, request.getIdsrc());
-								infra.send(new Token(host, request.getIdsrc()));
-								token = false;
-							}
-						} else {
-							System.out.printf("%d Pass request to %d\n", host, father);
-							infra.send(new Request(request.getIdsrc(), father));
-						}
-						father = request.getIdsrc();
-					}
-				
-					@MessageHandler
-					public void processToken(Token t) {
-						int host = infra.getId();
-						System.out.printf("%d Received token from %d\n", host, t.getIdsrc());
-						token = true;
-					}
-				
-					//simple class pour differencier les message
-					public static class Request extends Message {/*...*/}				
-					public static class Token extends Message {/*...*/}
-					public static class End extends Message {/*..*/}
-				
-					// terminaison
-					@MessageHandler
-					public void processEnd(End end) {
-						if (infra.getId() == 0) {
-							nbEnd++;
-							if (nbEnd == 5) {
-								for (int i = 1; i < 6; i++) {
-									infra.send(new End(0, i));
-								}
-								System.out.printf("%d Called exit\n", infra.getId());
-								infra.exit();
-							}
-						} else {
-							System.out.printf("%d Called exit\n", infra.getId());
-							infra.exit();
-						}
-					}	
+public class NaimiTrehel extends NodeProcess {
+	Integer father = 0;
+	Integer next = null;
+	boolean token = false;
+	boolean requesting = false;
+	int nbCS = 0;
+	int nbEnd = 0;// terminaison
+
+	@Override
+	public void init(String[] args) {
+		if (infra.getId() == father) {
+			father = null;
+			token = true;
+		}
+	}
+
+	public void doSomething() {
+		infra.wait(() -> requesting == false);
+		request();
+		infra.wait(() -> token == true);
+		cs();
+		release();
+
+		// terminaison
+		if (nbCS == 2) {
+			System.out.printf("%d Had 2 critical sections\n", infra.getId());
+			infra.send(new End(infra.getId(), 0));
+		}
+	}
+
+	public void request() {
+		requesting = true;
+		if (father != null) {
+			infra.send(new Request(infra.getId(), father));
+			father = null;
+		}
+		System.out.printf("%d Requested critical section\n", infra.getId());
+	}
+
+	public void cs() {System.out.printf("%d Entered critical section\n", infra.getId()); nbCS++;}
+
+	public void release() {
+		requesting = false;
+		System.out.printf("%d left critical section\n", infra.getId());
+		if (next != null) {
+			System.out.printf("%d Send token to %d\n", infra.getId(), next);
+			infra.send(new Token(infra.getId(), next));
+			token = false;
+			next = null;
+		}
+	}
+
+	@MessageHandler
+	public void processRequest(Request request) {
+		int host = infra.getId();
+		System.out.printf("%d Received request from %d\n", host, request.getIdsrc());
+		if (father == null) {
+			if (requesting == true) {
+				System.out.printf("%d Set %d as next\n", host, request.getIdsrc());
+				next = request.getIdsrc();
+			} else {
+				System.out.printf("%d Send token to %d\n", host, request.getIdsrc());
+				infra.send(new Token(host, request.getIdsrc()));
+				token = false;
+			}
+		} else {
+			System.out.printf("%d Pass request to %d\n", host, father);
+			infra.send(new Request(request.getIdsrc(), father));
+		}
+		father = request.getIdsrc();
+	}
+
+	@MessageHandler
+	public void processToken(Token t) {
+		int host = infra.getId();
+		System.out.printf("%d Received token from %d\n", host, t.getIdsrc());
+		token = true;
+	}
+
+	//simple class pour differencier les message
+	public static class Request extends Message {/*...*/}				
+	public static class Token extends Message {/*...*/}
+	public static class End extends Message {/*..*/}
+
+	// terminaison
+	@MessageHandler
+	public void processEnd(End end) {
+		if (infra.getId() == 0) {
+			nbEnd++;
+			if (nbEnd == 5) {
+				for (int i = 1; i < 6; i++) {
+					infra.send(new End(0, i));
+				}
+				System.out.printf("%d Called exit\n", infra.getId());
+				infra.exit();
+			}
+		} else {
+			System.out.printf("%d Called exit\n", infra.getId());
+			infra.exit();
+		}
+	}
+}
 			\end{lstlisting}
 			
 			\subsection{Scénario de validation}
 			Afin de tester les pannes ainsi que les événements nous avons utilisé le test suivant qui met en panne un noeud, ainsi il ignorera tous les messages reçus, sauf applicatifs, et un second noeud est mis hors-service mais tout de suite remis en ligne.
 			\begin{lstlisting}
 public class NodeBreakDownTest extends NodeProcess {
-    static String fileName = System.getProperty("user.dir") + "/testeJson.json";
+	static String fileName = System.getProperty("user.dir") + "/testeJson.json";
 
-    public static class ExampleMessage extends Message {/*...*/}
+	public static class ExampleMessage extends Message {/* ... */}
 
-    @MessageHandler
-    public void ExempleMsg(ExampleMessage message) {
-        int host = infra.getId();
-        System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
-        if (host != 0) {
-            int dest = (host + 1) % infra.size();
-            infra.send(new ExampleMessage(infra.getId(), dest, "Hello"));
-            infra.exit();
-        }else {
-            System.err.println(" not the right path");
-        }
-    }
-	//afin de demander l'arret du processus en panne			
-    public void End() {infra.exit();}
-
-    @Override
-    public void init(String[] args) {
-        if (infra.getId() == 0) {
-            infra.send(new ExampleMessage(infra.getId(), 1, "Hello"));
-        }else
-            Thread.sleep(500);
+	@MessageHandler
+	public void ExempleMsg(ExampleMessage message) {
+		int host = infra.getId();
+		System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
+		if (host != 0) {
+			int dest = (host + 1) % infra.size();
+			infra.send(new ExampleMessage(infra.getId(), dest, "Hello"));
+			infra.exit();
+		} else {
+			System.err.println(" not the right path");
+		}
 	}
-	//creation du scenario
-	@BeforeClass
-    @SuppressWarnings("unchecked")
-    public static void createJsonTeste() {
-            FileWriter filew = new FileWriter(fileName);
-            JSONObject toWrite = new JSONObject();
-            JSONArray array = new JSONArray();
-            //demande de la panne sur le neud 0
-            array.add(ProtocolTools.StateBuilder(0, 1000));
-			toWrite.put("undeploy", array);
-			//dmeande de la panne et l'annulation sur le neud 2
-			array = new JSONArray();
-			array.add(ProtocolTools.StateBuilder(2, 500));
-			toWrite.put("undeploy", array);
-			array = new JSONArray();
-			array.add(ProtocolTools.StateBuilder(2, 600));
-			toWrite.put("deploy", array);
-			//arret du process 0 car il ne va jamais appeler @MessageHandler du a la panne
-           	array.add(ProtocolTools.eventBuilder("End", 0, 5000,  new ArrayList<>()));
-            toWrite.put("events", array);
-            filew.write(toWrite.toString());
-    }
 
+	// afin de demander l'arret du processus en panne
+	public void End() {
+		infra.exit();
+	}
+
+	@Override
+	public void init(String[] args) {
+		if (infra.getId() == 0) {
+			infra.send(new ExampleMessage(infra.getId(), 1, "Hello"));
+		} else
+			Thread.sleep(500);
+	}
+
+	// creation du scenario
+	@BeforeClass
+	@SuppressWarnings("unchecked")
+	public static void createJsonTeste() {
+		FileWriter filew = new FileWriter(fileName);
+		JSONObject toWrite = new JSONObject();
+		JSONArray array = new JSONArray();
+		// demande de la panne sur le neud 0
+		array.add(ProtocolTools.StateBuilder(0, 1000));
+		toWrite.put("undeploy", array);
+		// dmeande de la panne et l'annulation sur le neud 2
+		array = new JSONArray();
+		array.add(ProtocolTools.StateBuilder(2, 500));
+		toWrite.put("undeploy", array);
+		array = new JSONArray();
+		array.add(ProtocolTools.StateBuilder(2, 600));
+		toWrite.put("deploy", array);
+		// arret du process 0 car il ne va jamais appeler @MessageHandler du a la panne
+		array.add(ProtocolTools.eventBuilder("End", 0, 5000, new ArrayList<>()));
+		toWrite.put("events", array);
+		filew.write(toWrite.toString());
+	}
+}
 		\end{lstlisting}
 		\newpage
 		\section{Conclusion}
@@ -1021,13 +1021,13 @@ java -cp .:ppi.jar ExampleNodeProcess
 			\newline
 			Pour construire un appel de fonction
 			\begin{lstlisting}
-				public static JSONObject eventBuilder(String funcName , int node, long delay, List<Object> args);
+public static JSONObject eventBuilder(String funcName , int node, long delay, List<Object> args);
 			\end{lstlisting}
 			Pour construire un évenement deploy ou undeploy 
 			\newline
 			(dépendra du nom de l'objet qui le contiendra)
 			\begin{lstlisting}
-				public static JSONObject StateBuilder(int node, long start_at);
+public static JSONObject StateBuilder(int node, long start_at);
 			\end{lstlisting}
 
 			Enfin, pour lancer l'exécution du scénario, il faut juste ajouter le nombre de processus et le chemin vers le fichier Json au runneur souhaité.
