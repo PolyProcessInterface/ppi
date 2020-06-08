@@ -350,7 +350,7 @@ public class RingScenarioTest extends NodeProcess{
 				\newpage
 					
 
-				\section{Présentation des deux Adapters}
+				\section{Présentation des deux adapters}
 				
 				\subsection{Adapter Peersim}
 				L'implantation de notre API du côté de \verb|PeerSim| consiste principalement à effectuer un Adapter avec l'API déjà existante de \verb|PeerSim|. Il fallait donc comprendre le fonctionnement des classes de \verb|PeerSim| nécessaires pour faire le lien entre les deux API,  
@@ -381,43 +381,42 @@ public class RingScenarioTest extends NodeProcess{
 		
 			\newpage
 			\subsection{Adapter MPI}
-			Dans le cas de \verb|MPI|, pour implanter l'Adapter, nous avons commencé par implanter un algorithme simple (un anneau). Puis, une fois que nous avons compris l'essentiel de \verb|MPI|, nous avons étendu la classe \verb|Infrastructure|, ainsi la classe \verb|MpiInfrastructure| nous permet de communiquer avec l'API \verb|MPI|. 
+			Dans le cas de \verb|MPI|, pour implanter l'adapter, nous avons commencé par implanter un algorithme simple (un anneau). Puis, une fois que nous avons compris l'essentiel de \verb|MPI|, nous avons étendu la classe \verb|Infrastructure|, ainsi la classe \verb|MpiInfrastructure| nous permet de communiquer avec l'API \verb|MPI|. 
 			Nous avons, cependant, dû ajouter une boucle afin d'adapter le fonctionnement de \verb|MPI| à celui de \verb|PeerSim|.
 				\subsubsection{Schéma UML MPI}
 				\vspace{1mm}
 				\hspace*{-2.1cm} \includegraphics[width=19.5cm]{uml/mpi1.png}
-				Le diagramme ci-dessus montre la structure interne de l'implémentation vers MPI, dont le cœur est la Class \verb|MpiInfrastructure|
-				et qui se charge de toutes les communications avec Mpi.
+				Le diagramme ci-dessus montre la structure interne de l'implémentation vers MPI, dont le cœur est la classe \verb|MpiInfrastructure|
+				et qui se charge de toutes les communications avec MPI.
 				\hspace*{-2.3cm} \includegraphics[width=20cm]{uml/mpi2.png}
-				Ci-dessus, l'abstraction du lancement MPI afin de permettre à l'utilisateur de lancer l'application sans avoir à utiliser \verb|mpirun|
+				Ci-dessus, l'abstraction du lancement MPI afin de permettre à l'utilisateur de lancer l'application sans avoir à utiliser \verb|mpirun|.
 				\subsubsection{Les difficultés pour implanter l'adapter : passer au modèle événementiel}
 				\subsubsection{Scenario en MPI}
 				\vspace{5mm}
 				\hspace*{4cm} \includegraphics[width=80mm]{uml/scenMPIuml.png}
 				
 				\vspace{5mm}
-				Pour l'implémentation sous MPI nous avons utilisé la classe \verb|Timer| pour planifier un évenement sur un noeud donné.
+				Pour l'implémentation sous MPI nous avons utilisé la classe \verb|Timer| pour planifier un événement sur un noeud donné.
 				\newline
 				Nous avions commencé par implanter un processus supplémentaire qui ce lançait à chaque demande de simulation et qui se chargeait d'envoyer des 
-				messages applicatifs distingués par l'interface \verb|AppMessage| , ainsi chaque processus qui recoit un message étendant cette interface , créer la classe 
-				qui étend la classe \verb|TimerTask| et l'insère dans son timer afin qu'elle soit éxecutée en temps voulu.
+				messages applicatifs distingués par l'interface \verb|AppMessage| , ainsi chaque processus qui recoit un message étendant cette interface , crée la classe 
+				qui étend la classe \verb|TimerTask| et l'insère dans son timer afin qu'elle soit éxécutée en temps voulu.
 				\newline
 				Cependant cette implémentation c'est révélée être plus compliqueée à mettre en place car elle devait être faite à la construction des processus et fut donc abondonnée.
 				\newline
-				A la place, dès l'utilisation de l'option scénario avec le le MpiRunner tous les processus reçoivent le chemin vers le fichier JSON, le lisent, et créent les classes correspondantes aux événements. 
+				A la place, dès l'utilisation de l'option scénario avec le le MpiRunner, tous les processus reçoivent le chemin vers le fichier JSON, le lisent, et créent les classes correspondantes aux événements. 
 		
 				
-		
+		\newpage
 		\section{Plan de validation}
 			%TODO
 			%Comment montrer que cela fonctionne bien, tests unitaires, respect du cahier des charges, l'algo Naimi Trehel nous permet  de tester l'ensemble des fonctionnalités (+ test deploy/undeploy?)
 			\subsection{Tests de validation}
-			Pour chaque fonctionnalité ajoutée nous ajoutons un test et nous nous assurons que les tests précédents fonctionnent toujours, dans un second temps les nouvelles fonctionnalité sont implantés dans des branchs séparer sur GitHub ,la fusion d'une branche avec la branch master donne lieu a de nouveau teste ,ainsi on s'assure que le développement et la fusion d'une autre branche qui aurait été créer en parallel ne perturbe pas.
+			Pour chaque fonctionnalité ajoutée nous ajoutons un test, et nous nous assurons que les tests précédents fonctionnent toujours, ainsi on s'assure que le développement et la fusion d'une autre branche qui aurait été créée en parallèle ne perturbe rien.
 			\newline
 			\newline
-			La classe BasicTest est la toute première classe de tests que nous avons implémenté, elle s'assure que les fonctionnalités de base de notre API
-			send/receive et le format de description de scénario restent fonctionnels malgré les nouveaux ajouts.
-			Nous avons implanter l'algorithme de Naimi-Trehel afin de tester notre implementation du de la fonctionaliter wait , ainsi que celui de l'anneaux pour touts les autres test.
+			En plus de chacun des tests correspondant à une fonctionnalité que propose notre API, nous avons souhaité vérifier que lorsque du code générique a pour support Peersim, l'éxécution de ce lui-ci reste bien déterministe, puisque c'est bien une des raisons principales du besoin d'éxécuter du code sur un simulateur au départ. Nous avons donc bien pu constater qu'un même code éxécuté avec la même graine aléatoire menait bien à la même trace d'éxécution.\newline 
+			Finalement, nous avons implanté l'algorithme de Naimi-Trehel afin de tester l'ajout du multithreading et notre implementation de la fonctionnalité wait.
 			\newline
 			Ci-dessous l'algorithme Naimi-Trehel :
 			\begin{lstlisting}
