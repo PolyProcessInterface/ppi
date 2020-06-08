@@ -555,8 +555,83 @@ public class RingScenarioTest extends NodeProcess{
 			\subsection{Tests de validation}
 			Pour chaque fonctionnalité ajoutée nous ajoutons un test, et nous nous assurons que les tests précédents fonctionnent toujours, ainsi on s'assure que le développement et la fusion d'une autre branche qui aurait été créée en parallèle ne perturbe rien.
 			\newline
-			\newline
-			En plus de chacun des tests correspondant à une fonctionnalité que propose notre API, nous avons souhaité vérifier que lorsque du code générique a pour support Peersim, l'éxécution de ce lui-ci reste bien déterministe, puisque c'est bien une des raisons principales du besoin d'éxécuter du code sur un simulateur au départ. Nous avons donc bien pu constater qu'un même code éxécuté avec la même graine aléatoire menait bien à la même trace d'éxécution.\newline 
+			\subsubsection{Test du déterminisme lors de l'éxécution sur Peersim}
+			Nous avons aussi souhaité vérifier que lorsque du code générique a pour support Peersim, l'éxécution de celui-ci reste bien déterministe, puisque c'est bien une des raisons principales du besoin d'éxécuter du code sur un simulateur au départ. 
+Dans le test suivant nous vérifions donc qu'un même code éxécuté avec la même graine aléatoire mène bien à la même trace d'éxécution.\newline
+Dans ce cas il s'agit d'un broadcast émis par le noeud d'identifiant 0 à tous les autres. On vérifie par le biais des affichages que l'ordre de réception et de traitement des messages est bien le même
+			\begin{lstlisting}
+public class BroadcastOrderTest extends RedirectedTest {
+
+	public static class ExampleMessage extends Message {
+
+		private static final long serialVersionUID = 1L;
+		private String s;
+		public ExampleMessage(int src, int dest, String s) {
+			super(src, dest);
+			this.s = s;
+		}
+
+		public String getS() {
+			return s;
+		}
+
+	}
+
+	@MessageHandler
+	public void processExampleMessage(ExampleMessage message) {
+		System.out.printf("%d Received '%s' from %d\n", message.getIddest(), message.getS(), message.getIdsrc());
+		infra.exit();
+	}
+
+	@Override
+	public void init(String[] args) {
+		if (infra.getId() == 0) {
+			for(int i = 1; i < infra.size(); i++) {
+				infra.send(new ExampleMessage(infra.getId(),i, "OrderTest"));
+			}
+			infra.exit();
+		}
+	}
+
+	private static final Integer NETWORKSIZE = 10 ;
+	private static final String PAR_SIZE = "network.size";
+
+	String outputPeersim;
+	@Test
+	public void PeersimBroadcastOrderTest() {
+		Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], NETWORKSIZE);
+		int networkSize=Configuration.getInt(PAR_SIZE);
+		int i=0;
+		
+		outputPeersim=outContent.toString();
+		System.out.println(outputPeersim);
+		Scanner scanner = new Scanner(outputPeersim);
+		String[] expected=new String[networkSize];
+
+		while (scanner.hasNextLine()) {
+		  String line = scanner.nextLine();
+		  if(line.isEmpty()) {	//Skipping empty output lines
+			  continue;
+		  }else {
+			  String[] results=line.split(" ");
+			  System.out.println( "dd"+line);
+			  if(i<networkSize-1) { // Initialisation des output expected pour chaque ligne lors du premier experiment
+				  
+				  expected[i]=results[0]+","+results[2]+","+results[4];
+			  
+			  }else{	// Comparaison des outputs pour chaque experiment au-dela du premier
+				  
+				  assertEquals(expected[i%(networkSize-1)],results[0]+","+results[2]+","+results[4]);
+			  }
+		  }
+		i++;
+		}
+		scanner.close();
+	}
+}
+			\end{lstlisting}
+
+			 \subsubsection{Test d'exclusion mutuelle grâce à l'algorithme de Naimi-Trehel}
 			Finalement, nous avons implanté l'algorithme de Naimi-Trehel afin de tester l'ensemble des fonctionnalités, y compris l'ajout du multithreading et notre implementation de la fonctionnalité wait.
 			\newline
 			Ci-dessous l'algorithme Naimi-Trehel :
