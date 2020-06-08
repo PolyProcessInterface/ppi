@@ -418,8 +418,7 @@ Pour représenter un événement de l'application, nous avons défini donc une i
 			%TODO
 			%Comment montrer que cela fonctionne bien, tests unitaires, respect du cahier des charges, l'algo Naimi Trehel nous permet  de tester l'ensemble des fonctionnalités (+ test deploy/undeploy?)
 			\subsection{Tests de validation}
-			Pour chaque fonctionnalité ajoutée nous ajoutons un test et nous nous assurons que les tests précédents fonctionnent toujours , dans un second temps les nouvelle fonctionaliter sont implanter dans des branch séparer sur GitHub 
-			lors de la fusion d'une  branche avec la branch master GitHub repasse les teste ainsi ont s'assure que le développement et la mise d'une autre branche qui aurais était créer en parallel ne perturbe pas le fonctionnement l'une de l'autre.
+			Pour chaque fonctionnalité ajoutée nous ajoutons un test et nous nous assurons que les tests précédents fonctionnent toujours, dans un second temps les nouvelles fonctionnalité sont implantés dans des branchs séparer sur GitHub ,la fusion d'une branche avec la branch master donne lieu a de nouveau teste ,ainsi on s'assure que le développement et la fusion d'une autre branche qui aurait été créer en parallel ne perturbe pas.
 			\newline
 			\newline
 			La classe BasicTest est la toute première classe de tests que nous avons implémenté, elle s'assure que les fonctionnalités de base de notre API
@@ -532,8 +531,7 @@ Pour représenter un événement de l'application, nous avons défini donc une i
 			\end{lstlisting}
 			%TODO
 			\subsection{Scénario de validation}
-			Afin de tester les pannes ainsi que les evennements nous avons utiliser le teste suivant qui mets en panne un processus ainsi il ignoreras touts les message recus saufe Applicatif
-			et un autre noeud est mis hors service mais touts de suite remis ont ligne.
+			Afin de tester les pannes ainsi que les événements nous avons utilisé le test suivant qui met en panne un processus, ainsi il ignorera tous les messages reçus sauf applicatif et un autre noeud est mis hors-service mais touts de suite remis ont ligne.
 			\begin{lstlisting}
 public class NodeBreakDownTest extends NodeProcess {
     static String fileName = System.getProperty("user.dir") + "/testeJson.json";
@@ -559,7 +557,6 @@ public class NodeBreakDownTest extends NodeProcess {
     public void init(String[] args) {
         if (infra.getId() == 0) {
             infra.send(new ExampleMessage(infra.getId(), 1, "Hello"));
-            infra.exit();
         }else
             Thread.sleep(500);
 	}
