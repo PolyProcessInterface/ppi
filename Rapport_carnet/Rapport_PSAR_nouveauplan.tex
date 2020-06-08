@@ -498,7 +498,7 @@ static void add(long delay, java.lang.Object event, Node node, int pid)
 
 				\subsubsection{Passer au modèle événementiel}
 				Le modèle de notre API étant événementiel, il a fallu, pour réaliser l'adapter MPI,
-				adapter l'infrastrcutre de MPI àce modeèle.
+				adapter l'infrastrcutre de MPI à ce modèle.
 
 				Nous avont donc ajouté à MPI une boucle d'événements chargée de recevoir et
 				d'envoyer des messages MPI. Cette boucle a deux intérêts principaux.
@@ -507,7 +507,7 @@ static void add(long delay, java.lang.Object event, Node node, int pid)
 				possible de masquer le traitement des récéptions et de déclencher un événement à
 				chaque message reçu.
 
-				Son intérêt est de palier à une faiblesse de MPI, la gestion de threads
+				Son deuxième intérêt est de palier à une faiblesse de MPI, la gestion de threads
 				multiples. En effet, MPI dispose de plusieurs modes pour les programmes
 				multithreads qui ont chacun leurs inconvénients. Le mode \lstinline{SERIALIZED}
 				permet à plusieurs threads d'appeler
@@ -522,13 +522,11 @@ static void add(long delay, java.lang.Object event, Node node, int pid)
 				\subsubsection{Transmettre des objets Java}
 				Pour transmettre des objets Java via MPI nous nous sommes appuiés sur la sérialisation
 				intégrée à Java. L'ensemble des propriétés des messages doivent donc être sérialisables.
-				Nous transformons ensuite le stream en tableau d'octet que nous envoyons en 2 temps via MPI.
-				En effet MPI doit connaitre la taille d'un message avant sa récéption.
-				Nous envoyons donc pour chaque objet Java un premier message MPI contenant un entier
-				décrivant la taille du tableau d'octet, qui est ensuite envoyé dans un second message.
+				Nous transformons ensuite le stream en tableau d'octet que nous envoyons directement
+				via MPI. L'utilisation de la fonction \lstinline{}
 
 				\subsubsection{Lancement du processus mpirun}
-				Pour lancer une infrastructure MPI la commande \lstinline{mpirun} doit être lancée
+				Afin de lancer une infrastructure MPI la commande \lstinline{mpirun} doit être lancée
 				dans un sous processus. De plus cette commande lancera elle même antant de nouveaux
 				processus Java que demandé. Nous avons donc du ajouter un deuxième \lstinline{Runner}
 				pour MPI. Le premier permettant de lancer la commande \lstinline{mpirun}, qui elle
