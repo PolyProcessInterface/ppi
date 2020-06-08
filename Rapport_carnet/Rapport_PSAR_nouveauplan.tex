@@ -419,23 +419,23 @@ public class RingExample extends NodeProcess {
 						\newpage
 							
 		
-						\section{Présentation des deux Adapters}
+						\section{Présentation des deux adapters}
 						
-						\subsection{Adapter Peersim}
+						\subsection{L'adapter vers Peersim}
 						L'implantation de notre API du côté de \verb|PeerSim| consiste principalement à effectuer un Adapter avec l'API déjà existante de \verb|PeerSim|. Il fallait donc comprendre le fonctionnement des classes de \verb|PeerSim| nécessaires pour faire le lien entre les deux API,  
 						et également adapter certaines de nos classes pour \verb|PeerSim|, par exemple rendre \verb|NodeProcess| clonable. 
 						\newline
 						Ainsi, la classe \verb|PeerSiminfrastructure| fait le lien entre notre API générique et l'API de \verb|PeerSim|.
-							\subsubsection{Schéma UML Peersim}
+							\subsubsection{Diagramme UML de l'adapter vers Peersim}
 							\hspace*{-1.3cm} \includegraphics[width=17cm]{uml/peersim1.png}
 		
 							\hspace*{-3.2cm} \includegraphics[width=20cm]{uml/peersim2.png}
 		
-						\subsubsection{Les difficultés pour implanter l'adapter : multithreading}
-						L’une des difficultés rencontrées au cours de l’implantation de l’adapter \verb|PeerSim| est de rendre celui-ci \emph{multithreadé} ce qui est une source critique de l'indéterminisme.
+						\subsubsection{Une difficulté pour implanter l'adapter : l'ajout du multithreading}
+						L’une des difficultés rencontrées au cours de l’implantation de l’adapter \verb|PeerSim| est de rendre celui-ci \emph{multithreadé} ce qui est une source critique d'indéterminisme.
 						En effet, en principe \verb|PeerSim| tourne sur un seul processus et est déterministe. Par conséquent un processus fait à la fois l’aiguillage et exécution des événement de manière séquentielle, ce qui n’est pas vraiment efficace. Il a donc fallu voir en détail de comment rendre effectif le \emph{multithread} tout en gardant une cohérence sur les données et surtout le déterminisme.  
 						La solution consiste à avoir un \emph{thread} principal qui joue le rôle d’ordonnanceur, celui-ci affectera chaque événement à un \emph{thread} et parallèlement se mettra en attente jusqu’à que le \emph{thread} exécutant l’événement finit son exécution ou qu’il se met en attente.
-						\subsubsection{Scenario en Peersim}
+						\subsubsection{La fonctionnalité de scénario en Peersim}
 						\vspace{5mm}
 						\hspace*{5cm} \includegraphics[width=60mm]{uml/scenPuml.png}
 						
@@ -455,10 +455,10 @@ public class RingExample extends NodeProcess {
 						correspondra à l'appel d'une fonction définie par l'utilisateur et  \verb|OnEvent|/\verb|OffEvent| à la fin et début d'une panne.
 			
 			\newpage
-			\subsection{Adapter MPI}
+			\subsection{L'adapter vers MPI}
 			Dans le cas de \verb|MPI|, pour implanter l'adapter, nous avons commencé par implanter un algorithme simple (un anneau). Puis, une fois que nous avons compris l'essentiel de \verb|MPI|, nous avons étendu la classe \verb|Infrastructure|, ainsi la classe \verb|MpiInfrastructure| nous permet de communiquer avec l'API \verb|MPI|. 
 			Nous avons, cependant, dû ajouter une boucle afin d'adapter le fonctionnement de \verb|MPI| à celui de \verb|PeerSim|.
-				\subsubsection{Schéma UML MPI}
+				\subsubsection{Diagramme UML de l'adapter vers MPI}
 				\vspace{1mm}
 				\hspace*{-2.1cm} \includegraphics[width=19.5cm]{uml/mpi1.png}
 				Le diagramme ci-dessus montre la structure interne de l'implémentation vers MPI, dont le cœur est la classe \verb|MpiInfrastructure|
