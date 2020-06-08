@@ -1,0 +1,45 @@
+\BOOKMARK [1][-]{section.1}{Introduction et motivations}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Les applications r\351parties}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Les difficult\351s \340 programmer une application r\351partie}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{M\351thodes de d\351veloppement d'applications r\351parties existantes}{section.1}% 4
+\BOOKMARK [3][-]{subsubsection.1.3.1}{Une API pour plateforme r\351elle : MPI}{subsection.1.3}% 5
+\BOOKMARK [3][-]{subsubsection.1.3.2}{Une API de simulation \340 \351v\351nements discrets : Peersim}{subsection.1.3}% 6
+\BOOKMARK [2][-]{subsection.1.4}{Premier aper\347u de ces deux API}{section.1}% 7
+\BOOKMARK [3][-]{subsubsection.1.4.1}{Exemple d'un anneau impl\351ment\351 avec une API de plateforme r\351elle : MPI}{subsection.1.4}% 8
+\BOOKMARK [3][-]{subsubsection.1.4.2}{Exemple d'un anneau impl\351ment\351 avec une API de simulation : Peersim}{subsection.1.4}% 9
+\BOOKMARK [2][-]{subsection.1.5}{Cr\351ation d'une API g\351n\351rique}{section.1}% 10
+\BOOKMARK [2][-]{subsection.1.6}{Aper\347u de l'impl\351mentation d'un anneau avec notre API g\351n\351rique}{section.1}% 11
+\BOOKMARK [1][-]{section.2}{Pr\351sentation de l'API g\351n\351rique}{}% 12
+\BOOKMARK [2][-]{subsection.2.1}{Schema en UML full g\351n\351rique}{section.2}% 13
+\BOOKMARK [2][-]{subsection.2.2}{Les m\351thodes de l'interface}{section.2}% 14
+\BOOKMARK [2][-]{subsection.2.3}{La fonctionnalit\351 de sc\351nario}{section.2}% 15
+\BOOKMARK [1][-]{section.3}{Pr\351sentation des deux impl\351mentations}{}% 16
+\BOOKMARK [2][-]{subsection.3.1}{Peersim}{section.3}% 17
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Schema UML peersim + generique et explications}{subsection.3.1}% 18
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Les probl\350mes \340 implanter cet adapter : multithreading et wait}{subsection.3.1}% 19
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Scenario en Peersim}{subsection.3.1}% 20
+\BOOKMARK [2][-]{subsection.3.2}{MPI}{section.3}% 21
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Schema UML MPI + generique et explications}{subsection.3.2}% 22
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Les probl\350mes \340 implanter cet adapter : passer au mod\350le \351v\351nementiel}{subsection.3.2}% 23
+\BOOKMARK [3][-]{subsubsection.3.2.3}{Scenario en MPI}{subsection.3.2}% 24
+\BOOKMARK [1][-]{section.4}{Plan de validation}{}% 25
+\BOOKMARK [2][-]{subsection.4.1}{Tests de validation}{section.4}% 26
+\BOOKMARK [2][-]{subsection.4.2}{Sc\351nario de validation le jour de la soutenance}{section.4}% 27
+\BOOKMARK [1][-]{section.5}{Conclusion}{}% 28
+\BOOKMARK [2][-]{subsection.5.1}{Rappel des objectifs et axes principaux de travail}{section.5}% 29
+\BOOKMARK [2][-]{subsection.5.2}{Axes d'am\351lioration possibles et ouverture}{section.5}% 30
+\BOOKMARK [1][-]{section.6}{Annexe : r\351partition des t\342ches}{}% 31
+\BOOKMARK [1][-]{section.7}{Annexe : Prise en main de notre API}{}% 32
+\BOOKMARK [2][-]{subsection.7.1}{Programmer un algorithme}{section.7}% 33
+\BOOKMARK [3][-]{subsubsection.7.1.1}{Etendre le classe NodeProcess}{subsection.7.1}% 34
+\BOOKMARK [3][-]{subsubsection.7.1.2}{Cr\351er des classes de message}{subsection.7.1}% 35
+\BOOKMARK [3][-]{subsubsection.7.1.3}{D\351finir des gestionnaires de messages}{subsection.7.1}% 36
+\BOOKMARK [3][-]{subsubsection.7.1.4}{M\351thodes \340 dispositions}{subsection.7.1}% 37
+\BOOKMARK [2][-]{subsection.7.2}{Lancer Ppi}{section.7}% 38
+\BOOKMARK [3][-]{subsubsection.7.2.1}{Depuis un shell}{subsection.7.2}% 39
+\BOOKMARK [3][-]{subsubsection.7.2.2}{Depuis un programme Java}{subsection.7.2}% 40
+\BOOKMARK [2][-]{subsection.7.3}{D\351crire un sc\351nario}{section.7}% 41
+\BOOKMARK [3][-]{subsubsection.7.3.1}{Introduction}{subsection.7.3}% 42
+\BOOKMARK [3][-]{subsubsection.7.3.2}{Exemple de sc\351nario}{subsection.7.3}% 43
+\BOOKMARK [3][-]{subsubsection.7.3.3}{D\351tails}{subsection.7.3}% 44
+\BOOKMARK [2][-]{subsection.7.4}{Comment \351crire son propre adapter pour un autre support}{section.7}% 45
