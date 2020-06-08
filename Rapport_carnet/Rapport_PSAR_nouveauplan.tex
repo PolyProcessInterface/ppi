@@ -510,6 +510,7 @@ Pour représenter un événement de l'application, nous avons défini donc une i
 					//simple class pour differencier les message
 					public static class Request extends Message {/*...*/}				
 					public static class Token extends Message {/*...*/}
+					public static class End extends Message {/*..*/}
 				
 					// terminaison
 					@MessageHandler
@@ -529,10 +530,63 @@ Pour représenter un événement de l'application, nous avons défini donc une i
 						}
 					}	
 			\end{lstlisting}
-		
 			%TODO
-			\subsection{Scénario de validation le jour de la soutenance}
-		
+			\subsection{Scénario de validation}
+			Afin de tester les pannes ainsi que les evennements nous avons utiliser le teste suivant qui mets en panne un processus ainsi il ignoreras touts les message recus saufe Applicatif
+			et un autre noeud est mis hors service mais touts de suite remis ont ligne.
+			\begin{lstlisting}
+public class NodeBreakDownTest extends NodeProcess {
+    static String fileName = System.getProperty("user.dir") + "/testeJson.json";
+
+    public static class ExampleMessage extends Message {/*...*/}
+
+    @MessageHandler
+    public void ExempleMsg(ExampleMessage message) {
+        int host = infra.getId();
+        System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
+        if (host != 0) {
+            int dest = (host + 1) % infra.size();
+            infra.send(new ExampleMessage(infra.getId(), dest, "Hello"));
+            infra.exit();
+        }else {
+            System.err.println(" not the right path");
+        }
+    }
+	//afin de demander l'arret du processus en panne			
+    public void End() {infra.exit();}
+
+    @Override
+    public void init(String[] args) {
+        if (infra.getId() == 0) {
+            infra.send(new ExampleMessage(infra.getId(), 1, "Hello"));
+            infra.exit();
+        }else
+            Thread.sleep(500);
+	}
+	//creation du scenario
+	@BeforeClass
+    @SuppressWarnings("unchecked")
+    public static void createJsonTeste() {
+            FileWriter filew = new FileWriter(fileName);
+            JSONObject toWrite = new JSONObject();
+            JSONArray array = new JSONArray();
+            //demande de la panne sur le neud 0
+            array.add(ProtocolTools.StateBuilder(0, 1000));
+			toWrite.put("undeploy", array);
+			//dmeande de la panne et l'annulation sur le neud 2
+			array = new JSONArray();
+			array.add(ProtocolTools.StateBuilder(2, 500));
+			toWrite.put("undeploy", array);
+			array = new JSONArray();
+			array.add(ProtocolTools.StateBuilder(2, 600));
+			toWrite.put("deploy", array);
+			//arret du process 0 car il ne va jamais appeler @MessageHandler du a la panne
+           	array.add(ProtocolTools.eventBuilder("End", 0, 5000,  new ArrayList<>()));
+            toWrite.put("events", array);
+            filew.write(toWrite.toString());
+    }
+
+		\end{lstlisting}
 		\newpage
 		\section{Conclusion}
 			%TODO
