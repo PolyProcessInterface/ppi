@@ -399,11 +399,11 @@ public class WaitExample extends NodeProcess {
 					\end{lstlisting}
 					\newpage
 					\subsection{La fonctionnalité de scénario}
-Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre de les exécuter sur les deux infrastructures sous-jacentes,
+Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre sont execution,
 afin de l'utiliser, il suffit de définir un fichier JSON et d'ajouter le chemin vers ce dernier (nous verrons cela plus en détail en annexe).
 
 \subsubsection{Exemple d'un anneau initialisé par un fichier de scénario}
-Ci-dessous un exemple du même algorithme que dans l'exemple précédent mais lancé par une instruction lue dans le fichier \verb|fileName|,ainsi que 
+Ci-dessous nous avons repris l'exemple précédents mais lancé par un appel de fonction lue dans le fichier \verb|fileName|,ainsi que 
 la création de ce fichier JSON.
 \begin{lstlisting}
 public class RingScenarioTest extends NodeProcess{
@@ -546,7 +546,12 @@ static void add(long delay, java.lang.Object event, Node node, int pid)
 				\newline
 				Cependant cette implémentation c'est révélée être plus compliqueée à mettre en place car elle devait être faite à la construction des processus et fut donc abondonnée.
 				\newline
-				A la place, dès l'utilisation de l'option scénario avec le le MpiRunner, tous les processus reçoivent le chemin vers le fichier JSON, le lisent, et créent les classes correspondantes aux événements. 
+				À la place, dès l'utilisation de l'option scénario avec le MpiRunner, tous les processus reçoivent le chemin vers le fichier JSON, le lisent, et créent les classes correspondantes aux événements.
+				\newline
+				Afin de modéliser les pannes pour MPI, nous l'avons réalisé au niveau de l'appi générique, ainsi lorsque un nœud est en "panne" il reçoit toujour les message qui lui sont envoyés cependant il les ignorent,
+				de ce fait le processus devra être tué malgré tout à la fin de l'exécution de MPI.
+				Cependant, il est a noté que cette fonctionnalité n'est pas garantie sur cette API car le réseau et les horloges séparées injectent un nombre d'incertitudes conséquant sur la précision des délais donnés 
+				pour les exécution.
 		
 				
 		\newpage
