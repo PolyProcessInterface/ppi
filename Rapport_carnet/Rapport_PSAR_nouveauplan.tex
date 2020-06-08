@@ -551,8 +551,7 @@ static void add(long delay, java.lang.Object event, Node node, int pid)
 				
 		\newpage
 		\section{Plan de validation}
-			%TODO
-			%Comment montrer que cela fonctionne bien, tests unitaires, respect du cahier des charges, l'algo Naimi Trehel nous permet  de tester l'ensemble des fonctionnalités (+ test deploy/undeploy?)
+
 			\subsection{Tests de validation}
 			Pour chaque fonctionnalité ajoutée nous ajoutons un test, et nous nous assurons que les tests précédents fonctionnent toujours, ainsi on s'assure que le développement et la fusion d'une autre branche qui aurait été créée en parallèle ne perturbe rien.
 			\newline
@@ -741,8 +740,8 @@ public class NaimiTrehel extends NodeProcess {
 }
 			\end{lstlisting}
 			
-			\subsection{Scénario de validation}
-			Afin de tester les pannes ainsi que les événements nous avons utilisé le test suivant qui met en panne un noeud, ainsi il ignorera tous les messages reçus, sauf applicatifs, et un second noeud est mis hors-service mais tout de suite remis en ligne.
+			\subsubsection{Test de scénario incluant une panne}
+			Afin de tester les pannes ainsi que les scénarios, nous avons utilisé le test suivant. Celui-ci met en panne un noeud qui ignorera tous les messages reçus, sauf applicatifs, et un second noeud est mis hors-service mais tout de suite remis en ligne.
 			\begin{lstlisting}
 public class NodeBreakDownTest extends NodeProcess {
 	static String fileName = System.getProperty("user.dir") + "/testeJson.json";
@@ -799,6 +798,14 @@ public class NodeBreakDownTest extends NodeProcess {
 	}
 }
 		\end{lstlisting}
+
+		\subsection{Scénario de validation lors de la soutenance}
+Lors de notre soutenance, nous prévoyons de montrer que notre projet passe bien les tests que nous lui avons fixé, et d'expliquer en quoi chacun de ces tests prouve le bon fonctionnement d'une ou plusieurs fonctionnalités de notre projet. Nous nous focaliserons sur les trois tests que nous venons de citer, qui permettent bien de vérifier : 
+\begin{itemize}
+\item Les fonctionnalités principales, comme l'envoi et la réception de message, l'aiguillage automatique, le multithreading et le wait dans le test \verb|NaimiTrehel| 
+\item La conservation du déterminisme lors d'une éxécution sur Peersim dans le \verb|BroadcastOrderTest| 
+\item Les fonctionnalités de description de scénario et de panne dans le \verb|NodeBreakdownTest| 
+\end{itemize} 
 		\newpage
 		\section{Conclusion}
 			%TODO
@@ -808,7 +815,7 @@ public class NodeBreakDownTest extends NodeProcess {
 			fonctionnalité permettant de décrire une suite d'évènements. 
 			\newline
 			Les deux objectifs ont été atteint et notre API permet bien de réaliser ces deux contraintes,
-			cependant vu la complexité des API Perrsim et MPI sous-jacent notre API est loin d'être capable d'exploiter la totalité des fonctionnalités proposées par ces deux platformes.
+			cependant vu la complexité des API Peersim et MPI sous-jacentes, notre API est loin d'être capable d'exploiter la totalité des fonctionnalités proposées par ces deux platformes.
 			\subsection{Axes d'amélioration possibles et ouverture}
 			Comme dit précédemment, il existe beaucoup d'axes d'amélioration possible pour notre API, nous avons jugé bon d'en énumérer certaines qui à défaut de temps n'ont pas pu être implémentées.
 
