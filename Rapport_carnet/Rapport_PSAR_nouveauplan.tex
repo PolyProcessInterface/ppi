@@ -80,11 +80,20 @@
 				\subsubsection{Une API de simulation à événements discrets : \textit{Peersim}}
 					Une simulation à événements discrets est une simulation dont le temps évolue seulement lorsqu'un événement survient sur un noeud.
 
-					On distingue donc deux entités : les noeuds, et les événements qui sont caractérisés par une date de délivrance, un noeud destinataire, et des données.
+					On distingue donc deux entités :
+\begin{itemize}
+\item les noeuds, représentant une unité de calcul.
+\item les événements caractérisés par une date de délivrance, un noeud destinataire, et des données.
+\end{itemize}
 
-					Les principaux avantages d'un tel type de simulation sont : son déterminisme et donc une capacité à reproduire des bugs, et une charge de calcul réduite aux événements qu'on décide de simuler. Toutefois, il faut savoir trouver un équilibre entre une simulation trop simpliste et une simulation trop précise ralentie par trop d'événements.
+					Les principaux avantages d'un tel type de simulation sont :
+\begin{itemize}
+\item son déterminisme et donc une capacité à reproduire des bugs
+\item une charge de calcul réduite à seulement les événements qu'on décide de simuler. 
+\end{itemize}
+Toutefois, il faut savoir trouver un équilibre entre une simulation trop simpliste et une simulation trop précise ralentie par trop d'événements.
 
-					Dans notre cas, nous nous sommes dirigés vers PeerSim comme simulateur à événements discrets, car il est codé en Java et possède une API relativement simple d'utilisation.
+					Dans notre cas, nous nous sommes dirigés vers PeerSim comme simulateur à événements discrets, car il possède une API relativement simple d'utilisation. De plus Peersim est codé en Java, un langage avec lequel nous sommes tous familiers, en plus d'autres avantages comme la sérialisation et la portabilité.
 
 					PeerSim est utilisé pour créer des nœuds et simuler une architecture pair-à-pair en générant des protocoles et des événements qui sont définis par l'utilisateur. Une éxécution est toujours déterministe ce qui permet d'accélérer le débug d'une application répartie avant son déploiement ou de reproduire une séquence d'événements qui a provoqué un bug sur une application déja existante.
 
@@ -137,7 +146,6 @@ public class RingProtocol implements EDProtocol {
 	private boolean deja_dit_voisin; // indique si message deja envoye
 
 	public RingProtocol(String prefix) {
-
 		System.out.println("prefix= "+prefix);
 		String tmp[]=prefix.split("\\.");
 		my_pid=Configuration.lookupPid(tmp[tmp.length-1]);
@@ -173,6 +181,10 @@ public class RingProtocol implements EDProtocol {
 		}
 	}
 
+
+
+
+
 	//Traitement a effectuer lorsqu'on recoit un RingMessage
 	private void receiveRingMessage(Node host, RingMessage mess) {
 		System.out.println("Noeud "+ host.getID() + " : a recu "+mess.getInfo() +" de "+mess.getIdsrc());
@@ -198,6 +210,19 @@ public class RingProtocol implements EDProtocol {
 			\subsection{Création d'une API générique}
 				Le but de notre projet est de produire une API générique sur un modèle de programmation événementielle afin de faciliter le développement de futures applications réparties, en permettant de s'abstraire du support d'éxécution au niveau du code métier. \par
 Pouvoir éxécuter le même code métier aussi bien sur une plateforme réelle que sur un simulateur permet au développeur d'une application répartie de passer de l'un à l'autre, sans risquer d'en  modifier son comportement en adaptant le code. \newline Il peut donc profiter des avantages d'un simulateur, comme la vision globale du système et le déterminisme des séquences d'éxécution  sans crainte d'y introduire de nouveaux bugs. \par
+Les similitudes entre MPI et Peersim que l'on souhaite inclure dans notre API générique sont donc : 
+\begin{itemize}
+\item le déploiement initial
+\item l'émission et réception de messages
+\item l'aiguillage des messages
+\item un code applicatif
+\end{itemize}
+Mais il existe aussi quelques différences notables entre les deux qu'il nous faudra prendre en compte : 
+\begin{itemize}
+\item la sérialisation de MPI par array de bytes
+\item la réception de message transparente en Peersim et pas en MPI
+\item Peersim est basé sur un modèle événementiel mais pas MPI
+\end{itemize}
  
 			\newpage
 			\subsection{Aperçu de l'implémentation d'un anneau avec notre API générique}
@@ -245,7 +270,9 @@ public class RingExample extends NodeProcess {
 				
 			
 				\section{Présentation de l'API générique}
-				L'idée pricipale est de produire une API générique permettant d'abstraire le support d'exécution au niveau du code métier, c'est-à-dire produire une couche logicielle afin de pouvoir exécuter de façon transparente le même code sur un simulateur (\verb|PeerSim|) et sur une infrastructure réelle (\verb|MPI|).					
+				L'idée principale est de produire une API générique permettant d'abstraire le support d'exécution au niveau du code métier, c'est-à-dire produire une couche logicielle afin de pouvoir exécuter de façon transparente le même code sur un simulateur (\verb|PeerSim|) et sur une infrastructure réelle (\verb|MPI|).
+Nous souhaitions aussi mettre en place une fonctionnalité de description de scénario, permettant de détailler des actions à effectuer à une date précise sur l'infrastructure.
+					
 				\subsection{Schéma UML des classes génériques}
 					\vspace{2mm}
 					\hspace*{-1cm} \includegraphics[width=22cm]{uml/generique.png}
@@ -375,9 +402,9 @@ public class RingExample extends NodeProcess {
 							Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre de les exécuter sur les deux infrastructures sous-jacentes,
 							afin de l'utiliser, il suffit de définir un fichier JSON et d'ajouter le chemin vers ce dernier (nous verrons cela plus en détail en annexe).
 							
-							\subsubsection{Exemple d'un anneau lancer avec fichier de scénario}
+							\subsubsection{Exemple d'un anneau initialisé par un fichier de scénario}
 						Ci-dessous un exemple du même algorithme que dans l'exemple précédent mais lancé par une instruction lue dans le fichier \verb|fileName|,ainsi que 
-						la création de celui-ci.
+						la création de ce fichier JSON.
 						\begin{lstlisting}
 public class RingScenarioTest extends NodeProcess{
 	static String fileName = System.getProperty("user.dir") + "/testJson.json";
@@ -408,7 +435,7 @@ public class RingScenarioTest extends NodeProcess{
             		JSONArray array = new JSONArray();
             		int node =  0; // Le node d'id 0 executera la methode FirstToSend
             		array.add(ProtocolTools.eventBuilder("FirstToSend", node, 1000, new ArrayList<>()));/ /un appel de fonction
-            toWrite.put("events", array);
+            		toWrite.put("events", array);
        		} catch (IOException e) {
             		e.printStackTrace();
         	}
@@ -894,7 +921,7 @@ java -cp .:ppi.jar ExampleNodeProcess
 	]
 }
 			\end{lstlisting}
-			\subsubsection{Détails}
+
 			Les tableaux Json \lstinline{"undeploy"}, \lstinline{"deploy"} et \lstinline{"events"} contiennent
 			les listes des différents appels demandés.
 			Chacun contient une liste d'événements, par exemple \lstinline{"undeploy"} est une liste
@@ -927,8 +954,8 @@ java -cp .:ppi.jar ExampleNodeProcess
 			\end{lstlisting}
 
 			Enfin, pour lancer l'exécution du scénario, il faut juste ajouter le nombre de processus et le chemin vers le fichier Json au runneur souhaité.
-		\newpage		
-		\subsection{Comment écrire son propre adapter pour un autre support}
+		%\newpage		
+		%\subsection{Comment écrire son propre adapter pour un autre support}
 
 		
 \end{document}
