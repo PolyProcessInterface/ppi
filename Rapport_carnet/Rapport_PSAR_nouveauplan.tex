@@ -823,7 +823,30 @@ public class NodeBreakDownTest extends NodeProcess {
 				%\item[Un system qui vérifierait au moment de la compilation l'unicité de @MessageHandler] \hfill \\
 				\item[Changer le Scheduler TimerTask par SchedularConfigurer ou @Scheduled.] \hfill \\ TimerTask ne s'est pas révélée être la solution la plus adéquate à notre utilisation et le changer pourrait augmenter la fiabilité de l'exécution du scénario coté Mpi
 				\item[Abstraire la totalité du fichier de configuration de Peersim] \hfill \\ une bonne partie du fichier de configuration de Peersim est réécrite par notre application cependant il serait intéressant que l'utilisateur puisse ajouter des configurations sur notre api et les transmettre à Peersim.
-			  \end{description}
+				\item[Avertissements sur Peersim] \hfill \\
+				Contrairement à MPI, un programme exécuté sur Peersim s'arrête dès le moment où il
+				n'y a plus d'événements dans la file. Il serait donc intéressant d'afficher des
+				avertissements quand des threads sont encore en train de wait ou bien qu'un n\oe ud
+				n'a pas fait appel à \lstinline{exit}. Car si un tel cas se produit, l'application
+				ne s'arrêtera pas lors d'un passage à l'infrastructure MPI.
+				\item[Optimiser le multithreading] \hfill \\
+				En utilisant plus de verrous et en particulier en faisant en sorte que chaque thread
+				qui fait appel à \lstinline{wait} attende sur son propre moniteur, il serait possible
+				d'optimiser l'exécution.
+				\item[Lancer la fonction init dans une SerialThread] \hfill \\
+				Ce qui permettrait de pouvoir appeler \lstinline{wait} depuis toutes les fonctions
+				du \lstinline{NodeProcess}.
+				\item[Ajouter un processeur d'annotation] \hfill \\
+				Celui-ci permettrait de valuder qu'un \lstinline{NodeProcess} est bien valide dès
+				la compilation de la classe.
+				\item[Simplifier l'ajout d'adapter] \hfill \\
+				Il est pour le moment asssez compliquer d'ajouter un adapter pour Ppi. Premièrement
+				à cause du manque de documentation et deuxièmement à cause d'une API assez mal
+				définie par endroits. Il serait possible notemment de refaoctoriser certaines
+				portions de code afin de les mettre en commun et ainsi simplifier l'API.
+				Notamment en ajoutant des fonctions dans \lstinline{Infrastructure} pour dispatcher
+				un événement ainsi que qu'une mise en commun du code de l'exécution de scénario.
+			\end{description}
 		
 
 			  \newpage
