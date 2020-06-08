@@ -242,15 +242,14 @@ public class RingExample extends NodeProcess {
 }			
 				\end{lstlisting}
 				\newpage
-				
-			
+
 				\section{Présentation de l'API générique}
-				L'idée pricipale est de produire une API générique permettant d'abstraire le support d'exécution au niveau du code métier, c'est-à-dire produire une couche logicielle afin de pouvoir exécuter de façon transparente le même code sur un simulateur (\verb|PeerSim|) et sur une infrastructure réelle (\verb|MPI|).					
+				L'idée pricipale est de produire une API générique permettant d'abstraire le support d'exécution au niveau du code métier, c'est-à-dire produire une couche logicielle afin de pouvoir exécuter de façon transparente le même code sur un simulateur et sur une infrastructure réelle.					
 				\subsection{Schéma UML des classes génériques}
-					\vspace{2mm}
+					\vspace{5mm}
 					\hspace*{-1cm} \includegraphics[width=22cm]{uml/generique.png}
 					
-					\vspace{8mm}
+					\vspace{10mm}
 					Nous avons commencé par définir une classe abstraite \verb|NodeProcess| qui représente un processus à exécuter et une autre classe abstraite \verb|Infrastructure| qui contient toutes les méthodes que nous devrons implanter pour les deux API (\verb|MPI| et \verb|PeerSim|), cette classe abstraite permet également d'abstraire l'infrastructure sur laquelle \verb|NodeProcess| est exécutée.
 					\newline
 					\newline
@@ -264,7 +263,8 @@ public class RingExample extends NodeProcess {
 					le nombre de processus ainsi qu’un scénario.
 					Selon qu'elle ait été appelée depuis la CLI ou depuis Java, elle se chargera ou
 					non d'instancier le \verb|Runner| qu'elle a reçu en paramètre avant de l'exécuter.
-		
+
+					\newpage
 					\subsection{Primitives offertes}
 					Les primitives mises à disposition correspondent à l'ensemble des méthodes publiques de la classe abstraite \verb|Infrastructure| dont une instance est accessible via la propriété \emph{infra}.
 					\newline
@@ -315,60 +315,61 @@ public class RingExample extends NodeProcess {
 					après la réception d'un nombre N de message :
 					\newpage
 					\begin{lstlisting}
-					   public class WaitTest extends NodeProcess {
-						   public static class ExampleMessage extends Message {
-							// constructeur + getters
-							...
-						   }
-						   private final int N = 2;
-						   private int msgReceived = 0;
-		
-						   // affiche "Hello !" sur la console apres N messages recus			   
-						   public void helloN(){
-							   try {
-								   infra.wait( () -> msgReceived >= N );
-								   System.out.println(infra.getId()+" Hello !");
-							   } catch (InterruptedException e) {
-								   System.out.println(infra.getId()+" Interrupted while waiting !");
-							   }
-						   }
-						   
-						   // gestionnaire de messages
-						   @MessageHandler
-						   public void processExampleMessage(ExampleMessage message) {
-							   int host = infra.getId();
-							   System.out.printf("%d Received '%s' from %d.\n", host, message.getS(), message.getIdsrc());
-							   msgReceived++;
-							   int dest = (host + 1) % infra.size();
-							   if (host != 0 && msgReceived == 1) {
-								   infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
-								   if(host==2) helloN(); // attendre N messages si l'id du noeud est 2
-							   } else {
-								   infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
-								   infra.exit();
-							   }
-						   }
-		
-						   @Override
-						   public void init(String[] args) {
-							   if (infra.getId() == 0)
-								   infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
-						   }
-		
-						   // lancement mpi
-						   @Test
-						   public void MpiAnnotatedProcessTest() {
-							   Assume.assumeTrue(Environment.mpirunExist());
-							   Ppi.main(this.getClass(), new MpiRunner());
-							   assertTrue(true);
-						   }
-		
-						   // lancement peersim
-						   @Test
-						   public void PeersimWaitNotifyTest() {
-							   Ppi.main(this.getClass(), new PeerSimRunner());
-							   assertTrue(true);
-						   }
+public class WaitTest extends NodeProcess {
+	public static class ExampleMessage extends Message {
+			// constructeur + getters
+			...
+	}
+	private final int N = 2;
+	private int msgReceived = 0;
+			
+	// affiche "Hello !" sur la console apres N messages recus			   
+	public void helloN(){
+		try {
+			infra.wait( () -> msgReceived >= N );
+			System.out.println(infra.getId()+" Hello !");
+			} catch (InterruptedException e) {
+				System.out.println(infra.getId()+" Interrupted while waiting !");
+			}
+		}
+							
+		// gestionnaire de messages
+		@MessageHandler
+		public void processExampleMessage(ExampleMessage message) {
+			int host = infra.getId();
+			System.out.printf("%d Received '%s' from %d.\n", host, message.getS(), message.getIdsrc());
+			msgReceived++;
+			int dest = (host + 1) % infra.size();
+			if (host != 0 && msgReceived == 1) {
+				infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+				if(host==2) helloN(); // attendre N messages si l'id du noeud est 2
+			} else {
+				infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+				infra.exit();
+			}
+		}
+			
+		@Override
+		public void init(String[] args) {
+			if (infra.getId() == 0)
+				infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
+			}
+			
+		// lancement mpi
+		@Test
+		public void MpiAnnotatedProcessTest() {
+			Assume.assumeTrue(Environment.mpirunExist());
+			Ppi.main(this.getClass(), new MpiRunner());
+			assertTrue(true);
+		}
+
+		// lancement peersim
+		@Test
+		public void PeersimWaitNotifyTest() {
+			Ppi.main(this.getClass(), new PeerSimRunner());
+			assertTrue(true);
+		}
+	}
 					\end{lstlisting}
 					\newpage
 							\subsection{La fonctionnalité de scénario}
