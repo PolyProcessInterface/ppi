@@ -304,81 +304,150 @@ public class RingExample extends NodeProcess {
 						void wait(BooleanSupplier condition)
 					\end{lstlisting}
 					Attendre tant que la condition passée en argument n'est pas évaluée à vraie. Il est recommander de passer une lambda retournant un booléen en paramètre.
-		
-					\subsection{La fonctionnalité de scénario}
-					Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre de les exécuter sur les deux infrastructures sous-jacentes,
-					afin de l'utiliser, il suffit de définir un fichier JSON et d'ajouter le chemin vers ce dernier (nous verrons cela plus en détail en annexe).
+					\newline
+
+					Un exemple d'utilisation de la primitive \emph{wait} est d'afficher une information sur la sortie standard seulement
+					après la réception d'un nombre N de message :
 					\newpage
-					\subsubsection{Exemple d'utilisation de la fonctionnalité de scénario}
-				Voici un exemple du même algorithme que dans les précédents exemples,  mais l'initialisation a lieu par le biais d'un scénario lu dans le fichier \verb|fileName|.
-				\begin{lstlisting}
-public class RingScenarioTest extends NodeProcess{
-    static String fileName = System.getProperty("user.dir") + "/testJson.json";
-    public static class RingMessage extends Message {/*Meme classe que dans l'exemple precedent*/}
-
-    @MessageHandler
-    public void processRingMessage(RingMessage message) {
-        int host = infra.getId();
-        System.out.printf("Noeud "+ host + " a recu " + message.getContent() + " de " + message.getIdsrc());
-        int dest = (host + 1) % infra.size();
-        infra.send(new RingMessage(infra.getId(), dest, message.getContent()+1));
-        infra.exit();
-    }
-
-    public void FirstToSend(){
-        infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(),(infra.getId() + 1) % infra.size(), 0));
-    }
-
-    @Override
-	public void init(String[] args) {/*Rien a metre ici*/}
-	
-    @BeforeClass
-    @SuppressWarnings("unchecked")
-    public static void createJsonTest() {
-		//exemple de construction d'un fichier scenario
-        try (FileWriter filew = new FileWriter(fileName)){
-            JSONObject toWrite = new JSONObject();
-            JSONArray array = new JSONArray();
-            int node =  0; // Le node d'id 0 executera la methode FirstToSend
-            array.add(ProtocolTools.eventBuilder("FirstToSend", node, 1000, new ArrayList<>()));//un appel de fonction
-            toWrite.put("events", array);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-				\end{lstlisting}
-				\newpage
-					
-
-				\section{Présentation des deux adapters}
-				
-				\subsection{Adapter Peersim}
-				L'implantation de notre API du côté de \verb|PeerSim| consiste principalement à effectuer un Adapter avec l'API déjà existante de \verb|PeerSim|. Il fallait donc comprendre le fonctionnement des classes de \verb|PeerSim| nécessaires pour faire le lien entre les deux API,  
-				et également adapter certaines de nos classes pour \verb|PeerSim|, par exemple rendre \verb|NodeProcess| clonable. 
-				\newline
-				Ainsi, la classe \verb|PeerSiminfrastructure| fait le lien entre notre API générique et l'API de \verb|PeerSim|.
-					\subsubsection{Schéma UML Peersim}
-					\hspace*{-1.3cm} \includegraphics[width=17cm]{uml/peersim1.png}
-
-					\hspace*{-3.2cm} \includegraphics[width=20cm]{uml/peersim2.png}
-
-				\subsubsection{Les difficultés pour implanter l'adapter : multithreading et wait}
-				
-				\subsubsection{Scenario en Peersim}
-				\vspace{5mm}
-				\hspace*{5cm} \includegraphics[width=60mm]{uml/scenPuml.png}
-				
-				\vspace{5mm}
-				Peersim ayant déjà une fonctionnalité qui permet de définir un ou plusieurs évènements qui peuvent être définis avec un délai de livraison donné à l'aide de la class \verb|EDSimulator|, l'implantation de notre fonctionnalité de scénario vers peersim repose entièrement sur elle.
-				En effet la class \verb|EDSimulator| a une fonction \verb|add|
-				\begin{lstlisting}
-				static void add(long delay, java.lang.Object event, Node node, int pid)
-				\end{lstlisting}
-				qui permet de programmer un événement qui va être délivré sur un nœud donné. \newline
-				Nous avons utilisé celle-ci afin de délivrer les évènements définis dans le fichier JSON.\newline Au début de l'application si on choisit le runner de \verb|PeersimRunner| , celui-ci va les lire et les ajouter dans la file des évènements de Peersim.
-				Pour représenter un événement de l'application, nous avons défini donc une interface fonctionnelle \verb|AppEvent| dont l'unique méthode est run, et qui sera éxécutée par u nnoeud lorsqu'il reçoit un tel événement. 
-				Un exemple de classe implantant \verb|AppEvent| est la classe \verb|SchedEvent|, qui correspond à l'appel d'une fonction définie par l'utilisateur, et le second exemple sont les classes \verb|OffEvent| et \verb|OnEvent| qui correspondent respectivement au début et à la fin d'une panne.
+					\begin{lstlisting}
+					   public class WaitTest extends NodeProcess {
+						   public static class ExampleMessage extends Message {
+							// constructeur + getters
+							...
+						   }
+						   private final int N = 2;
+						   private int msgReceived = 0;
 		
+						   // affiche "Hello !" sur la console apres N messages recus			   
+						   public void helloN(){
+							   try {
+								   infra.wait( () -> msgReceived >= N );
+								   System.out.println(infra.getId()+" Hello !");
+							   } catch (InterruptedException e) {
+								   System.out.println(infra.getId()+" Interrupted while waiting !");
+							   }
+						   }
+						   
+						   // gestionnaire de messages
+						   @MessageHandler
+						   public void processExampleMessage(ExampleMessage message) {
+							   int host = infra.getId();
+							   System.out.printf("%d Received '%s' from %d.\n", host, message.getS(), message.getIdsrc());
+							   msgReceived++;
+							   int dest = (host + 1) % infra.size();
+							   if (host != 0 && msgReceived == 1) {
+								   infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+								   if(host==2) helloN(); // attendre N messages si l'id du noeud est 2
+							   } else {
+								   infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+								   infra.exit();
+							   }
+						   }
+		
+						   @Override
+						   public void init(String[] args) {
+							   if (infra.getId() == 0)
+								   infra.send(new ExampleMessage(infra.getId(), 1, "hello"));
+						   }
+		
+						   // lancement mpi
+						   @Test
+						   public void MpiAnnotatedProcessTest() {
+							   Assume.assumeTrue(Environment.mpirunExist());
+							   Ppi.main(this.getClass(), new MpiRunner());
+							   assertTrue(true);
+						   }
+		
+						   // lancement peersim
+						   @Test
+						   public void PeersimWaitNotifyTest() {
+							   Ppi.main(this.getClass(), new PeerSimRunner());
+							   assertTrue(true);
+						   }
+					\end{lstlisting}
+					\newpage
+							\subsection{La fonctionnalité de scénario}
+							Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre de les exécuter sur les deux infrastructures sous-jacentes,
+							afin de l'utiliser, il suffit de définir un fichier JSON et d'ajouter le chemin vers ce dernier (nous verrons cela plus en détail en annexe).
+							
+							\subsubsection{Exemple d'un anneau lancer avec fichier de scénario}
+						Ci-dessous un exemple du même algorithme que dans l'exemple précédent mais lancé par une instruction lue dans le fichier \verb|fileName|,ainsi que 
+						la création de celui-ci.
+						\begin{lstlisting}
+		public class HelloRingScenarioTest extends NodeProcess{
+			static String fileName = System.getProperty("user.dir") + "/testeJson.json";
+			public static class ExampleMessage extends Message {/*...*/}
+		
+			@MessageHandler
+			public void ExempleMsg(NodeBreakDownTest.ExampleMessage message) {
+				int host = infra.getId();
+				System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
+				int dest = (host + 1) % infra.size();
+				infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(), dest, "Hello"));
+				infra.exit();
+			}
+		
+			public void FirstToSend(){
+				System.out.printf("%d : First to send well be \n",infra.getId());
+				infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(),(infra.getId() + 1) % infra.size(), "Hello"));
+			}
+		
+			@Override
+			public void init(String[] args) {/*Rien a metre ici*/}
+			
+			@BeforeClass
+			@SuppressWarnings("unchecked")
+			public static void createJsonTeste() {
+				//exemple de construction d'un fichier scenario
+				try (FileWriter filew = new FileWriter(fileName)){
+					JSONObject toWrite = new JSONObject();
+					JSONArray array = new JSONArray();
+					int node =  (int) (Math.random() * 3);
+					array.add(ProtocolTools.eventBuilder("FirstToSend", node, 1000, new ArrayList<>()));//un appel de fonction
+					toWrite.put("events", array);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+						\end{lstlisting}
+						\newpage
+							
+		
+						\section{Présentation des deux Adapters}
+						
+						\subsection{Adapter Peersim}
+						L'implantation de notre API du côté de \verb|PeerSim| consiste principalement à effectuer un Adapter avec l'API déjà existante de \verb|PeerSim|. Il fallait donc comprendre le fonctionnement des classes de \verb|PeerSim| nécessaires pour faire le lien entre les deux API,  
+						et également adapter certaines de nos classes pour \verb|PeerSim|, par exemple rendre \verb|NodeProcess| clonable. 
+						\newline
+						Ainsi, la classe \verb|PeerSiminfrastructure| fait le lien entre notre API générique et l'API de \verb|PeerSim|.
+							\subsubsection{Schéma UML Peersim}
+							\hspace*{-1.3cm} \includegraphics[width=17cm]{uml/peersim1.png}
+		
+							\hspace*{-3.2cm} \includegraphics[width=20cm]{uml/peersim2.png}
+		
+						\subsubsection{Les difficultés pour implanter l'adapter : multithreading}
+						L’une des difficultés rencontrées au cours de l’implantation de l’adapter \verb|PeerSim| est de rendre celui-ci \emph{multithreadé} ce qui est une source critique de l'indéterminisme.
+						En effet, en principe \verb|PeerSim| tourne sur un seul processus et est déterministe. Par conséquent un processus fait à la fois l’aiguillage et exécution des événement de manière séquentielle, ce qui n’est pas vraiment efficace. Il a donc fallu voir en détail de comment rendre effectif le \emph{multithread} tout en gardant une cohérence sur les données et surtout le déterminisme.  
+						La solution consiste à avoir un \emph{thread} principal qui joue le rôle d’ordonnanceur, celui-ci affectera chaque événement à un \emph{thread} et parallèlement se mettra en attente jusqu’à que le \emph{thread} exécutant l’événement finit son exécution ou qu’il se met en attente.
+						\subsubsection{Scenario en Peersim}
+						\vspace{5mm}
+						\hspace*{5cm} \includegraphics[width=60mm]{uml/scenPuml.png}
+						
+						\vspace{5mm}
+						Peersim ayant déjà une fonctionnalité qui permet de définir un ou plusieurs évènements qui peuvent être définis avec un délai de livraison donné à l'aide de la class \verb|EDSimulator|,
+						l'implantation de notre fonctionnalité de scénario vers peersim repose entièrement sur elle.
+						En effet la class \verb|EDSimulator| a une fonction \verb|add|
+						\begin{lstlisting}
+						static void add(long delay, java.lang.Object event, Node node, int pid)
+						\end{lstlisting}
+						qui permet de programmer un événement qui va être délivré sur un nœud donné. 
+						\newline
+						Nous avons utilisé celle-ci afin de délivrer les évènements définis dans le fichier JSON, au début de l'application si on choisit le runner de \verb|PeersimRunner| , celui-ci va 
+						les lire et les ajouter dans la file des évènements de Peersim.
+		Pour représenter un événement de l'application, nous avons défini donc une interface \verb|AppEvent|,
+						Lorsqu'un le nœud reçoit un tel événement, il exécute la méthode run de l'interface dont les instructions correspondront à l'évènement, par exemple la méthode \verb|run()| la class \verb|SchedEvent| 
+						correspondra à l'appel d'une fonction définie par l'utilisateur et  \verb|OnEvent|/\verb|OffEvent| à la fin et début d'une panne.
+			
 			\newpage
 			\subsection{Adapter MPI}
 			Dans le cas de \verb|MPI|, pour implanter l'adapter, nous avons commencé par implanter un algorithme simple (un anneau). Puis, une fois que nous avons compris l'essentiel de \verb|MPI|, nous avons étendu la classe \verb|Infrastructure|, ainsi la classe \verb|MpiInfrastructure| nous permet de communiquer avec l'API \verb|MPI|. 
