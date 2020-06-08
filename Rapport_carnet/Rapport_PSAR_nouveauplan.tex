@@ -201,7 +201,6 @@ public class RingProtocol implements EDProtocol {
 }
 				\end{lstlisting}
 
-		
 			\subsection{Création d'une API générique}
 				Le but de notre projet est de produire une API générique sur un modèle de programmation événementielle afin de faciliter le développement de futures applications réparties, en permettant de s'abstraire du support d'éxécution au niveau du code métier. \par
 Pouvoir éxécuter le même code métier aussi bien sur une plateforme réelle que sur un simulateur permet au développeur d'une application répartie de passer de l'un à l'autre, sans risquer d'en  modifier son comportement en adaptant le code. \newline Il peut donc profiter des avantages d'un simulateur, comme la vision globale du système et le déterminisme des séquences d'éxécution  sans crainte d'y introduire de nouveaux bugs. \par
@@ -399,11 +398,11 @@ public class WaitExample extends NodeProcess {
 					\end{lstlisting}
 					\newpage
 					\subsection{La fonctionnalité de scénario}
-Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre de les exécuter sur les deux infrastructures sous-jacentes,
+Notre API permettra aussi de définir des actions ou pannes sur un nœud donné à l'aide d'un scénario prédéfini qui va permettre sont execution,
 afin de l'utiliser, il suffit de définir un fichier JSON et d'ajouter le chemin vers ce dernier (nous verrons cela plus en détail en annexe).
 
 \subsubsection{Exemple d'un anneau initialisé par un fichier de scénario}
-Ci-dessous un exemple du même algorithme que dans l'exemple précédent mais lancé par une instruction lue dans le fichier \verb|fileName|,ainsi que 
+Ci-dessous nous avons repris l'exemple précédents mais lancé par un appel de fonction lue dans le fichier \verb|fileName|,ainsi que 
 la création de ce fichier JSON.
 \begin{lstlisting}
 public class RingScenarioTest extends NodeProcess{
@@ -464,6 +463,9 @@ toWrite.put("events", array);
 	\newline
 	Voici un diagramme de séquence illustrant ceci :
 
+	\vspace{10mm}
+	\hspace*{-0.7cm} \includegraphics[width=17cm]{uml/diagseq.png}
+	\newpage
 						\subsubsection{La fonctionnalité de scénario en Peersim}
 						\vspace{5mm}
 						\hspace*{5cm} \includegraphics[width=60mm]{uml/scenPuml.png}
@@ -482,6 +484,8 @@ static void add(long delay, java.lang.Object event, Node node, int pid)
 		Pour représenter un événement de l'application, nous avons défini donc une interface \verb|AppEvent|,
 						Lorsqu'un le nœud reçoit un tel événement, il exécute la méthode run de l'interface dont les instructions correspondront à l'évènement, par exemple la méthode \verb|run()| la class \verb|SchedEvent| 
 						correspondra à l'appel d'une fonction définie par l'utilisateur et  \verb|OnEvent|/\verb|OffEvent| à la fin et début d'une panne.
+						Cependant, la notion événementielle n'est pas synchronisé entre notre API et Peersim c'est à dire que si, par exemple, on lance un algorithme lors de l'implémentation de la fonction \verb|init()| celui-ci 
+						va s'exécuter indépendamment de la boucle des évènements de peersim, bien sûr ce problème n'existe pas si toutes les instructions sont dans le fichier JSON.
 			
 			\newpage
 			\subsection{L'adapter vers MPI}
@@ -532,7 +536,7 @@ static void add(long delay, java.lang.Object event, Node node, int pid)
 				pour MPI. Le premier permettant de lancer la commande \lstinline{mpirun}, qui elle
 				va à nouveau appeler le \lstinline{main} de \lstinline{Ppi} pour chaque processus,
 				mais cette faois avec le \lstinline{SubRunner}.
-
+					\newpage
 				\subsubsection{Scenario en MPI}
 				\vspace{5mm}
 				\hspace*{4cm} \includegraphics[width=80mm]{uml/scenMPIuml.png}
@@ -546,7 +550,12 @@ static void add(long delay, java.lang.Object event, Node node, int pid)
 				\newline
 				Cependant cette implémentation c'est révélée être plus compliqueée à mettre en place car elle devait être faite à la construction des processus et fut donc abondonnée.
 				\newline
-				A la place, dès l'utilisation de l'option scénario avec le le MpiRunner, tous les processus reçoivent le chemin vers le fichier JSON, le lisent, et créent les classes correspondantes aux événements. 
+				À la place, dès l'utilisation de l'option scénario avec le MpiRunner, tous les processus reçoivent le chemin vers le fichier JSON, le lisent, et créent les classes correspondantes aux événements.
+				\newline
+				Afin de modéliser les pannes pour MPI, nous l'avons réalisé au niveau de l'appi générique, ainsi lorsque un nœud est en "panne" il reçoit toujour les message qui lui sont envoyés cependant il les ignorent,
+				de ce fait le processus devra être tué malgré tout à la fin de l'exécution de MPI.
+				Cependant, il est a noté que cette fonctionnalité n'est pas garantie sur cette API car le réseau et les horloges séparées injectent un nombre d'incertitudes conséquant sur la précision des délais donnés 
+				pour les exécution.
 		
 				
 		\newpage
@@ -823,12 +832,32 @@ Lors de notre soutenance, nous prévoyons de montrer que notre projet passe bien
 				%\item[Un system qui vérifierait au moment de la compilation l'unicité de @MessageHandler] \hfill \\
 				\item[Changer le Scheduler TimerTask par SchedularConfigurer ou @Scheduled.] \hfill \\ TimerTask ne s'est pas révélée être la solution la plus adéquate à notre utilisation et le changer pourrait augmenter la fiabilité de l'exécution du scénario coté Mpi
 				\item[Abstraire la totalité du fichier de configuration de Peersim] \hfill \\ une bonne partie du fichier de configuration de Peersim est réécrite par notre application cependant il serait intéressant que l'utilisateur puisse ajouter des configurations sur notre api et les transmettre à Peersim.
-			  \end{description}
+				\item[Avertissements sur Peersim] \hfill \\
+				Contrairement à MPI, un programme exécuté sur Peersim s'arrête dès le moment où il
+				n'y a plus d'événements dans la file. Il serait donc intéressant d'afficher des
+				avertissements quand des threads sont encore en train de wait ou bien qu'un n\oe ud
+				n'a pas fait appel à \lstinline{exit}. Car si un tel cas se produit, l'application
+				ne s'arrêtera pas lors d'un passage à l'infrastructure MPI.
+				\item[Optimiser le multithreading] \hfill \\
+				En utilisant plus de verrous et en particulier en faisant en sorte que chaque thread
+				qui fait appel à \lstinline{wait} attende sur son propre moniteur, il serait possible
+				d'optimiser l'exécution.
+				\item[Lancer la fonction init dans une SerialThread] \hfill \\
+				Ce qui permettrait de pouvoir appeler \lstinline{wait} depuis toutes les fonctions
+				du \lstinline{NodeProcess}.
+				\item[Ajouter un processeur d'annotation] \hfill \\
+				Celui-ci permettrait de valuder qu'un \lstinline{NodeProcess} est bien valide dès
+				la compilation de la classe.
+				\item[Simplifier l'ajout d'adapter] \hfill \\
+				Il est pour le moment asssez compliquer d'ajouter un adapter pour Ppi. Premièrement
+				à cause du manque de documentation et deuxièmement à cause d'une API assez mal
+				définie par endroits. Il serait possible notemment de refaoctoriser certaines
+				portions de code afin de les mettre en commun et ainsi simplifier l'API.
+				Notamment en ajoutant des fonctions dans \lstinline{Infrastructure} pour dispatcher
+				un événement ainsi que qu'une mise en commun du code de l'exécution de scénario.
+			\end{description}
 		
-
-			  \newpage
-
-
+		\appendix
 		\section{Annexe : répartition des tâches}
 			\hspace*{-0.8cm}\begin{tabular}{|c|c|c|}
 				\hline
