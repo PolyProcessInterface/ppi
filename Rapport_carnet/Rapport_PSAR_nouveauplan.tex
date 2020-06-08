@@ -522,9 +522,9 @@ public class RingScenarioTest extends NodeProcess{
 						}
 					}	
 			\end{lstlisting}
-			%TODO
+			
 			\subsection{Scénario de validation}
-			Afin de tester les pannes ainsi que les événements nous avons utilisé le test suivant qui met en panne un processus, ainsi il ignorera tous les messages reçus sauf applicatif et un autre noeud est mis hors-service mais touts de suite remis ont ligne.
+			Afin de tester les pannes ainsi que les événements nous avons utilisé le test suivant qui met en panne un noeud, ainsi il ignorera tous les messages reçus, sauf applicatifs, et un second noeud est mis hors-service mais tout de suite remis en ligne.
 			\begin{lstlisting}
 public class NodeBreakDownTest extends NodeProcess {
     static String fileName = System.getProperty("user.dir") + "/testeJson.json";
