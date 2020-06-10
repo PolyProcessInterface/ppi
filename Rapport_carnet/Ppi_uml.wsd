@@ -188,3 +188,17 @@ interface NodeInitializer [[java:peersim.dynamics.NodeInitializer]] {
 }
 NodeInitializer <|.. PeerSimInfrastructure
 @enduml
+@startuml teste2
+class MpiSubRunner [[java:org.sar.ppi.mpi.MpiSubRunner]] {
+}
+interface Runner [[java:org.sar.ppi.Runner]] {
+	+void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario)
+}
+Runner <|.. MpiSubRunner
+Runner <|.. MpiRunner
+Runner <|.. PeerSimRunner
+class PeerSimRunner [[java:org.sar.ppi.peersim.PeerSimRunner]] {
+}
+class MpiRunner [[java:org.sar.ppi.mpi.MpiRunner]] {
+}
+@enduml
