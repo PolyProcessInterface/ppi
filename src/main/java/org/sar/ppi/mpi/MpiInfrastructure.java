@@ -159,13 +159,13 @@ public class MpiInfrastructure extends Infrastructure {
 			if(num_node==currentNode)
 				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process,this),(long)func[2]);
 		}
-		l_call=map.get("Off");
+		l_call=map.get("undeploy");
 		for(Object[] func : l_call){
 			num_node=(int)func[0];
 			if(num_node==currentNode)
 				process.getTimer().schedule(new ScheduledBreakDown(process),(long)func[1]);
 		}
-		l_call=map.get("On");
+		l_call=map.get("deploy");
 		for(Object[] func : l_call){
 			num_node=(int)func[0];
 			if(num_node==currentNode)

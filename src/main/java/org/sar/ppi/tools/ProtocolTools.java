@@ -139,8 +139,8 @@ public class ProtocolTools {
                 }
             res = new HashMap<>();
             res.put("events",func_list);
-            res.put("Off",BreakDownFromJSON(jsonObject,"Off"));
-            res.put("On",BreakDownFromJSON(jsonObject,"On"));
+            res.put("undeploy",BreakDownFromJSON(jsonObject,"undeploy"));
+            res.put("deploy",BreakDownFromJSON(jsonObject,"deploy"));
 
 
         } catch (IOException | ParseException e) {

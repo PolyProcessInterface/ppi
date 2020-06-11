@@ -84,14 +84,14 @@ public class PeerSimInit implements Control {
 			delay=(long)func[2];
 			EDSimulator.add(delay,new SchedEvent((String) func[0], Arrays.copyOfRange(func,3,func.length),mapInfra.get(num_node)),Network.get(num_node),infrapid);
 		}
-		l_call = map.get("Off");
+		l_call = map.get("undeploy");
 		Node node;
 		for(Object[] func : l_call) {
 			num_node = (int) func[0];
 			delay = (long) func[1];
 			EDSimulator.add(delay,new OffEvent(mapInfra.get(num_node)),Network.get(num_node),infrapid);
 		}
-		l_call = map.get("On");
+		l_call = map.get("deploy");
 		for(Object[] func : l_call) {
 			num_node = (int) func[0];
 			delay = (long) func[1];

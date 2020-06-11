@@ -105,7 +105,7 @@ public class NodeBreakDownTest extends NodeProcess {
             JSONObject B1 = ProtocolTools.StateBuilder(node, delay);
             array.add(B1);
 
-            toWrite.put("Off", array);
+            toWrite.put("undeploy", array);
             array = new JSONArray();
             delay = 500;
             array = new JSONArray();
