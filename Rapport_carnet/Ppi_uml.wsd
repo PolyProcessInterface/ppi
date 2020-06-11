@@ -188,17 +188,84 @@ interface NodeInitializer [[java:peersim.dynamics.NodeInitializer]] {
 }
 NodeInitializer <|.. PeerSimInfrastructure
 @enduml
-@startuml teste2
-class MpiSubRunner [[java:org.sar.ppi.mpi.MpiSubRunner]] {
-}
-interface Runner [[java:org.sar.ppi.Runner]] {
+@startuml RunneurPres
+
+interface Runner [[java:org.sar.ppi.Runner]] #90e0ef{
 	+void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario)
 }
-Runner <|.. MpiSubRunner
 Runner <|.. MpiRunner
 Runner <|.. PeerSimRunner
-class PeerSimRunner [[java:org.sar.ppi.peersim.PeerSimRunner]] {
+class PeerSimRunner [[java:org.sar.ppi.peersim.PeerSimRunner]] #fec89a{
 }
-class MpiRunner [[java:org.sar.ppi.mpi.MpiRunner]] {
+class MpiRunner [[java:org.sar.ppi.mpi.MpiRunner]] #7bf1a8{
 }
+@enduml
+@startuml Ppi
+
+class Ppi [[java:org.sar.ppi.Ppi]]  #90e0ef{
+	+{static}void main(Class<? extends NodeProcess> pClass, Runner runner, int nbProcs, String scenario)
+}
+interface Runner [[java:org.sar.ppi.Runner]] #90e0ef{
+	+void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario)
+}
+Infrastructure "1" *-- "1" NodeProcess
+abstract class Infrastructure [[java:org.sar.ppi.Infrastructure]] #90e0ef{
+	+{abstract}void send(Message message)
+	+int getId()
+	+{abstract}void exit()
+	+{abstract}int size()
+	+void serialThreadRun(Runnable method)
+	+void wait(BooleanSupplier condition)
+}
+abstract class NodeProcess [[java:org.sar.ppi.NodeProcess]]  #90e0ef{
+	+void processMessage(Message message)
+	+{abstract}void start()
+}
+
+
+abstract class Message [[java:org.sar.ppi.Message]] #90e0ef{
+	+int getIdsrc()
+	+int getIddest()
+	+Message(int idsrc, int iddest)
+}
+@enduml
+@startuml tmp
+class PeerSimRunner [[java:org.sar.ppi.peersim.PeerSimRunner]]  #fec89a{
+	+void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario)
+}
+
+class PeerSimInfrastructure [[java:org.sar.ppi.peersim.PeerSimInfrastructure]]  #fec89a{
+	+PeerSimInfrastructure(String prefix)
+	+int getId()
+	+void send(Message message)
+	+void exit()
+	+int size()
+	+void initialize(Node node)
+	+void processEvent(Node host, int pid, Object event)
+}
+
+@enduml
+@startuml tmp2
+abstract class Infrastructure [[java:org.sar.ppi.Infrastructure]] #90e0ef{
+	+{abstract}void send(Message message)
+	+int getId()
+	+{abstract}void exit()
+	+{abstract}int size()
+	+void serialThreadRun(Runnable method)
+	+void wait(BooleanSupplier condition)
+}
+
+class MpiInfrastructure [[java:org.sar.ppi.mpi.MpiInfrastructure]] #7bf1a8 {
+	+void run(String[] args)
+}
+
+interface Runner [[java:org.sar.ppi.Runner]] #90e0ef{
+	+void run(Class<? extends NodeProcess> pClass, int nbProcs, String scenario)
+}
+class MpiRunner [[java:org.sar.ppi.Runner]] #7bf1a8{
+}
+Runner <|.. MpiRunner 
+
+
+Infrastructure  <|--  MpiInfrastructure
 @enduml

@@ -1,0 +1,31 @@
+{
+	"undeploy": [
+		{
+			"node": 0,
+			"start": 100
+		}
+	],
+	"deploy": [
+		{
+			"node": 0,
+			"start": 10000
+		}
+	],
+	"events": [
+		{
+			"args": [
+				{ "val": "MonArgument", "type": "String" },
+				{ "val": 4, "type": "Integer" }
+			],
+			"FunctionName": "Nom_1",
+			"Node": 1,
+			"Delay": 900
+		},
+		{
+			"args": [],
+			"FunctionName": "nom_2",
+			"Node": 2,
+			"Delay": 300
+		}
+	]
+}
