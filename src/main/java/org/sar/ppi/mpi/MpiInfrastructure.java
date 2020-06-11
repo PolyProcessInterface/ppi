@@ -155,7 +155,6 @@ public class MpiInfrastructure extends Infrastructure {
 		List<Object[]> l_call = map.get("events");
 		int num_node;
 		for(Object[] func : l_call){
-		    System.out.println(22);
 			num_node=(int)func[1];
 			if(num_node==currentNode)
 				process.getTimer().schedule(new ScheduledFunction((String)func[0],Arrays.copyOfRange(func,3,func.length),process,this),(long)func[2]);

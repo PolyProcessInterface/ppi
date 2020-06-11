@@ -124,7 +124,6 @@ public abstract class NodeProcess {
 			stopSched();
 			timer =  new Timer(true);
 		}*/
-		System.out.println("Is down = "+val);
 		is_down.set(val);
 	}
 
