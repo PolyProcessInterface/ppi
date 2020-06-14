@@ -1,11 +1,11 @@
 package org.sar.ppi.communication;
 
-import java.io.Serializable;
+import org.sar.ppi.events.Event;
 
 /**
  * Abstract Message class.
  */
-public abstract class Message implements Serializable {
+public abstract class Message implements Event {
 
 	private static final long serialVersionUID = 1L;
 	private final int idsrc;
