@@ -17,6 +17,7 @@
     <maven.compiler.version>3.8.1</maven.compiler.version>
     <picocli.version>4.3.2</picocli.version>
     <log4j.version>2.13.3</log4j.version>
+    <jackson.version>2.11.0</jackson.version>
     <mpi.path>/usr/local/lib</mpi.path>
     <peersim.path>/usr/local/lib</peersim.path>
     <main.class>${project.groupId}.Ppi</main.class>
@@ -81,6 +82,11 @@
       <groupId>com.googlecode.json-simple</groupId>
       <artifactId>json-simple</artifactId>
       <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
