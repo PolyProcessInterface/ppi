@@ -1,24 +1,13 @@
 package org.sar.ppi;
 
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.junit.AfterClass;
 import org.junit.Assume;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sar.ppi.communication.Message;
 import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
-import org.sar.ppi.tools.ProtocolTools;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -51,72 +40,18 @@ public class PredefinedScenarioTest extends NodeProcess{
     }
 
 
-    @BeforeClass
-    @SuppressWarnings("unchecked")
-    public static void createJsonTeste(){
-        try{
-            FileWriter filew = new FileWriter(fileName);
-            JSONObject toWrite = new JSONObject();
-            List<Object> array = new ArrayList<>();
-            JSONArray arrayJSON = new JSONArray();
-            //CALL 1
-            array.add("Arg_1er Appel");
-            array.add(4);
-            long delay = 1000;
-            JSONObject call_1 = ProtocolTools.eventBuilder("callMe",0,delay,array);
-            arrayJSON.add(call_1);
-
-
-            //CALL 2
-            array = new ArrayList<>();
-            array.add("Arg_1er");
-            array.add(4);
-            delay = 2000;
-            JSONObject call_2 = ProtocolTools.eventBuilder("callMe",1,delay,array);
-            arrayJSON.add(call_2);
-
-            //CALL 3
-            array = new ArrayList<>();
-            array.add("Arg_dernier Appel");
-            array.add(45);
-            delay = 3000;
-            JSONObject call_3 = ProtocolTools.eventBuilder("callMe",2,delay,array);
-            arrayJSON.add(call_3);
-            toWrite.put("events",arrayJSON);
-
-            filew.write(toWrite.toString());
-            filew.flush();
-            filew.close();
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Test
     public void MpiScenario() {
              Assume.assumeTrue(Environment.mpirunExist());
-             Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3 , new File(fileName));
+             Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3 , new File("src/test/resources/PredefinedScenarioTest.json"));
               assertTrue(true);
               System.out.println("Teste Sceneario from Json mpi ok");
     }
 
     @Test
     public void PeersimScenario() {
-          Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3 , new File(fileName));
+          Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3 , new File("src/test/resources/PredefinedScenarioTest.json"));
           assertTrue(true);
           System.out.println("Teste Sceneario from Json Peersim ok");
     }
-    @AfterClass
-    public static void  after(){
-        try {
-            Files.deleteIfExists(Paths.get(fileName));
-            System.out.println("End Scenario Test");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }

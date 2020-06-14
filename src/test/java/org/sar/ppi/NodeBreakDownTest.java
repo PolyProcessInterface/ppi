@@ -1,11 +1,7 @@
 package org.sar.ppi;
 
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.junit.AfterClass;
 import org.junit.Assume;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sar.ppi.communication.Message;
 import org.sar.ppi.communication.MessageHandler;
@@ -14,15 +10,8 @@ import org.sar.ppi.mpi.MpiRunner;
 import static org.junit.Assert.assertTrue;
 
 import org.sar.ppi.peersim.PeerSimRunner;
-import org.sar.ppi.tools.ProtocolTools;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Example on off process
@@ -80,54 +69,15 @@ public class NodeBreakDownTest extends NodeProcess {
     @Test
     public void MpitesteProtocolBreakDown() {
         Assume.assumeTrue(Environment.mpirunExist());
-        Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3, new File(fileName));
+        Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3, new File("src/test/resources/NodeBreakDownTest.json"));
         assertTrue(true);
         System.out.println("Teste BreakDown for Mpi ok");
     }
 
     @Test
     public void PeersimtesteProtocolBreakDown() {
-        Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3, new File(fileName));
+        Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3, new File("src/test/resources/NodeBreakDownTest.json"));
         assertTrue(true);
         System.out.println("Teste BreakDown for Peersim ok");
-    }
-
-    @BeforeClass
-    @SuppressWarnings("unchecked")
-    public static void createJsonTeste() {
-        try {
-            FileWriter filew = new FileWriter(fileName);
-            JSONObject toWrite = new JSONObject();
-            JSONArray array = new JSONArray();
-            //off
-            long delay =1;
-            int node = 0;
-            JSONObject B1 = ProtocolTools.StateBuilder(node, delay);
-            array.add(B1);
-
-            toWrite.put("undeploy", array);
-            array = new JSONArray();
-            delay = 500;
-            array = new JSONArray();
-            List<Object> objects = new ArrayList<>();
-           array.add(ProtocolTools.eventBuilder("End", 0, 5000, objects));
-            toWrite.put("events", array);
-
-            filew.write(toWrite.toString());
-            filew.flush();
-            filew.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @AfterClass
-    public static void  after(){
-        try {
-            Files.deleteIfExists(Paths.get(fileName));
-            System.out.println("End node down Test");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -1,0 +1,31 @@
+{
+	"calls": [
+		{
+			"args": [
+				"Arg_1er Appel",
+				4
+			],
+			"node": 0,
+			"delay": 1000,
+			"function": "callMe"
+		},
+		{
+			"args": [
+				"Arg_1er",
+				4
+			],
+			"node": 1,
+			"delay": 2000,
+			"function": "callMe"
+		},
+		{
+			"args": [
+				"Arg_dernier Appel",
+				45
+			],
+			"node": 2,
+			"delay": 3000,
+			"function": "callMe"
+		}
+	]
+}

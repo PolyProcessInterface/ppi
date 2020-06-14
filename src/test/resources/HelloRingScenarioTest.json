@@ -1,0 +1,16 @@
+{
+	"calls": [
+		{
+			"args": [],
+			"node": 0,
+			"delay": 1000,
+			"function": "FirstToSend"
+		},
+		{
+			"args": [],
+			"node": 0,
+			"delay": 1000000,
+			"function": "end"
+		}
+	]
+}
