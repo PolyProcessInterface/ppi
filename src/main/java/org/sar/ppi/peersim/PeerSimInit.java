@@ -1,9 +1,8 @@
 package org.sar.ppi.peersim;
 
-import org.sar.ppi.communication.AppEvents.OffEvent;
-import org.sar.ppi.communication.AppEvents.OnEvent;
-import org.sar.ppi.communication.AppEvents.SchedEvent;
-import org.sar.ppi.tools.ProtocolTools;
+import org.sar.ppi.PpiException;
+import org.sar.ppi.events.Scenario;
+import org.sar.ppi.events.ScheduledEvent;
 import peersim.config.Configuration;
 import peersim.config.MissingParameterException;
 import peersim.core.CommonState;
@@ -13,10 +12,10 @@ import peersim.core.Node;
 import peersim.edsim.EDSimulator;
 import peersim.util.ExtendedRandom;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * PeerSimInit class.
@@ -55,15 +54,13 @@ public class PeerSimInit implements Control {
 		long seed =	Configuration.getLong(PAR_SEED,System.currentTimeMillis());
 		System.err.println("SETTING THE RANDOM.SEED TO "+seed);
 		CommonState.r=new ExtendedRandom(seed);
-		HashMap<Integer,PeerSimInfrastructure>  mapOfInfra = new HashMap<>();
 		for(int i=0;i < Network.size();i++) {
 			Node node=Network.get(i);
 			PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infrapid);
 			pInfra.initialize(node);
-			mapOfInfra.put(pInfra.getId(),pInfra);
 		}
 		if(FileName!=null)
-			launchSimulation(FileName,mapOfInfra);
+			launchSimulation(FileName);
 		return false;
 	}
 
@@ -71,31 +68,17 @@ public class PeerSimInit implements Control {
 	 *
 	 * @param path
 	 * path to the json file
-	 * @param mapInfra
-	 * map of all application node
 	 */
-	private void launchSimulation(String path, HashMap<Integer,PeerSimInfrastructure> mapInfra) {
-		HashMap<String, List<Object[]>> map = ProtocolTools.readProtocolJSON(path);
-		List<Object[]> l_call = map.get("events");
-		int num_node;
-		long delay;
-		for(Object[] func : l_call){
-			num_node=(int)func[1];
-			delay=(long)func[2];
-			EDSimulator.add(delay,new SchedEvent((String) func[0], Arrays.copyOfRange(func,3,func.length),mapInfra.get(num_node)),Network.get(num_node),infrapid);
+	private void launchSimulation(String path) {
+		Scenario scenario;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			scenario = mapper.readValue(new File(FileName), Scenario.class);
+		} catch (IOException e) {
+			throw new PpiException("Invalid scenario file", e);
 		}
-		l_call = map.get("undeploy");
-		Node node;
-		for(Object[] func : l_call) {
-			num_node = (int) func[0];
-			delay = (long) func[1];
-			EDSimulator.add(delay,new OffEvent(mapInfra.get(num_node)),Network.get(num_node),infrapid);
-		}
-		l_call = map.get("deploy");
-		for(Object[] func : l_call) {
-			num_node = (int) func[0];
-			delay = (long) func[1];
-			EDSimulator.add(delay,new OnEvent(mapInfra.get(num_node)),Network.get(num_node),infrapid);
+		for (ScheduledEvent e : scenario.getEvents()) {
+			EDSimulator.add(e.getDelay(), e, Network.get(e.getNode()), infrapid);
 		}
 	}
 }

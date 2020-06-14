@@ -34,7 +34,7 @@ public class MpiProcess implements Runnable {
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
 				Message m = infra.recv();
-				infra.serialThreadRun(() -> process.processMessage(m));
+				infra.processEvent(m);
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt(); // preserve interruption status
 				return;
