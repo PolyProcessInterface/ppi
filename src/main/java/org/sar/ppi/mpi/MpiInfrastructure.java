@@ -31,7 +31,7 @@ public class MpiInfrastructure extends Infrastructure {
 	AtomicBoolean running = new AtomicBoolean(true);
 	protected Comm comm;
 	protected Queue<Message> sendQueue = new ConcurrentLinkedQueue<>();
-	protected BlockingQueue<Message> recvQueue = new LinkedBlockingQueue<>();
+	protected BlockingQueue<Event> recvQueue = new LinkedBlockingQueue<>();
 	protected File scenario = null;
 	/**
 	 * Constructor for MpiInfrastructure.
@@ -128,9 +128,21 @@ public class MpiInfrastructure extends Infrastructure {
 	 * @return a {@link Message} object.
 	 * @throws java.lang.InterruptedException if interrupted while waiting.
 	 */
-	public Message recv() throws InterruptedException {
+	public Event recv() throws InterruptedException {
 		return recvQueue.take();
 	}
+
+	/**
+	 * Add an event to the queue.
+	 *
+	 * This function is package private as it is only meant to be used by
+	 * EventTimer.
+	 * @param event the event to add to the que.
+	 */
+	void addEvent(Event event) {
+		recvQueue.add(event);
+	}
+
 
 	/** {@inheritDoc} */
 	@Override

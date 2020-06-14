@@ -20,6 +20,6 @@ public class EventTimer extends TimerTask implements Serializable {
 
 	@Override
 	public void run() {
-		infra.processEvent(e);
+		infra.addEvent(e);
 	}
 }
