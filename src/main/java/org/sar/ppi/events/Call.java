@@ -1,10 +1,13 @@
 package org.sar.ppi.events;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
 public class Call extends ScheduledEvent {
 	private static final long serialVersionUID = 1L;
 	
+	@JsonPropertyDescription("The function to call")
 	protected String function;
+	@JsonPropertyDescription("The arguments to pass to the function")
 	protected Object[] args;
 
 	public void setFunction(String function) {

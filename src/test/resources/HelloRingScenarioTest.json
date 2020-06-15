@@ -1,4 +1,5 @@
 {
+	"$schema": "../../../target/Scenario-schema.json",
 	"calls": [
 		{
 			"args": [],
