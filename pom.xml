@@ -16,6 +16,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.version>3.8.1</maven.compiler.version>
     <picocli.version>4.3.2</picocli.version>
+    <log4j.version>2.13.3</log4j.version>
     <mpi.path>/usr/local/lib</mpi.path>
     <peersim.path>/usr/local/lib</peersim.path>
     <main.class>${project.groupId}.Ppi</main.class>
@@ -64,7 +65,18 @@
       <version>${picocli.version}</version>
       <scope>provided</scope>
     </dependency>
-    <!-- Description API -->
+    <!-- Logger -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <!-- Scenario feature -->
     <dependency>
       <groupId>com.googlecode.json-simple</groupId>
       <artifactId>json-simple</artifactId>

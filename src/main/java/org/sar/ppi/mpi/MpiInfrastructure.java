@@ -1,5 +1,7 @@
 package org.sar.ppi.mpi;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.sar.ppi.*;
 
 import mpi.Comm;
@@ -31,6 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * MpiInfrastructure class.
  */
 public class MpiInfrastructure extends Infrastructure {
+	private static Logger logger = LogManager.getLogger();
 
 	AtomicBoolean running = new AtomicBoolean(true);
 	protected Comm comm;
@@ -67,7 +70,6 @@ public class MpiInfrastructure extends Infrastructure {
 				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
 				if (s != null) {
 					recvMpi(s.getCount(MPI.BYTE), s.getSource(), s.getTag());
-          
 				}
 				Message m = sendQueue.poll();
 				if (m != null) {
@@ -76,14 +78,14 @@ public class MpiInfrastructure extends Infrastructure {
 			}
 			for (Thread t : threads.values()) {
 				t.interrupt();
-			//	System.out.printf("%d Interrupted waiting thread %d\n", getId(), t.getId());
+				logger.info("{} Interrupted waiting thread {}", getId(), t.getId());
 				t.join();
-		//		System.out.printf("%d Joined waiting thread %d\n", getId(), t.getId());
+				logger.info("{} Joined waiting thread {}", getId(), t.getId());
 			}
 			executor.interrupt();
-		//	System.out.printf("%d Interrupted MpiProcess thread\n", getId());
+			logger.info("{} Interrupted MpiProcess thread", getId());
 			executor.join();
-		//	System.out.printf("%d Joined MpiProcess thread\n", getId());
+			logger.info("{} Joined MpiProcess thread", getId());
 			MPI.Finalize();
 		} catch (MPIException e) {
 			throw new PpiException("Init fail.", e);

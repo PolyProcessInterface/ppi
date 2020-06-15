@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" strict="true" name="Ppi" packages="${project.groupId}">
+	<Appenders>
+		<Appender type="Console" name="STDOUT">
+			<Layout type="PatternLayout">
+				<pattern>[%-5p] %m (%F:%L)%n</pattern>
+			</Layout>
+		</Appender>
+		<Appender type="File" name="LOGFILE" fileName="${project.build.directory}/ppi.log" immediateFlush="false">
+			<Layout type="PatternLayout">
+				<Pattern>%d [%-5p] %m (%F:%M:%L)%n</Pattern>
+			</Layout>
+		</Appender>
+	</Appenders>
+
+	<Loggers>
+		<Root level="debug">
+			<AppenderRef ref="LOGFILE" level="debug" />
+			<AppenderRef ref="STDOUT" level="warn" />
+		</Root>
+	</Loggers>
+
+</Configuration>
