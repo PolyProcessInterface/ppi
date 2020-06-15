@@ -8,7 +8,7 @@
   <version>https://jgitver.github.io/</version>
 
   <name>ppi</name>
-  <url>https://github.com/Atlaoui/ParallelProgramingInterface</url>
+  <url>https://github.com/PolyProcessInterface/ppi</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

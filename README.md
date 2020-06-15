@@ -1,4 +1,4 @@
-# Parallel Programing Interface
+# Poly-Process Interface
 
 [![build][buildbadge]][buildworkflow] [![javadoc][javadocbadge]][javadocurl] [![release][releasebadge]][releaseurl]
 
@@ -79,7 +79,7 @@ java -cp .:ppi-0.2-dev-bundle.jar ExampleNodeProcess
 
 ### API reference
 
-The API consists of the [public methods of the `Infrastructure` class](https://atlaoui.github.io/ParallelProgramingInterface/org/sar/ppi/Infrastructure.html)
+The API consists of the [public methods of the `Infrastructure` class](https://polyprocessinterface.github.io/ppi/org/sar/ppi/Infrastructure.html)
 which can be access via the `infra` property.
 
 ### CLI reference
@@ -146,9 +146,9 @@ If you installed the libraries in a different location you can use the options
 
     sudo apt install texlive latexmk texlive-lang-french cm-super
 
-[buildbadge]: https://github.com/Atlaoui/ParallelProgramingInterface/workflows/build/badge.svg
-[buildworkflow]: https://github.com/Atlaoui/ParallelProgramingInterface/actions?query=workflow%3Abuild+branch%3Amaster
-[javadocbadge]: https://img.shields.io/github/deployments/Atlaoui/ParallelProgramingInterface/github-pages?label=javadoc
-[javadocurl]: https://atlaoui.github.io/ParallelProgramingInterface
-[releasebadge]: https://img.shields.io/github/v/release/Atlaoui/ParallelProgramingInterface
-[releaseurl]: https://github.com/Atlaoui/ParallelProgramingInterface/releases/latest
+[buildbadge]: https://github.com/PolyProcessInterface/ppi/workflows/build/badge.svg
+[buildworkflow]: https://github.com/PolyProcessInterface/ppi/actions?query=workflow%3Abuild+branch%3Amaster
+[javadocbadge]: https://img.shields.io/github/deployments/PolyProcessInterface/ppi/github-pages?label=javadoc
+[javadocurl]: https://polyprocessinterface.github.io/ppi
+[releasebadge]: https://img.shields.io/github/v/release/PolyProcessInterface/ppi
+[releaseurl]: https://github.com/PolyProcessInterface/ppi/releases/latest
