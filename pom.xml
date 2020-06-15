@@ -105,11 +105,12 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven.compiler.version}</version>
         <configuration>
-          <!-- Show all warnings -->
+          <!-- Show all warnings and treat warnings as errors -->
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
           <compilerArgs>
             <arg>-Xlint:all,-processing</arg>
+            <arg>-Werror</arg>
           </compilerArgs>
           <!-- Compile CLI annotation at compile time rather than runtime -->
           <annotationProcessorPaths>
