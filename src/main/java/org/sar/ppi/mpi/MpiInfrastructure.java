@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * MpiInfrastructure class.
  */
 public class MpiInfrastructure extends Infrastructure {
-	private static Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
 
 	protected AtomicBoolean running = new AtomicBoolean(true);
 	protected Timer timer = new Timer();

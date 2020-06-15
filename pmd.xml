@@ -33,6 +33,16 @@ under the License.
   <!-- Ppi extension -->
   <rule ref="category/java/codestyle.xml/ControlStatementBraces" />
 
+  <rule ref="category/java/errorprone.xml/MoreThanOneLogger" />
+  <rule ref="category/java/errorprone.xml/ProperLogger">
+    <properties>
+      <property name="staticLoggerName" value="logger" />
+      <property name="loggerName" value="logger" />
+      <property name="loggerClass" value="Logger" />
+    </properties>
+  </rule>
+
+
   <!-- Maven PMD Plugin default -->
   <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP" />
   <rule ref="category/java/bestpractices.xml/CheckResultSet" />

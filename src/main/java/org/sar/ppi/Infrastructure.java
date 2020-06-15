@@ -22,7 +22,7 @@ import java.util.function.BooleanSupplier;
  * Abstract Infrastructure class.
  */
 public abstract class Infrastructure {
-	private static Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
 
 	protected NodeProcess process;
 	protected int currentNode;
