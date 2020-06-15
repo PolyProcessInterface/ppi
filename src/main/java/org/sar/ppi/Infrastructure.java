@@ -1,5 +1,7 @@
 package org.sar.ppi;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.sar.ppi.communication.Message;
 
 import java.util.HashSet;
@@ -14,6 +16,7 @@ import java.util.function.BooleanSupplier;
  * Abstract Infrastructure class.
  */
 public abstract class Infrastructure {
+	private static Logger logger = LogManager.getLogger();
 
 	protected NodeProcess process;
 	protected int currentNode;
@@ -87,11 +90,13 @@ public abstract class Infrastructure {
 	public void serialThreadRun(Runnable method) {
 		Thread t = new Thread(() -> {
 			synchronized (lock) {
+				logger.debug("{} Start thread {}", getId(), Thread.currentThread().getId());
 				runningThreads.add(Thread.currentThread());
 				method.run();
 				nextThread = mainThread;
 				lock.notifyAll();
 				runningThreads.remove(Thread.currentThread());
+				logger.debug("{} Terminated thread {}", getId(), Thread.currentThread().getId());
 			}
 		});
 		synchronized (lock) {
@@ -101,19 +106,20 @@ public abstract class Infrastructure {
 			while (Thread.currentThread() != nextThread) {
 				try {
 					lock.wait();
-					serialThreadScheduler();
 				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt(); // preserve interruption status
 					t.interrupt();
-					serialThreadScheduler();
-					return;
+					break;
 				}
 			}
+			tryJoinThread(t);
+			serialThreadScheduler();
 		}
 	}
 
 	/**
-	 * This scheduler iterates over the waiting serialThreads and wakes them up
-	 * if they can continue.
+	 * This scheduler iterates over the waiting serialThreads and wakes them up if
+	 * they can continue.
 	 */
 	protected void serialThreadScheduler() {
 		synchronized (lock) {
@@ -125,16 +131,31 @@ public abstract class Infrastructure {
 					while (Thread.currentThread() != nextThread) {
 						try {
 							lock.wait();
-							if (!runningThreads.contains(thread)) {
-								thread.join();
-							}
 						} catch (InterruptedException e) {
+							Thread.currentThread().interrupt(); // preserve interruption status
 							return;
 						}
 					}
+					tryJoinThread(thread);
 				}
 			}
 		}
+	}
+
+	protected boolean tryJoinThread(Thread thread) {
+		if (!runningThreads.contains(thread)) {
+			try {
+				logger.debug("{} Try joining terminated thread {}", getId(), thread.getId());
+				thread.join();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt(); // preserve interruption status
+				logger.debug("{} Could not join terminated thread {}", getId(), thread.getId());
+				return false;
+			}
+			logger.debug("{} Succedded joining terminated thread {}", getId(), thread.getId());
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -148,7 +169,7 @@ public abstract class Infrastructure {
 		synchronized (lock) {
 			if (!condition.getAsBoolean()) {
 				threads.put(condition, Thread.currentThread());
-				System.out.printf("%d Start waiting on %s\n", this.getId(), condition.toString());
+				logger.info("{} Start waiting on {}", this.getId(), condition);
 				nextThread = mainThread;
 				while (Thread.currentThread() != nextThread) {
 					lock.notifyAll();
@@ -159,7 +180,7 @@ public abstract class Infrastructure {
 						throw new InterruptedException();
 					}
 				}
-				System.out.printf("%d Stopped waiting\n", this.getId());
+				logger.info("{} Stopped waiting", this.getId());
 				threads.remove(condition);
 			}
 		}
