@@ -1,11 +1,12 @@
 package org.sar.ppi.events;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 public class Scenario {
-	@JsonProperty("$schema")
+	@JsonProperty(value = "$schema", access = JsonProperty.Access.WRITE_ONLY)
 	private String schema = "";
 
 	@JsonPropertyDescription("The list of Deploy events")
@@ -26,14 +27,27 @@ public class Scenario {
 		this.deploys = deploys;
 	}
 
+	public Deploy[] getDeploys() {
+		return deploys;
+	}
+
 	public void setUndeploys(Undeploy[] undeploys) {
 		this.undeploys = undeploys;
+	}
+
+	public Undeploy[] getUndeploys() {
+		return undeploys;
 	}
 
 	public void setCalls(Call[] calls) {
 		this.calls = calls;
 	}
 
+	public Call[] getCalls() {
+		return calls;
+	}
+
+	@JsonIgnore
 	public ScheduledEvent[] getEvents() {
 		int pos = 0;
 		int size = deploys.length + undeploys.length + calls.length;
@@ -45,5 +59,10 @@ public class Scenario {
 		System.arraycopy(calls, 0, events, pos, calls.length);
 		pos += calls.length;
 		return events;
+	}
+
+	@JsonIgnore
+	public boolean isEmpty() {
+		return deploys.length == 0 && undeploys.length == 0 && calls.length == 0;
 	}
 }

@@ -1,6 +1,5 @@
 package org.sar.ppi.peersim;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,6 +8,7 @@ import java.nio.file.Paths;
 
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Runner;
+import org.sar.ppi.events.Scenario;
 import org.sar.ppi.tools.Utils;
 
 import peersim.Simulator;
@@ -20,7 +20,7 @@ public class PeerSimRunner implements Runner {
 
 	/** {@inheritDoc} */
 	@Override
-	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, File scenario)
+	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Scenario scenario)
 			throws ReflectiveOperationException {
 		String tmpdir = System.getProperty("java.io.tmpdir");
 		String tmpfile = Paths.get(tmpdir, "ppi-peersim.config").toString();
@@ -29,17 +29,12 @@ public class PeerSimRunner implements Runner {
 		{
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			InputStream base;
-			if(scenario == null)
-				base = loader.getResourceAsStream("peersim.base.conf");
-			else
-				base=loader.getResourceAsStream("peersimSimulate.base.conf");
+			base = loader.getResourceAsStream("peersimSimulate.base.conf");
 			assert base != null;
 			Utils.transferTo(base, os);
 			ps.println();
 			ps.println("protocol.infra.nodeprocess " + pClass.getName());
 			ps.printf("network.size %d\n", nbProcs);
-			if(scenario != null)
-				ps.println("path " + scenario.getAbsolutePath());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * MpiInfrastructure class.
  */
@@ -32,13 +31,13 @@ public class MpiInfrastructure extends Infrastructure {
 	protected Comm comm;
 	protected Queue<Message> sendQueue = new ConcurrentLinkedQueue<>();
 	protected BlockingQueue<Event> recvQueue = new LinkedBlockingQueue<>();
-	protected File scenario = null;
+	protected Scenario scenario;
 	/**
 	 * Constructor for MpiInfrastructure.
 	 *
 	 * @param process a {@link org.sar.ppi.NodeProcess} object.
 	 */
-	public MpiInfrastructure(NodeProcess process, File scenario) {
+	public MpiInfrastructure(NodeProcess process, Scenario scenario) {
 		super(process);
 		this.scenario = scenario;
 	}
@@ -57,8 +56,7 @@ public class MpiInfrastructure extends Infrastructure {
 			comm = MPI.COMM_WORLD;
 			currentNode = comm.getRank();
 			executor.start();
-			if(scenario != null)
-				get_my_tasks(scenario.getAbsolutePath());
+			scheduleEvents(scenario);
 			while (running.get() || !sendQueue.isEmpty()) {
 				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
 				if (s != null) {
@@ -163,14 +161,7 @@ public class MpiInfrastructure extends Infrastructure {
 		super.processEvent(e);
 	}
 
-	private void get_my_tasks(String path){
-		Scenario scenario;
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			scenario = mapper.readValue(new File(path), Scenario.class);
-		} catch (IOException e) {
-			throw new PpiException("Invalid scenario file", e);
-		}
+	private void scheduleEvents(Scenario scenario){
 		for (ScheduledEvent e : scenario.getEvents()) {
 			if (e.getNode() != getId()) {
 				continue;

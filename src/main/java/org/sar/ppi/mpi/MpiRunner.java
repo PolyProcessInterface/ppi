@@ -1,39 +1,55 @@
 package org.sar.ppi.mpi;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Ppi;
 import org.sar.ppi.PpiException;
 import org.sar.ppi.Runner;
+import org.sar.ppi.events.Scenario;
 
 /**
  * MpiRunner class.
  */
 public class MpiRunner implements Runner {
+	private static final Logger logger = LogManager.getLogger();
 
 	/** {@inheritDoc} */
 	@Override
-	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, File scenario) throws PpiException {
+	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Scenario scenario) throws PpiException {
+		String scenarioJson;
 		String s = null;
 		boolean err = false;
-		String cmd = String.format(
-			"mpirun --oversubscribe --np %s java -cp %s %s %s %s --np=%d %s %s",
-			nbProcs,
+		try {
+			scenarioJson = Ppi.getMapper().writeValueAsString(scenario);
+		} catch (JsonProcessingException e) {
+			throw new PpiException("Could not serialize this scenario", e);
+		}
+		ProcessBuilder pBuilder = new ProcessBuilder(
+			"mpirun",
+			"--oversubscribe",
+			"--np",
+			String.valueOf(nbProcs),
+			"java",
+			"-cp",
 			System.getProperty("java.class.path"),
 			Ppi.class.getName(),
 			pClass.getName(),
 			MpiSubRunner.class.getName(),
-			nbProcs,
-			scenario != null ? "-s" + scenario.getAbsolutePath() : "",
+			"--np=" + nbProcs,
+			"-c=" + scenarioJson,
 			String.join(" ", args)
 		);
+		logger.debug("mpi cmdline: {}", pBuilder.command());
 		try {
-			Process p = Runtime.getRuntime().exec(cmd);
+			Process p = pBuilder.start();
 			Thread killMpi = new Thread(() -> {
 				System.out.println("Interrupt received, killing MPI");
 				p.destroyForcibly();
