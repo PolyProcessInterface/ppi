@@ -1,0 +1,17 @@
+{
+	"problemMatcher": [
+		{
+			"owner": "prettier",
+			"fileLocation": "relative",
+			"pattern":[
+				{
+					"kind": "file",
+					"regexp": "^\\[(ERROR)\\] (Incorrectly formatted file): ([^\\s]+)$",
+					"severity": 1,
+					"message": 2,
+					"file": 3
+				}
+			]
+		}
+	]
+}

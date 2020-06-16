@@ -69,7 +69,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout branch
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }} # Do not create a merge commit
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
@@ -87,13 +89,18 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
+    - name: Add Prettier problem matcher
+      run: echo "::add-matcher::.github/matchers/prettier.json"
+
     - name: PMD check
-      run: mvn -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib pmd:pmd --no-transfer-progress
+      run: mvn -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib pmd:check --no-transfer-progress
 
     - name: Add PMD annotations
-      uses: jwgmeligmeyling/pmd-github-action@v1
+      if: ${{ failure() }}
+      uses: jwgmeligmeyling/pmd-github-action@master
       with:
         path: 'target/pmd.xml'
 
     - name: Check prettier
+      if: ${{ always() }}
       run: mvn -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib prettier:check --no-transfer-progress

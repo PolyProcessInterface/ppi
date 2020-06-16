@@ -215,10 +215,12 @@
         <version>3.13.0</version>
         <configuration>
           <rulesets>
-            <ruleset>${basedir}/pmd.xml</ruleset>
+            <ruleset>file:${basedir}/pmd.xml</ruleset>
           </rulesets>
           <includeTests>true</includeTests>
           <targetJdk>${maven.compiler.target}</targetJdk>
+          <skipEmptyReport>false</skipEmptyReport>
+          <linkXRef>false</linkXRef>
         </configuration>
       </plugin>
     </plugins>
