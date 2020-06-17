@@ -1,5 +1,7 @@
 package org.sar.ppi.events;
 
+import java.util.Arrays;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
@@ -64,5 +66,13 @@ public class Scenario {
 	@JsonIgnore
 	public boolean isEmpty() {
 		return deploys.length == 0 && undeploys.length == 0 && calls.length == 0;
+	}
+
+	@Override
+	public String toString() {
+		String d = Arrays.toString(deploys);
+		String u = Arrays.toString(undeploys);
+		String c = Arrays.toString(calls);
+		return "scenario(deploys:" + d + ", undeploys:" + u + ", calls:" + c + ")";
 	}
 }

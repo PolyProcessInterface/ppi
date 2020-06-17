@@ -1,5 +1,7 @@
 package org.sar.ppi.events;
 
+import java.util.Arrays;
+
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
 public class Call extends ScheduledEvent {
@@ -32,5 +34,11 @@ public class Call extends ScheduledEvent {
 			classes[i] = args[i].getClass();
 		}
 		return classes;
+	}
+
+	@Override
+	public String toString() {
+		String args = Arrays.toString(this.args);
+		return "call(" +super.toString() + ", function:" + function + ", args:" + args + ")";
 	}
 }

@@ -26,4 +26,9 @@ public abstract class ScheduledEvent implements Event {
 	public int getDelay() {
 		return delay;
 	}
+
+	@Override
+	public String toString() {
+		return "node:" + node + ", delay:" + delay;
+	}
 }
