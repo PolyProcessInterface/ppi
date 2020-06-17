@@ -71,14 +71,22 @@ public abstract class Infrastructure {
 	public abstract int size();
 
 	/**
-	 * deploy the current node so he can recive msg
+	 * Deploy the current node so it can receive messages.
 	 */
-	public void deploy(){ process.setIs_down(false); }
+	protected void deploy() {
+		process.deploy();
+	}
 
 	/**
-	 * undeploy the current node (turn it of)
+	 * Undeploy the current node (turn it off).
 	 */
-	public void undeploy() { process.setIs_down(true); }
+	protected void undeploy() {
+		process.undeploy();
+	}
+
+	protected boolean isDeployed() {
+		return process.isDeployed();
+	}
 
 	/**
 	 *

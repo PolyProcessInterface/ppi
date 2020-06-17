@@ -6,7 +6,6 @@ import org.sar.ppi.communication.MessageHandlerException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Timer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -15,9 +14,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class NodeProcess {
 
 	protected Infrastructure infra;
-	protected Timer timer;
+	private AtomicBoolean deployed = new AtomicBoolean(true);
 
-	protected AtomicBoolean is_down = new AtomicBoolean(false);
 	/**
 	 * Setter for the field <code>infra</code>.
 	 *
@@ -74,36 +72,23 @@ public abstract class NodeProcess {
 		}
 	}
 
-	public void stopSched(){
-		if(timer!=null) {
-			timer.cancel();
-			timer=null;
-		}
+	/**
+	 * Deploy the current node so it can receive messages.
+	 */
+	void deploy() {
+		deployed.set(true);
 	}
 
 	/**
-	 * Getter for the field <code>timer</code>.
-	 *
-	 * @return a {@link java.util.Timer} object.
+	 * Undeploy the current node (turn it off).
 	 */
-	public Timer getTimer() {
-		if(timer==null){
-			timer=new Timer(true);
-			return timer;
-		}
-		return timer;
+	void undeploy() {
+		deployed.set(false);
 	}
 
-	public void setIs_down(boolean val) {
-
-		/*if(val){
-			stopSched();
-			timer =  new Timer(true);
-		}*/
-		is_down.set(val);
+	boolean isDeployed() {
+		return deployed.get();
 	}
-
-	public boolean getIs_down() { return is_down.get(); }
 
 	/** {@inheritDoc} */
 	@Override

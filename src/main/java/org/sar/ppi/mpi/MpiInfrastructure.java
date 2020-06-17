@@ -16,6 +16,7 @@ import org.sar.ppi.events.ScheduledEvent;
 import java.io.*;
 
 import java.util.Queue;
+import java.util.Timer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -27,7 +28,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MpiInfrastructure extends Infrastructure {
 	private static Logger logger = LogManager.getLogger();
 
-	AtomicBoolean running = new AtomicBoolean(true);
+	protected AtomicBoolean running = new AtomicBoolean(true);
+	protected Timer timer = new Timer();
 	protected Comm comm;
 	protected Queue<Message> sendQueue = new ConcurrentLinkedQueue<>();
 	protected BlockingQueue<Event> recvQueue = new LinkedBlockingQueue<>();
@@ -98,8 +100,9 @@ public class MpiInfrastructure extends Infrastructure {
 			byte [] tab = new byte[size];
 			comm.recv(tab, size, MPI.BYTE, source, tag);
 			Message msg = RetriveMessage(tab);
-			if(!process.getIs_down())
+			if (isDeployed()) {
 				recvQueue.add(msg);
+			}
 		} catch (MPIException e) {
 			throw new PpiException("Receive from" + source + "failed", e);
 		}
@@ -151,7 +154,7 @@ public class MpiInfrastructure extends Infrastructure {
 	/** {@inheritDoc} */
 	@Override
 	public void exit() {
-		process.stopSched();
+		timer.cancel();
 		running.set(false);
 	}
 
@@ -166,7 +169,7 @@ public class MpiInfrastructure extends Infrastructure {
 			if (e.getNode() != getId()) {
 				continue;
 			}
-			process.getTimer().schedule(new EventTimer(this, e), e.getDelay());
+			timer.schedule(new EventTimer(this, e), e.getDelay());
 		}
 	}
 
