@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -17,6 +17,8 @@
     <maven.compiler.version>3.8.1</maven.compiler.version>
     <picocli.version>4.3.2</picocli.version>
     <log4j.version>2.13.3</log4j.version>
+    <jackson.version>2.11.0</jackson.version>
+    <jsonschema.version>4.12.2</jsonschema.version>
     <mpi.path>/usr/local/lib</mpi.path>
     <peersim.path>/usr/local/lib</peersim.path>
     <main.class>${project.groupId}.Ppi</main.class>
@@ -78,9 +80,9 @@
     </dependency>
     <!-- Scenario feature -->
     <dependency>
-      <groupId>com.googlecode.json-simple</groupId>
-      <artifactId>json-simple</artifactId>
-      <version>1.1.1</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
@@ -139,6 +141,35 @@
         <configuration>
           <!-- <stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile> -->
           <show>public</show>
+        </configuration>
+      </plugin>
+      <!-- Generate Json schemas -->
+      <plugin>
+        <groupId>com.github.victools</groupId>
+        <artifactId>jsonschema-maven-plugin</artifactId>
+        <version>${jsonschema.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <classNames>${project.groupId}.events.Scenario</classNames>
+          <modules>
+            <module>
+              <name>Jackson</name>
+            </module>
+          </modules>
+          <schemaVersion>DRAFT_2019_09</schemaVersion>
+          <schemaFilePath>${project.build.directory}</schemaFilePath>
+          <options>
+            <enabled>
+              <option>DEFINITIONS_FOR_ALL_OBJECTS</option>
+              <option>FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT</option>
+            </enabled>
+          </options>
         </configuration>
       </plugin>
       <!-- Create an executable .jar -->

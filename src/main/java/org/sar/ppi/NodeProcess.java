@@ -1,15 +1,8 @@
 package org.sar.ppi;
 
-import org.sar.ppi.communication.AppMessage.AppMessage;
-import org.sar.ppi.communication.AppMessage.SchedMessage;
-import org.sar.ppi.communication.AppMessage.ShedBreakMessage;
-import org.sar.ppi.communication.AppMessage.ShedOnMessage;
 import org.sar.ppi.communication.Message;
 import org.sar.ppi.communication.MessageHandler;
 import org.sar.ppi.communication.MessageHandlerException;
-import org.sar.ppi.communication.Tasks.SchedDeploy;
-import org.sar.ppi.communication.Tasks.ScheduledBreakDown;
-import org.sar.ppi.communication.Tasks.ScheduledFunction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -41,10 +34,6 @@ public abstract class NodeProcess {
 	 */
 	public void processMessage(Message message) {
 		//System.err.println("Starting to process a message from " + message.getIdsrc() + " to " + message.getIddest());
-		if(message instanceof AppMessage) {
-			processAppMessage(message);
-			return;
-		}
 
 		Method[] methods = this.getClass().getMethods();
 		for (Method method : methods) {
@@ -64,19 +53,6 @@ public abstract class NodeProcess {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	private void processAppMessage(Message message) {
-		//mpi
-		if(message instanceof SchedMessage && !is_down.get()) {
-			SchedMessage shed = (SchedMessage) message;
-			timer.schedule(new ScheduledFunction(shed.getName(),shed.getArgs(),this,this.infra),shed.getDelay());
-		}
-		if(message instanceof ShedBreakMessage)
-			timer.schedule(new ScheduledBreakDown(this),((ShedBreakMessage) message).getDelay());
-
-		if(message instanceof ShedOnMessage)
-			timer.schedule(new SchedDeploy(this.infra),((ShedOnMessage) message).getDelay());
 	}
 
 	/**

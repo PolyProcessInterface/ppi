@@ -3,7 +3,13 @@ package org.sar.ppi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.sar.ppi.communication.Message;
+import org.sar.ppi.events.Call;
+import org.sar.ppi.events.Deploy;
+import org.sar.ppi.events.Event;
+import org.sar.ppi.events.Undeploy;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -80,6 +86,42 @@ public abstract class Infrastructure {
 	 * the current process linked to this infra
 	 */
 	public NodeProcess getProcess() { return process; }
+
+	/**
+	 * Process an event.
+	 *
+	 * Infrastructure implementations should call this method for each
+	 * event to process.
+	 * @param event
+	 */
+	protected void processEvent(Event event) {
+		if (event instanceof Message) {
+			serialThreadRun(() -> {
+				this.process.processMessage((Message) event);
+			});
+		} else if (event instanceof Deploy) {
+			deploy();
+		} else if (event instanceof Undeploy) {
+			undeploy();
+		} else if (event instanceof Call) {
+			Call call = (Call) event;
+			Method m;
+			try {
+				m = process.getClass().getMethod(call.getFunction(), call.argsClasses());
+				serialThreadRun(() -> {
+					try {
+						m.invoke(getProcess(), call.getArgs());
+					} catch (IllegalAccessException | InvocationTargetException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+			} catch (NoSuchMethodException | SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
 	/**
 	 * Run a new thread that will start immediately. The current thread

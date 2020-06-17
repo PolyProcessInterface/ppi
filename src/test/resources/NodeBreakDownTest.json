@@ -1,0 +1,17 @@
+{
+	"$schema": "../../../target/Scenario-schema.json",
+	"calls": [
+		{
+			"args": [],
+			"node": 0,
+			"delay": 5000,
+			"function": "End"
+		}
+	],
+	"undeploys": [
+		{
+			"node": 0,
+			"delay": 1
+		}
+	]
+}
