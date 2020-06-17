@@ -85,11 +85,12 @@ which can be access via the `infra` property.
 ### CLI reference
 
 ```
-Usage: ppi [-hV] [--np=<number>] [-s=<path>] <process-class> <runner-class>
-           [<args>...]
+Usage: ppi [-s=<path> | -c=<json>] [-hV] [--np=<number>] <process-class>
+           <runner-class> [<args>...]
       <process-class>     Fully qualified name of the class to use as process
       <runner-class>      Fully qualified name of the class to use as runner
       [<args>...]         Args to pass to the processes
+  -c, --content=<json>    Content of the scenario
   -h, --help              Display a help message
       --np=<number>       Number of processus in the network
                             Default: 4
