@@ -57,8 +57,8 @@ public class MpiInfrastructure extends Infrastructure {
 			MPI.InitThread(args, MPI.THREAD_FUNNELED);
 			comm = MPI.COMM_WORLD;
 			currentNode = comm.getRank();
-			executor.start();
 			scheduleEvents(scenario);
+			executor.start();
 			while (running.get() || !sendQueue.isEmpty()) {
 				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
 				if (s != null) {
