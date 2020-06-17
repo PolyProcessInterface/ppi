@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
+import org.sar.ppi.tools.Utils;
+
 public class Scenario {
 	@JsonProperty(value = "$schema", access = JsonProperty.Access.WRITE_ONLY)
 	private String schema = "";
@@ -51,16 +53,7 @@ public class Scenario {
 
 	@JsonIgnore
 	public ScheduledEvent[] getEvents() {
-		int pos = 0;
-		int size = deploys.length + undeploys.length + calls.length;
-		ScheduledEvent[] events = new ScheduledEvent[size];
-		System.arraycopy(deploys, 0, events, pos, deploys.length);
-		pos += deploys.length;
-		System.arraycopy(undeploys, 0, events, pos, undeploys.length);
-		pos += undeploys.length;
-		System.arraycopy(calls, 0, events, pos, calls.length);
-		pos += calls.length;
-		return events;
+		return Utils.concatAll(ScheduledEvent.class, deploys, undeploys, calls);
 	}
 
 	@JsonIgnore

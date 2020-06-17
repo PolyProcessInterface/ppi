@@ -14,6 +14,7 @@ import org.sar.ppi.Ppi;
 import org.sar.ppi.PpiException;
 import org.sar.ppi.Runner;
 import org.sar.ppi.events.Scenario;
+import org.sar.ppi.tools.Utils;
 
 /**
  * MpiRunner class.
@@ -32,7 +33,7 @@ public class MpiRunner implements Runner {
 		} catch (JsonProcessingException e) {
 			throw new PpiException("Could not serialize this scenario", e);
 		}
-		ProcessBuilder pBuilder = new ProcessBuilder(
+		String[] cmdline = new String[] {
 			"mpirun",
 			"--oversubscribe",
 			"--np",
@@ -44,12 +45,12 @@ public class MpiRunner implements Runner {
 			pClass.getName(),
 			MpiSubRunner.class.getName(),
 			"--np=" + nbProcs,
-			"-c=" + scenarioJson,
-			String.join(" ", args)
-		);
-		logger.debug("mpi cmdline: {}", pBuilder.command());
+			"-c=" + scenarioJson
+		};
+		cmdline = Utils.concatAll(String.class, cmdline, args);
+		logger.debug("mpi cmdline: {}", String.join(" ", cmdline));
 		try {
-			Process p = pBuilder.start();
+			Process p = Runtime.getRuntime().exec(cmdline);
 			Thread killMpi = new Thread(() -> {
 				System.out.println("Interrupt received, killing MPI");
 				p.destroyForcibly();
