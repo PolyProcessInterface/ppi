@@ -32,11 +32,16 @@ under the License.
 
   <!-- Ppi extension -->
   <rule ref="category/java/codestyle.xml/ControlStatementBraces" />
+  <rule ref="category/java/codestyle.xml/ClassNamingConventions" />
+  <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions" />
+  <rule ref="category/java/codestyle.xml/MethodNamingConventions" />
+  <rule ref="category/java/codestyle.xml/FieldNamingConventions" />
+  <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions" />
 
   <rule ref="category/java/errorprone.xml/MoreThanOneLogger" />
   <rule ref="category/java/errorprone.xml/ProperLogger">
     <properties>
-      <property name="staticLoggerName" value="logger" />
+      <property name="staticLoggerName" value="LOGGER" />
       <property name="loggerName" value="logger" />
       <property name="loggerClass" value="Logger" />
     </properties>
@@ -64,7 +69,7 @@ under the License.
 
   <rule ref="category/java/design.xml/CollapsibleIfStatements" />
   <rule ref="category/java/design.xml/SimplifiedTernary" />
-  <rule ref="category/java/design.xml/UselessOverridingMethod" />
+  <!-- <rule ref="category/java/design.xml/UselessOverridingMethod" /> -->
 
   <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop" />
   <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor" />
