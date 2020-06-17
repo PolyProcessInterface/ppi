@@ -1,8 +1,6 @@
 org.sar.ppi
 org.sar.ppi.communication
-org.sar.ppi.communication.AppEvents
-org.sar.ppi.communication.AppMessage
-org.sar.ppi.communication.Tasks
+org.sar.ppi.events
 org.sar.ppi.mpi
 org.sar.ppi.peersim
 org.sar.ppi.tools
