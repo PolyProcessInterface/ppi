@@ -18,6 +18,7 @@ public class ArgsTest extends RedirectedTest {
 	public void init(String[] args) {
 		if (infra.getId() == 0) {
 			System.out.println(args[0]);
+			System.out.println(args[1]);
 		}
 		infra.exit();
 	}
@@ -25,15 +26,8 @@ public class ArgsTest extends RedirectedTest {
 	@Test
 	public void MpiTest() {
 		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = {"test"};
+		String[] args = {"test", "test"};
 		Ppi.main(this.getClass(), new MpiRunner(), args, 2);
-		assertEquals("test", outContent.toString().substring(0, 4));
-	}
-
-	@Test
-	public void PeersimTest() {
-		String[] args = {"test"};
-		Ppi.main(this.getClass(), new PeerSimRunner(), args, 2);
 		int i = 0;
 		Scanner scanner = new Scanner(outContent.toString());
 		while (scanner.hasNextLine()) {
@@ -46,5 +40,23 @@ public class ArgsTest extends RedirectedTest {
 			}
 		}
 		assertEquals(2, i);
+	}
+
+	@Test
+	public void PeersimTest() {
+		String[] args = {"test", "test"};
+		Ppi.main(this.getClass(), new PeerSimRunner(), args, 2);
+		int i = 0;
+		Scanner scanner = new Scanner(outContent.toString());
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+			if (line.isEmpty()) {
+				continue;
+			} else {
+				i++;
+				assertEquals("test", line);
+			}
+		}
+		assertEquals(4, i);
 	}
 }

@@ -1,7 +1,6 @@
 package org.sar.ppi.peersim;
 
-import org.sar.ppi.PpiException;
-import org.sar.ppi.events.Scenario;
+import org.sar.ppi.Ppi;
 import org.sar.ppi.events.ScheduledEvent;
 import peersim.config.Configuration;
 import peersim.config.MissingParameterException;
@@ -11,11 +10,6 @@ import peersim.core.Network;
 import peersim.core.Node;
 import peersim.edsim.EDSimulator;
 import peersim.util.ExtendedRandom;
-
-import java.io.File;
-import java.io.IOException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * PeerSimInit class.
@@ -29,7 +23,6 @@ public class PeerSimInit implements Control {
 	private final int infrapid;
 
 	private  int pid_trans;
-	private String FileName;
 
 	/**
 	 * Constructor for PeerSimInit.
@@ -40,10 +33,8 @@ public class PeerSimInit implements Control {
 		infrapid=Configuration.getPid(prefix+"."+PAR_PROTO);
 		try{
 		pid_trans=Configuration.getPid(prefix+"."+TRANSPORT_SIMULATION);
-		FileName = Configuration.getString("path");
 		}catch (MissingParameterException e){
 			pid_trans=-1;
-			FileName=null;
 		}
 	}
 
@@ -59,25 +50,12 @@ public class PeerSimInit implements Control {
 			PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infrapid);
 			pInfra.initialize(node);
 		}
-		if(FileName!=null)
-			launchSimulation(FileName);
+		launchSimulation();
 		return false;
 	}
 
-	/**
-	 *
-	 * @param path
-	 * path to the json file
-	 */
-	private void launchSimulation(String path) {
-		Scenario scenario;
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			scenario = mapper.readValue(new File(FileName), Scenario.class);
-		} catch (IOException e) {
-			throw new PpiException("Invalid scenario file", e);
-		}
-		for (ScheduledEvent e : scenario.getEvents()) {
+	private void launchSimulation() {
+		for (ScheduledEvent e : Ppi.getScenario().getEvents()) {
 			EDSimulator.add(e.getDelay(), e, Network.get(e.getNode()), infrapid);
 		}
 	}

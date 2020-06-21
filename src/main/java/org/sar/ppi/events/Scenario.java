@@ -1,11 +1,16 @@
 package org.sar.ppi.events;
 
+import java.util.Arrays;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
+import org.sar.ppi.tools.Utils;
+
 public class Scenario {
-	@JsonProperty("$schema")
+	@JsonProperty(value = "$schema", access = JsonProperty.Access.WRITE_ONLY)
 	private String schema = "";
 
 	@JsonPropertyDescription("The list of Deploy events")
@@ -26,24 +31,41 @@ public class Scenario {
 		this.deploys = deploys;
 	}
 
+	public Deploy[] getDeploys() {
+		return deploys;
+	}
+
 	public void setUndeploys(Undeploy[] undeploys) {
 		this.undeploys = undeploys;
+	}
+
+	public Undeploy[] getUndeploys() {
+		return undeploys;
 	}
 
 	public void setCalls(Call[] calls) {
 		this.calls = calls;
 	}
 
+	public Call[] getCalls() {
+		return calls;
+	}
+
+	@JsonIgnore
 	public ScheduledEvent[] getEvents() {
-		int pos = 0;
-		int size = deploys.length + undeploys.length + calls.length;
-		ScheduledEvent[] events = new ScheduledEvent[size];
-		System.arraycopy(deploys, 0, events, pos, deploys.length);
-		pos += deploys.length;
-		System.arraycopy(undeploys, 0, events, pos, undeploys.length);
-		pos += undeploys.length;
-		System.arraycopy(calls, 0, events, pos, calls.length);
-		pos += calls.length;
-		return events;
+		return Utils.concatAll(ScheduledEvent.class, deploys, undeploys, calls);
+	}
+
+	@JsonIgnore
+	public boolean isEmpty() {
+		return deploys.length == 0 && undeploys.length == 0 && calls.length == 0;
+	}
+
+	@Override
+	public String toString() {
+		String d = Arrays.toString(deploys);
+		String u = Arrays.toString(undeploys);
+		String c = Arrays.toString(calls);
+		return "scenario(deploys:" + d + ", undeploys:" + u + ", calls:" + c + ")";
 	}
 }
