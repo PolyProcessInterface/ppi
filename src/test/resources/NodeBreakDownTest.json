@@ -4,8 +4,8 @@
 		{
 			"args": [],
 			"node": 0,
-			"delay": 5000,
-			"function": "End"
+			"delay": 300,
+			"function": "end"
 		}
 	],
 	"undeploys": [
