@@ -2,7 +2,9 @@ package org.sar.ppi.peersim;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.sar.ppi.*;
+import org.sar.ppi.Infrastructure;
+import org.sar.ppi.NodeProcess;
+import org.sar.ppi.Ppi;
 import org.sar.ppi.communication.Message;
 import org.sar.ppi.events.Event;
 import peersim.config.Configuration;
@@ -22,11 +24,11 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 
 	private static String[] args;
 
-	private final int pid_transport; // id du protocole de transport
+	private final int transportPid; // id du protocole de transport
 
 	private static final String PAR_NP="nodeprocess"; 
 
-	private final int my_pid; // identifiant du protocole
+	private final int protocolPid; // identifiant du protocole
 
 	private boolean running; // true while exit() hasnt been executed
 	private static int cptID=0;
@@ -48,8 +50,8 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		}
 		this.process=np;
 		String tmp[]=prefix.split("\\.");
-		my_pid=Configuration.lookupPid(tmp[tmp.length-1]);
-		pid_transport=Configuration.getPid(prefix+"."+PAR_TRANSPORT);
+		protocolPid=Configuration.lookupPid(tmp[tmp.length-1]);
+		transportPid=Configuration.getPid(prefix+"."+PAR_TRANSPORT);
 		running=true;
 		currentNode=0;  
 	}
@@ -89,10 +91,10 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 		if(running) {
 
 			Node nodeHost = Network.get(getId());
-			Transport tr = (Transport) nodeHost.getProtocol(pid_transport);
+			Transport tr = (Transport) nodeHost.getProtocol(transportPid);
 			Node nodeDest = Network.get(message.getIddest()%Network.size());
 			//System.err.println(message.getIdsrc() + " SENDING TO "+message.getIddest());
-			tr.send(nodeHost, nodeDest, message, my_pid);
+			tr.send(nodeHost, nodeDest, message, protocolPid);
 		}else {
 			System.err.println("Not running : won't send the message from "+message.getIdsrc() +" to " +message.getIddest());
 		}
@@ -119,8 +121,9 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	/** {@inheritDoc} */
 	@Override
 	public void processEvent(Node host, int pid, Object event) {
-		if(pid!=my_pid) throw new IllegalArgumentException("Inconsistency on protocol id");
-
+		if (pid != protocolPid) {
+			throw new IllegalArgumentException("Inconsistency on protocol id");
+		}
 		if (event instanceof Event && isDeployed()){
 			processEvent((Event) event);
 		} else if (isDeployed()){

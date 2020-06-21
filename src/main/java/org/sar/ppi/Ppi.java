@@ -26,7 +26,7 @@ import picocli.CommandLine.Help.Visibility;
  */
 @Command(name = "ppi", versionProvider = ManifestVersionProvider.class)
 public class Ppi implements Callable<Integer> {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger();
 	protected static ObjectMapper mapper = new ObjectMapper();
 	protected static Scenario scenario;
 
@@ -207,8 +207,8 @@ public class Ppi implements Callable<Integer> {
 		try {
 			return mapper.readValue(json, Scenario.class);
 		} catch (IOException e) {
-			logger.debug("escaped json: {}", json);
-			logger.error(e.getMessage());
+			LOGGER.debug("escaped json: {}", json);
+			LOGGER.error(e.getMessage());
 			throw new PpiException("Invalid scenario json", e);
 		}
 	}

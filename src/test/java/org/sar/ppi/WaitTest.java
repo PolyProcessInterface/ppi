@@ -29,12 +29,12 @@ public class WaitTest extends NodeProcess {
 		}
 	}
 	
-	private final int N = 2;
+	private final int n = 2;
 	private int msgReceived = 0;
 			
 	public void helloN(){
 		try {
-			infra.wait( () -> msgReceived >= N );
+			infra.wait( () -> msgReceived >= n );
 			System.out.println(infra.getId()+" Hello !");
 		} catch (InterruptedException e) {
 			System.out.println(infra.getId()+" Interrupted while waiting !");
@@ -50,7 +50,9 @@ public class WaitTest extends NodeProcess {
 		
 		if (host != 0 && msgReceived == 1) {
 		    infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
-		    if(host==2) helloN();
+			if (host == 2) {
+				helloN();
+			}
 		} else {
 			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
 		    infra.exit();
@@ -65,14 +67,14 @@ public class WaitTest extends NodeProcess {
 	}
 
 	@Test
-	public void MpiAnnotatedProcessTest() {
-		Assume.assumeTrue(Environment.mpirunExist());
+	public void mpi() {
+		Assume.assumeTrue(EnvUtils.mpirunExist());
 		Ppi.main(this.getClass(), new MpiRunner());
 		assertTrue(true);
 	}
 
 	@Test
-	public void PeersimWaitNotifyTest() {
+	public void peersim() {
 		Ppi.main(this.getClass(), new PeerSimRunner());
 		assertTrue(true);
 	}

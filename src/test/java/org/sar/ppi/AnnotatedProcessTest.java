@@ -48,14 +48,14 @@ public class AnnotatedProcessTest extends NodeProcess {
 	}
 
 	@Test
-	public void MpiAnnotatedProcessTest() {
-		Assume.assumeTrue(Environment.mpirunExist());
+	public void mpi() {
+		Assume.assumeTrue(EnvUtils.mpirunExist());
 		Ppi.main(this.getClass(), new MpiRunner());
 		assertTrue(true);
 	}
 
 	@Test
-	public void PeersimAnnotatedProcessTest() {
+	public void peersim() {
 		Ppi.main(this.getClass(), new PeerSimRunner());
 		assertTrue(true);
 	}

@@ -24,8 +24,8 @@ public class ArgsTest extends RedirectedTest {
 	}
 
 	@Test
-	public void MpiTest() {
-		Assume.assumeTrue(Environment.mpirunExist());
+	public void mpi() {
+		Assume.assumeTrue(EnvUtils.mpirunExist());
 		String[] args = {"test", "test"};
 		Ppi.main(this.getClass(), new MpiRunner(), args, 2);
 		int i = 0;
@@ -43,7 +43,7 @@ public class ArgsTest extends RedirectedTest {
 	}
 
 	@Test
-	public void PeersimTest() {
+	public void peersim() {
 		String[] args = {"test", "test"};
 		Ppi.main(this.getClass(), new PeerSimRunner(), args, 2);
 		int i = 0;

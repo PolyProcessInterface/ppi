@@ -38,7 +38,7 @@ public class NodeBreakDownTest extends RedirectedTest {
     }
 
     @MessageHandler
-    public void ExempleMsg(ExampleMessage message) {
+    public void exempleMsg(ExampleMessage message) {
         int host = infra.getId();
         System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
         if (host != 0) {
@@ -63,8 +63,8 @@ public class NodeBreakDownTest extends RedirectedTest {
     }
 
     @Test
-	public void MpitesteProtocolBreakDown() throws EOFException {
-        Assume.assumeTrue(Environment.mpirunExist());
+	public void mpi() throws EOFException {
+        Assume.assumeTrue(EnvUtils.mpirunExist());
         Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3, new File("src/test/resources/NodeBreakDownTest.json"));
 		String line;
 		line = nextNonEmpty();
@@ -76,7 +76,7 @@ public class NodeBreakDownTest extends RedirectedTest {
     }
 
     @Test
-	public void PeersimtesteProtocolBreakDown() throws EOFException {
+	public void peersim() throws EOFException {
         Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3, new File("src/test/resources/NodeBreakDownTest.json"));
 		String line;
 		for (int i = 0; i < 2; i++) {

@@ -15,5 +15,5 @@ public interface Runner {
 	 * @param scenario the scenario to execute.
 	 * @throws java.lang.ReflectiveOperationException if pClass instanciation fails.
 	 */
-	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Scenario scenario) throws ReflectiveOperationException;
+	void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Scenario scenario) throws ReflectiveOperationException;
 }

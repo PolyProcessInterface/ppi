@@ -14,13 +14,13 @@ import org.sar.ppi.Ppi;
 import org.sar.ppi.PpiException;
 import org.sar.ppi.Runner;
 import org.sar.ppi.events.Scenario;
-import org.sar.ppi.tools.Utils;
+import org.sar.ppi.tools.PpiUtils;
 
 /**
  * MpiRunner class.
  */
 public class MpiRunner implements Runner {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	/** {@inheritDoc} */
 	@Override
@@ -47,8 +47,8 @@ public class MpiRunner implements Runner {
 			"--np=" + nbProcs,
 			"-c=" + scenarioJson
 		};
-		cmdline = Utils.concatAll(String.class, cmdline, args);
-		logger.debug("mpi cmdline: {}", String.join(" ", cmdline));
+		cmdline = PpiUtils.concatAll(String.class, cmdline, args);
+		LOGGER.debug("mpi cmdline: {}", String.join(" ", cmdline));
 		try {
 			Process p = Runtime.getRuntime().exec(cmdline);
 			Thread killMpi = new Thread(() -> {

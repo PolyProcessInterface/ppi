@@ -34,7 +34,7 @@ public class HelloRingScenarioTest extends NodeProcess{
     }
 
     @MessageHandler
-    public void ExempleMsg(NodeBreakDownTest.ExampleMessage message) {
+    public void exempleMsg(NodeBreakDownTest.ExampleMessage message) {
         int host = infra.getId();
         System.out.printf("%d Received '%s' from %d\n", host, message.getS(), message.getIdsrc());
         int dest = (host + 1) % infra.size();
@@ -43,7 +43,7 @@ public class HelloRingScenarioTest extends NodeProcess{
         System.out.printf("%d : has finished \n",infra.getId());
     }
 
-    public void FirstToSend(){
+    public void firstToSend(){
         System.out.printf("%d : First to send well be \n",infra.getId());
         infra.send(new NodeBreakDownTest.ExampleMessage(infra.getId(),(infra.getId() + 1) % infra.size(), "Hello"));
     }
@@ -59,15 +59,15 @@ public class HelloRingScenarioTest extends NodeProcess{
     }
 
     @Test
-    public void MpiHelloRingScenarioTest() {
-        Assume.assumeTrue(Environment.mpirunExist());
+    public void mpi() {
+        Assume.assumeTrue(EnvUtils.mpirunExist());
         Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3, new File("src/test/resources/HelloRingScenarioTest.json"));
         assertTrue(true);
         System.out.println("Teste BreakDown for Mpi ok");
     }
 
     @Test
-    public void PeersimHelloRingScenarioTest() {
+    public void peersim() {
         Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3, new File("src/test/resources/HelloRingScenarioTest.json"));
         assertTrue(true);
         System.out.println("Teste BreakDown for Peersim ok");

@@ -36,14 +36,18 @@ public abstract class NodeProcess {
 		Method[] methods = this.getClass().getMethods();
 		for (Method method : methods) {
 			Class<?>[] params = method.getParameterTypes();
-			if (!method.isAnnotationPresent(MessageHandler.class))
+			if (!method.isAnnotationPresent(MessageHandler.class)) {
 				continue;
-			if (params.length != 1)
+			}
+			if (params.length != 1) {
 				throw new MessageHandlerException(method.getName() + ": should only have one parameter");
-			if (!Message.class.isAssignableFrom(params[0]))
+			}
+			if (!Message.class.isAssignableFrom(params[0])) {
 				throw new MessageHandlerException(method.getName() + ": first param must extend Message");
-			if (!params[0].equals(message.getClass()))
+			}
+			if (!params[0].equals(message.getClass())) {
 				continue;
+			}
 			try {
 				method.invoke(this, message);
 				return;

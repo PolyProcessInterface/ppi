@@ -3,7 +3,6 @@ package org.sar.ppi.peersim;
 import org.sar.ppi.Ppi;
 import org.sar.ppi.events.ScheduledEvent;
 import peersim.config.Configuration;
-import peersim.config.MissingParameterException;
 import peersim.core.CommonState;
 import peersim.core.Control;
 import peersim.core.Network;
@@ -18,11 +17,7 @@ public class PeerSimInit implements Control {
 
 	private static final String PAR_PROTO="infrapid";
 	public static final String PAR_SEED = "random.seed";
-
-	private static final String TRANSPORT_SIMULATION="transport";
-	private final int infrapid;
-
-	private  int pid_trans;
+	private final int infraPid;
 
 	/**
 	 * Constructor for PeerSimInit.
@@ -30,12 +25,7 @@ public class PeerSimInit implements Control {
 	 * @param prefix a {@link java.lang.String} object.
 	 */
 	public PeerSimInit(String prefix) {
-		infrapid=Configuration.getPid(prefix+"."+PAR_PROTO);
-		try{
-		pid_trans=Configuration.getPid(prefix+"."+TRANSPORT_SIMULATION);
-		}catch (MissingParameterException e){
-			pid_trans=-1;
-		}
+		infraPid=Configuration.getPid(prefix+"."+PAR_PROTO);
 	}
 
 	/** {@inheritDoc} */
@@ -47,7 +37,7 @@ public class PeerSimInit implements Control {
 		CommonState.r=new ExtendedRandom(seed);
 		for(int i=0;i < Network.size();i++) {
 			Node node=Network.get(i);
-			PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infrapid);
+			PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infraPid);
 			pInfra.initialize(node);
 		}
 		launchSimulation();
@@ -56,7 +46,7 @@ public class PeerSimInit implements Control {
 
 	private void launchSimulation() {
 		for (ScheduledEvent e : Ppi.getScenario().getEvents()) {
-			EDSimulator.add(e.getDelay(), e, Network.get(e.getNode()), infrapid);
+			EDSimulator.add(e.getDelay(), e, Network.get(e.getNode()), infraPid);
 		}
 	}
 }

@@ -56,7 +56,7 @@ public class BroadcastOrderTest extends RedirectedTest {
 
 	String outputPeersim;
 	@Test
-	public void PeersimBroadcastOrderTest() {
+	public void peersim() {
 		Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], NETWORKSIZE);
 		int networkSize=Configuration.getInt(PAR_SIZE);
 		int i=0;

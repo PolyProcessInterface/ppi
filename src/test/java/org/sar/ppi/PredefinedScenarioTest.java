@@ -41,15 +41,15 @@ public class PredefinedScenarioTest extends NodeProcess{
 
 
     @Test
-    public void MpiScenario() {
-             Assume.assumeTrue(Environment.mpirunExist());
+    public void mpi() {
+             Assume.assumeTrue(EnvUtils.mpirunExist());
              Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3 , new File("src/test/resources/PredefinedScenarioTest.json"));
               assertTrue(true);
               System.out.println("Teste Sceneario from Json mpi ok");
     }
 
     @Test
-    public void PeersimScenario() {
+    public void peersim() {
           Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3 , new File("src/test/resources/PredefinedScenarioTest.json"));
           assertTrue(true);
           System.out.println("Teste Sceneario from Json Peersim ok");
