@@ -1,18 +1,25 @@
 # Poly-Process Interface
 
-[![build][buildbadge]][buildworkflow] [![javadoc][javadocbadge]][javadocurl] [![release][releasebadge]][releaseurl]
+[![build][buildbadge]][buildurl] [![javadoc][javadocbadge]][javadocurl] [![release][releasebadge]][releaseurl]
 
 A high level Java interface to develop distributed protocols.
 
 ## Usage
 
+### Download
+
+A bundled jar containing all Java dependencies can be downloaded in the [latest
+release assets][releaseurl]. There is also one in the artefacts of each [build
+on master][buildurl]. Then to use the runners that require shared libraries like
+the `MpiRunner` see the [_install dependencies_ section](#install-dependencies).
+
 ### Example
 
 Create a class that extends `NodeProcess` and at least one class that extends
-`Message`. The function `start` is the first one to be run by PPI. It must be
+`Message`. The function `init` is the first one to be run by PPI. It must be
 overriden with the initialisation of the process.
 
-Inside of `NodeProces` there is an instance on `Infrastructure` name `infra`.
+Inside `NodeProcess` there is an instance of `Infrastructure` named `infra`.
 This is the entry point of the [API](#api-reference).
 
 ```java
@@ -64,7 +71,8 @@ javac -cp ppi-0.2-dev-bundle.jar ExampleNodeProcess
 java -jar ppi-0.2-dev-bundle.jar ExampleNodeProcess org.sar.ppi.peersim.PeerSimRunner --np=4
 ```
 
-Alternatively you can call `Ppi.main()` yourself like this and the run your class:
+Alternatively you can call `Ppi.main()` yourself like this and then run your
+class:
 
 ```java
 public static void main(String[] args) {
@@ -148,7 +156,7 @@ If you installed the libraries in a different location you can use the options
     sudo apt install texlive latexmk texlive-lang-french cm-super
 
 [buildbadge]: https://github.com/PolyProcessInterface/ppi/workflows/build/badge.svg
-[buildworkflow]: https://github.com/PolyProcessInterface/ppi/actions?query=workflow%3Abuild+branch%3Amaster
+[buildurl]: https://github.com/PolyProcessInterface/ppi/actions?query=workflow%3Abuild+branch%3Amaster
 [javadocbadge]: https://img.shields.io/github/deployments/PolyProcessInterface/ppi/github-pages?label=javadoc
 [javadocurl]: https://polyprocessinterface.github.io/ppi
 [releasebadge]: https://img.shields.io/github/v/release/PolyProcessInterface/ppi
