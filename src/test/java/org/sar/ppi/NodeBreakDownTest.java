@@ -7,16 +7,18 @@ import org.sar.ppi.communication.Message;
 import org.sar.ppi.communication.MessageHandler;
 import org.sar.ppi.mpi.MpiRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.sar.ppi.peersim.PeerSimRunner;
 
+import java.io.EOFException;
 import java.io.File;
 
 /**
  * Example on off process
  */
-public class NodeBreakDownTest extends NodeProcess {
+public class NodeBreakDownTest extends RedirectedTest {
     static String fileName = System.getProperty("user.dir") + "/testeJson.json";
 
     public static class ExampleMessage extends Message {
@@ -48,7 +50,7 @@ public class NodeBreakDownTest extends NodeProcess {
         }
     }
 
-    public void End() {
+    public void end() {
         System.out.println("End of sequence");
         infra.exit();
     }
@@ -57,27 +59,33 @@ public class NodeBreakDownTest extends NodeProcess {
     public void init(String[] args) {
         if (infra.getId() == 0) {
             infra.send(new ExampleMessage(infra.getId(), 1, "Hello"));
-            infra.exit();
-        }else
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        }
     }
 
     @Test
-    public void MpitesteProtocolBreakDown() {
+	public void MpitesteProtocolBreakDown() throws EOFException {
         Assume.assumeTrue(Environment.mpirunExist());
         Ppi.main(this.getClass(), new MpiRunner(), new String[0], 3, new File("src/test/resources/NodeBreakDownTest.json"));
-        assertTrue(true);
+		String line;
+		line = nextNonEmpty();
+		assertEquals("1 Received 'Hello' from 0", line);
+		line = nextNonEmpty();
+		assertEquals("2 Received 'Hello' from 1", line);
+		assertTrue(!hasNextNonEmpty());
         System.out.println("Teste BreakDown for Mpi ok");
     }
 
     @Test
-    public void PeersimtesteProtocolBreakDown() {
+	public void PeersimtesteProtocolBreakDown() throws EOFException {
         Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 3, new File("src/test/resources/NodeBreakDownTest.json"));
-        assertTrue(true);
+		String line;
+		for (int i = 0; i < 2; i++) {
+			line = nextNonEmpty();
+			assertEquals("1 Received 'Hello' from 0", line);
+			line = nextNonEmpty();
+			assertEquals("2 Received 'Hello' from 1", line);
+		}
+		assertTrue(!hasNextNonEmpty());
         System.out.println("Teste BreakDown for Peersim ok");
     }
 }

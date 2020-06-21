@@ -121,10 +121,9 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol 
 	public void processEvent(Node host, int pid, Object event) {
 		if(pid!=my_pid) throw new IllegalArgumentException("Inconsistency on protocol id");
 
-		if (event instanceof Event && !process.getIs_down()){
+		if (event instanceof Event && isDeployed()){
 			processEvent((Event) event);
-			
-		} else if(!process.getIs_down()){
+		} else if (isDeployed()){
 			throw new IllegalArgumentException("Unknown event for this protocol");
 		}
 	}
