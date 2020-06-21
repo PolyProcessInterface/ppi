@@ -2,7 +2,6 @@ package org.sar.ppi.mpi;
 
 import java.io.Serializable;
 import java.util.TimerTask;
-
 import org.sar.ppi.events.ScheduledEvent;
 
 public class EventTimer extends TimerTask implements Serializable {

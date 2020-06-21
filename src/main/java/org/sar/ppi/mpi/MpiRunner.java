@@ -1,12 +1,10 @@
 package org.sar.ppi.mpi;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.sar.ppi.NodeProcess;
@@ -24,7 +22,13 @@ public class MpiRunner implements Runner {
 
 	/** {@inheritDoc} */
 	@Override
-	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Scenario scenario) throws PpiException {
+	public void run(
+		Class<? extends NodeProcess> pClass,
+		String[] args,
+		int nbProcs,
+		Scenario scenario
+	)
+		throws PpiException {
 		String scenarioJson;
 		String s = null;
 		boolean err = false;
@@ -51,12 +55,16 @@ public class MpiRunner implements Runner {
 		LOGGER.debug("mpi cmdline: {}", String.join(" ", cmdline));
 		try {
 			Process p = Runtime.getRuntime().exec(cmdline);
-			Thread killMpi = new Thread(() -> {
-				System.out.println("Interrupt received, killing MPI");
-				p.destroyForcibly();
-				try { p.waitFor(1, TimeUnit.SECONDS); } catch (InterruptedException e) {}
-				p.destroy();
-			});
+			Thread killMpi = new Thread(
+				() -> {
+					System.out.println("Interrupt received, killing MPI");
+					p.destroyForcibly();
+					try {
+						p.waitFor(1, TimeUnit.SECONDS);
+					} catch (InterruptedException e) {}
+					p.destroy();
+				}
+			);
 			Runtime.getRuntime().addShutdownHook(killMpi);
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));

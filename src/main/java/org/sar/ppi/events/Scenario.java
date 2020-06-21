@@ -1,12 +1,10 @@
 package org.sar.ppi.events;
 
-import java.util.Arrays;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSetter;
-
+import java.util.Arrays;
 import org.sar.ppi.tools.PpiUtils;
 
 public class Scenario {

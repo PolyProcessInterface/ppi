@@ -8,7 +8,6 @@ import org.sar.ppi.events.Event;
  * and then execute the NodeProcess handler for each message in a serialThread.
  */
 public class MpiProcess implements Runnable {
-
 	protected NodeProcess process;
 	protected MpiInfrastructure infra;
 	protected String[] args;
@@ -25,7 +24,6 @@ public class MpiProcess implements Runnable {
 		this.infra = infra;
 		this.args = args;
 	}
-
 
 	/** {@inheritDoc} */
 	@Override

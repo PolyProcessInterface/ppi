@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-
 import picocli.CommandLine;
 import picocli.CommandLine.IVersionProvider;
 
@@ -14,16 +13,21 @@ import picocli.CommandLine.IVersionProvider;
  * the picocli-x.x.jar file's {@code /META-INF/MANIFEST.MF} file.
  */
 class ManifestVersionProvider implements IVersionProvider {
+
 	public String[] getVersion() throws Exception {
-		Enumeration<URL> resources = CommandLine.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
+		Enumeration<URL> resources =
+			CommandLine.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
 		while (resources.hasMoreElements()) {
 			URL url = resources.nextElement();
 			try {
 				Manifest manifest = new Manifest(url.openStream());
 				if (isApplicableManifest(manifest)) {
 					Attributes attr = manifest.getMainAttributes();
-					return new String[] { get(attr, "Implementation-Title") + " version "
-						+ get(attr, "Implementation-Version") };
+					return new String[] {
+						get(attr, "Implementation-Title") +
+						" version " +
+						get(attr, "Implementation-Version")
+					};
 				}
 			} catch (IOException ex) {
 				return new String[] { "Unable to read from " + url + ": " + ex };

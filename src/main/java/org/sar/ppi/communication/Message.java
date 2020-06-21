@@ -6,11 +6,10 @@ import org.sar.ppi.events.Event;
  * Abstract Message class.
  */
 public abstract class Message implements Event {
-
 	private static final long serialVersionUID = 1L;
 	private final int idsrc;
 	private final int iddest;
-	
+
 	/**
 	 * Getter for the field <code>idsrc</code>.
 	 *
@@ -39,5 +38,4 @@ public abstract class Message implements Event {
 		this.idsrc = idsrc;
 		this.iddest = iddest;
 	}
-
 }

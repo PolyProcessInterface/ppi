@@ -13,13 +13,16 @@ import org.sar.ppi.peersim.PeerSimRunner;
  * ExampleNodeProces
  */
 public class WaitNotifyTest extends NodeProcess {
+
 	public static class StartMessage extends Message {
 		private static final long serialVersionUID = 1L;
-		public StartMessage(int src, int dest) { super(src, dest); }
+
+		public StartMessage(int src, int dest) {
+			super(src, dest);
+		}
 	}
 
 	public static class ExampleMessage extends Message {
-
 		private static final long serialVersionUID = 1L;
 		private String s;
 
@@ -31,10 +34,9 @@ public class WaitNotifyTest extends NodeProcess {
 		public String getS() {
 			return s;
 		}
-
 	}
-	private int msgReceived = 0;
 
+	private int msgReceived = 0;
 
 	public void affiche() {
 		System.out.println("## Thread " + Thread.currentThread().getId() + " : Going to wait ##");
@@ -44,7 +46,7 @@ public class WaitNotifyTest extends NodeProcess {
 			System.out.println("Interrupted while waiting");
 		}
 		//System.out.println("Bonjour !");
-		System.out.println("## Thread "+Thread.currentThread().getId()+" : No more waiting ##");
+		System.out.println("## Thread " + Thread.currentThread().getId() + " : No more waiting ##");
 	}
 
 	@MessageHandler
@@ -52,11 +54,15 @@ public class WaitNotifyTest extends NodeProcess {
 		affiche();
 	}
 
-
 	@MessageHandler
 	public void processExampleMessage(ExampleMessage message) {
 		int host = infra.getId();
-		System.out.printf("Thread" + Thread.currentThread().getId() +" : %d Received '%s' from %d.\n", host, message.getS(), message.getIdsrc());
+		System.out.printf(
+			"Thread" + Thread.currentThread().getId() + " : %d Received '%s' from %d.\n",
+			host,
+			message.getS(),
+			message.getIdsrc()
+		);
 		if (host != 0) {
 			int dest = (host + 1) % infra.size();
 			infra.send(new ExampleMessage(infra.getId(), dest, "bonjour"));

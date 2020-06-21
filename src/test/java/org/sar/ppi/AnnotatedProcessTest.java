@@ -15,9 +15,9 @@ import org.sar.ppi.peersim.PeerSimRunner;
 public class AnnotatedProcessTest extends NodeProcess {
 
 	public static class ExampleMessage extends Message {
-	
 		private static final long serialVersionUID = 1L;
 		private String s;
+
 		public ExampleMessage(int src, int dest, String s) {
 			super(src, dest);
 			this.s = s;
@@ -26,7 +26,6 @@ public class AnnotatedProcessTest extends NodeProcess {
 		public String getS() {
 			return s;
 		}
-
 	}
 
 	@MessageHandler

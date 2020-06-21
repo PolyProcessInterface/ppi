@@ -1,13 +1,18 @@
 package org.sar.ppi.mpi;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import java.io.*;
+import java.util.Queue;
+import java.util.Timer;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import mpi.Comm;
 import mpi.MPI;
 import mpi.MPIException;
 import mpi.Status;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.sar.ppi.Infrastructure;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.PpiException;
@@ -15,15 +20,6 @@ import org.sar.ppi.communication.Message;
 import org.sar.ppi.events.Event;
 import org.sar.ppi.events.Scenario;
 import org.sar.ppi.events.ScheduledEvent;
-
-import java.io.*;
-
-import java.util.Queue;
-import java.util.Timer;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * MpiInfrastructure class.
@@ -37,6 +33,7 @@ public class MpiInfrastructure extends Infrastructure {
 	protected Queue<Message> sendQueue = new ConcurrentLinkedQueue<>();
 	protected BlockingQueue<Event> recvQueue = new LinkedBlockingQueue<>();
 	protected Scenario scenario;
+
 	/**
 	 * Constructor for MpiInfrastructure.
 	 *
@@ -46,7 +43,6 @@ public class MpiInfrastructure extends Infrastructure {
 		super(process);
 		this.scenario = scenario;
 	}
-
 
 	/**
 	 * Run the infrastructure.
@@ -100,7 +96,7 @@ public class MpiInfrastructure extends Infrastructure {
 	 */
 	protected void recvMpi(int size, int source, int tag) throws PpiException {
 		try {
-			byte [] tab = new byte[size];
+			byte[] tab = new byte[size];
 			comm.recv(tab, size, MPI.BYTE, source, tag);
 			Message msg = deserializeMessage(tab);
 			if (isDeployed()) {
@@ -147,7 +143,6 @@ public class MpiInfrastructure extends Infrastructure {
 		recvQueue.add(event);
 	}
 
-
 	/** {@inheritDoc} */
 	@Override
 	public void send(Message message) {
@@ -167,7 +162,7 @@ public class MpiInfrastructure extends Infrastructure {
 		super.processEvent(e);
 	}
 
-	private void scheduleEvents(Scenario scenario){
+	private void scheduleEvents(Scenario scenario) {
 		for (ScheduledEvent e : scenario.getEvents()) {
 			if (e.getNode() != getId()) {
 				continue;
@@ -186,10 +181,11 @@ public class MpiInfrastructure extends Infrastructure {
 		}
 	}
 
-
 	private byte[] serializeMessage(Message message) {
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			 ObjectOutputStream out = new ObjectOutputStream(bos);) {
+		try (
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream out = new ObjectOutputStream(bos);
+		) {
 			out.writeObject(message);
 			return bos.toByteArray();
 		} catch (IOException e) {
@@ -199,8 +195,10 @@ public class MpiInfrastructure extends Infrastructure {
 	}
 
 	private Message deserializeMessage(byte[] message) {
-		try (ByteArrayInputStream bis = new ByteArrayInputStream(message);
-			 ObjectInput in = new ObjectInputStream(bis);) {
+		try (
+			ByteArrayInputStream bis = new ByteArrayInputStream(message);
+			ObjectInput in = new ObjectInputStream(bis);
+		) {
 			return (Message) in.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
@@ -208,17 +206,15 @@ public class MpiInfrastructure extends Infrastructure {
 		throw new PpiException("ERROR OF PARSING");
 	}
 
-
-
 	/**
 	 * Debug print an array of bytes.
 	 *
 	 * @param tab an array of {@link byte} objects.
 	 */
-	protected void printByteArray(byte[] tab){
+	protected void printByteArray(byte[] tab) {
 		System.out.print("[");
-		for (int i =0,len=tab.length;i<len;i++){
-			System.out.print(tab[i]+" ,");
+		for (int i = 0, len = tab.length; i < len; i++) {
+			System.out.print(tab[i] + " ,");
 		}
 		System.out.println("]");
 	}

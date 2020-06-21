@@ -14,8 +14,7 @@ import peersim.util.ExtendedRandom;
  * PeerSimInit class.
  */
 public class PeerSimInit implements Control {
-
-	private static final String PAR_PROTO="infrapid";
+	private static final String PAR_PROTO = "infrapid";
 	public static final String PAR_SEED = "random.seed";
 	private final int infraPid;
 
@@ -25,18 +24,17 @@ public class PeerSimInit implements Control {
 	 * @param prefix a {@link java.lang.String} object.
 	 */
 	public PeerSimInit(String prefix) {
-		infraPid=Configuration.getPid(prefix+"."+PAR_PROTO);
+		infraPid = Configuration.getPid(prefix + "." + PAR_PROTO);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean execute() {
-		
-		long seed =	Configuration.getLong(PAR_SEED,System.currentTimeMillis());
-		System.err.println("SETTING THE RANDOM.SEED TO "+seed);
-		CommonState.r=new ExtendedRandom(seed);
-		for(int i=0;i < Network.size();i++) {
-			Node node=Network.get(i);
+		long seed = Configuration.getLong(PAR_SEED, System.currentTimeMillis());
+		System.err.println("SETTING THE RANDOM.SEED TO " + seed);
+		CommonState.r = new ExtendedRandom(seed);
+		for (int i = 0; i < Network.size(); i++) {
+			Node node = Network.get(i);
 			PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infraPid);
 			pInfra.initialize(node);
 		}

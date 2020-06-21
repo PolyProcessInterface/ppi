@@ -1,13 +1,5 @@
 package org.sar.ppi;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.sar.ppi.communication.Message;
-import org.sar.ppi.events.Call;
-import org.sar.ppi.events.Deploy;
-import org.sar.ppi.events.Event;
-import org.sar.ppi.events.Undeploy;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -17,6 +9,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.events.Call;
+import org.sar.ppi.events.Deploy;
+import org.sar.ppi.events.Event;
+import org.sar.ppi.events.Undeploy;
 
 /**
  * Abstract Infrastructure class.
@@ -31,7 +30,6 @@ public abstract class Infrastructure {
 	protected Thread nextThread;
 	protected Map<BooleanSupplier, Thread> threads = new ConcurrentHashMap<>();
 	protected Set<Thread> runningThreads = new HashSet<>();
-
 
 	/**
 	 * Constructor for Infrastructure.
@@ -93,7 +91,9 @@ public abstract class Infrastructure {
 	 * @return
 	 * the current process linked to this infra
 	 */
-	public NodeProcess getProcess() { return process; }
+	public NodeProcess getProcess() {
+		return process;
+	}
 
 	/**
 	 * Process an event.
@@ -104,9 +104,11 @@ public abstract class Infrastructure {
 	 */
 	protected void processEvent(Event event) {
 		if (event instanceof Message) {
-			serialThreadRun(() -> {
-				this.process.processMessage((Message) event);
-			});
+			serialThreadRun(
+				() -> {
+					this.process.processMessage((Message) event);
+				}
+			);
 		} else if (event instanceof Deploy) {
 			deploy();
 		} else if (event instanceof Undeploy) {
@@ -116,14 +118,16 @@ public abstract class Infrastructure {
 			Method m;
 			try {
 				m = process.getClass().getMethod(call.getFunction(), call.argsClasses());
-				serialThreadRun(() -> {
-					try {
-						m.invoke(getProcess(), call.getArgs());
-					} catch (IllegalAccessException | InvocationTargetException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				serialThreadRun(
+					() -> {
+						try {
+							m.invoke(getProcess(), call.getArgs());
+						} catch (IllegalAccessException | InvocationTargetException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
-				});
+				);
 			} catch (NoSuchMethodException | SecurityException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -138,17 +142,23 @@ public abstract class Infrastructure {
 	 * @param method a {@link java.lang.Runnable} object.
 	 */
 	public void serialThreadRun(Runnable method) {
-		Thread t = new Thread(() -> {
-			synchronized (LOCK) {
-				LOGGER.debug("{} Start thread {}", getId(), Thread.currentThread().getId());
-				runningThreads.add(Thread.currentThread());
-				method.run();
-				nextThread = mainThread;
-				LOCK.notifyAll();
-				runningThreads.remove(Thread.currentThread());
-				LOGGER.debug("{} Terminated thread {}", getId(), Thread.currentThread().getId());
+		Thread t = new Thread(
+			() -> {
+				synchronized (LOCK) {
+					LOGGER.debug("{} Start thread {}", getId(), Thread.currentThread().getId());
+					runningThreads.add(Thread.currentThread());
+					method.run();
+					nextThread = mainThread;
+					LOCK.notifyAll();
+					runningThreads.remove(Thread.currentThread());
+					LOGGER.debug(
+						"{} Terminated thread {}",
+						getId(),
+						Thread.currentThread().getId()
+					);
+				}
 			}
-		});
+		);
 		synchronized (LOCK) {
 			mainThread = Thread.currentThread();
 			nextThread = t;
