@@ -43,7 +43,7 @@ public class PeerSimInit implements Control {
 	}
 
 	private void launchSimulation() {
-		for (ScheduledEvent e : Ppi.getScenario().getEvents()) {
+		for (ScheduledEvent e : Ppi.getConfig().getEvents()) {
 			EDSimulator.add(e.getDelay(), e, Network.get(e.getNode()), infraPid);
 		}
 	}

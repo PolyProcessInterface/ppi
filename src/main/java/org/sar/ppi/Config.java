@@ -1,13 +1,17 @@
-package org.sar.ppi.events;
+package org.sar.ppi;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.Arrays;
+import org.sar.ppi.events.Call;
+import org.sar.ppi.events.Deploy;
+import org.sar.ppi.events.ScheduledEvent;
+import org.sar.ppi.events.Undeploy;
 import org.sar.ppi.tools.PpiUtils;
 
-public class Scenario {
+public class Config {
 	@JsonProperty(value = "$schema", access = JsonProperty.Access.WRITE_ONLY)
 	@SuppressWarnings("PMD.UnusedPrivateField")
 	private String schema = "";
@@ -65,6 +69,6 @@ public class Scenario {
 		String d = Arrays.toString(deploys);
 		String u = Arrays.toString(undeploys);
 		String c = Arrays.toString(calls);
-		return "scenario(deploys:" + d + ", undeploys:" + u + ", calls:" + c + ")";
+		return "config(deploys:" + d + ", undeploys:" + u + ", calls:" + c + ")";
 	}
 }

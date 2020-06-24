@@ -9,7 +9,6 @@ import java.net.URLClassLoader;
 import java.util.concurrent.Callable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.sar.ppi.events.Scenario;
 import picocli.CommandLine;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
@@ -24,7 +23,7 @@ import picocli.CommandLine.Parameters;
 public class Ppi implements Callable<Integer> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	protected static ObjectMapper mapper = new ObjectMapper();
-	protected static Scenario scenario;
+	protected static Config config;
 
 	public static ClassLoader loader = ClassLoader.getSystemClassLoader();
 
@@ -37,33 +36,33 @@ public class Ppi implements Callable<Integer> {
 	static int nbProcs = 4;
 
 	@ArgGroup(exclusive = true, multiplicity = "0..1")
-	protected static ScenarioOption scenarioOption = new ScenarioOption();
+	protected static ConfigOption configOption = new ConfigOption();
 
-	static class ScenarioOption {
+	static class ConfigOption {
 		@Option(
-			names = { "-s", "--scenario" },
+			names = { "-c", "--config" },
 			paramLabel = "<path>",
-			description = "Path to the scenario file"
+			description = "Path to the config file"
 		)
-		protected File scenarioPath = null;
+		protected File configPath = null;
 
 		@Option(
-			names = { "-c", "--content" },
-			paramLabel = "<json>",
-			description = "Content of the scenario"
+			names = { "-j", "--json" },
+			paramLabel = "<content>",
+			description = "Content of the config"
 		)
-		protected String scenarioContent = null;
+		protected String configJson = null;
 
-		public Scenario get() {
-			Scenario scenario;
-			if (scenarioContent != null) {
-				scenario = parseScenario(scenarioContent);
-			} else if (scenarioPath != null) {
-				scenario = parseScenario(scenarioPath);
+		public Config get() {
+			Config config;
+			if (configJson != null) {
+				config = parseConfig(configJson);
+			} else if (configPath != null) {
+				config = parseConfig(configPath);
 			} else {
-				scenario = new Scenario();
+				config = new Config();
 			}
-			return scenario;
+			return config;
 		}
 	}
 
@@ -101,8 +100,7 @@ public class Ppi implements Callable<Integer> {
 	}
 
 	/**
-	 * The main to call to run the app. Usage:
-	 * {@code java org.sar.Ppi <process-class-name> <runner-class-name> [<nb-proc> [<scenario>]]}
+	 * The main to call to run the app.
 	 *
 	 * This function sets the defaults values, then call the Runner's init method
 	 * which should then call Ppi.main().
@@ -140,7 +138,7 @@ public class Ppi implements Callable<Integer> {
 			return exitWithError(3, "Failed to intanciate the Runner %s", rClassName);
 		}
 		try {
-			main(processClass, runner, args, nbProcs, scenarioOption.get());
+			main(processClass, runner, args, nbProcs, configOption.get());
 		} catch (PpiException e) {
 			return exitWithError(5, e.getMessage());
 		}
@@ -155,7 +153,7 @@ public class Ppi implements Callable<Integer> {
 	 */
 	public static void main(Class<? extends NodeProcess> pClass, Runner runner)
 		throws PpiException {
-		main(pClass, runner, new String[0], nbProcs, scenarioOption.get());
+		main(pClass, runner, new String[0], nbProcs, configOption.get());
 	}
 
 	/**
@@ -167,7 +165,7 @@ public class Ppi implements Callable<Integer> {
 	 */
 	public static void main(Class<? extends NodeProcess> pClass, Runner runner, String[] args)
 		throws PpiException {
-		main(pClass, runner, args, nbProcs, scenarioOption.get());
+		main(pClass, runner, args, nbProcs, configOption.get());
 	}
 
 	/**
@@ -185,7 +183,7 @@ public class Ppi implements Callable<Integer> {
 		int nbProcs
 	)
 		throws PpiException {
-		main(pClass, runner, args, nbProcs, scenarioOption.get());
+		main(pClass, runner, args, nbProcs, configOption.get());
 	}
 
 	/**
@@ -194,7 +192,7 @@ public class Ppi implements Callable<Integer> {
 	 * @param runner        the runner to use for this execution.
 	 * @param args          the args to pass to the processes.
 	 * @param nbProcs       the number of processes to run.
-	 * @param scenarioFile  the name of the scenario file.
+	 * @param configFile    the name of the config file.
 	 * @throws PpiException if pClass instanciation fails.
 	 */
 	public static void main(
@@ -202,10 +200,10 @@ public class Ppi implements Callable<Integer> {
 		Runner runner,
 		String[] args,
 		int nbProcs,
-		File scenarioFile
+		File configFile
 	)
 		throws PpiException {
-		main(pClass, runner, args, nbProcs, parseScenario(scenarioFile));
+		main(pClass, runner, args, nbProcs, parseConfig(configFile));
 	}
 
 	/**
@@ -214,7 +212,7 @@ public class Ppi implements Callable<Integer> {
 	 * @param runner        the runner to use for this execution.
 	 * @param args          the args to pass to the processes.
 	 * @param nbProcs       the number of processes to run.
-	 * @param scenario      the content of the scenario.
+	 * @param config        the content of the config.
 	 * @throws PpiException if pClass instanciation fails.
 	 */
 	public static void main(
@@ -222,12 +220,12 @@ public class Ppi implements Callable<Integer> {
 		Runner runner,
 		String[] args,
 		int nbProcs,
-		Scenario scenario
+		Config config
 	)
 		throws PpiException {
 		try {
-			Ppi.scenario = scenario;
-			runner.run(pClass, args, nbProcs, scenario);
+			Ppi.config = config;
+			runner.run(pClass, args, nbProcs, config);
 		} catch (ReflectiveOperationException e) {
 			throw new PpiException("Failed to intantiate the process class " + pClass.getName(), e);
 		}
@@ -237,35 +235,35 @@ public class Ppi implements Callable<Integer> {
 		return mapper;
 	}
 
-	public static Scenario getScenario() {
-		return scenario;
+	public static Config getConfig() {
+		return config;
 	}
 
-	private static Scenario parseScenario(String json) {
+	private static Config parseConfig(String json) {
 		if (json == null) {
-			return new Scenario();
+			return new Config();
 		}
 		// temporary fix while https://github.com/remkop/picocli/issues/1113 is open.
 		if (json.length() > 1 && json.startsWith("'") && json.endsWith("'")) {
 			json = json.substring(1, json.length() - 1);
 		}
 		try {
-			return mapper.readValue(json, Scenario.class);
+			return mapper.readValue(json, Config.class);
 		} catch (IOException e) {
 			LOGGER.debug("escaped json: {}", json);
 			LOGGER.error(e.getMessage());
-			throw new PpiException("Invalid scenario json", e);
+			throw new PpiException("Invalid config json", e);
 		}
 	}
 
-	private static Scenario parseScenario(File file) {
+	private static Config parseConfig(File file) {
 		if (file == null) {
-			return new Scenario();
+			return new Config();
 		}
 		try {
-			return mapper.readValue(file, Scenario.class);
+			return mapper.readValue(file, Config.class);
 		} catch (IOException e) {
-			throw new PpiException("Invalid scenario file", e);
+			throw new PpiException("Invalid config file", e);
 		}
 	}
 

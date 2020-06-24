@@ -170,7 +170,7 @@
           </execution>
         </executions>
         <configuration>
-          <classNames>${project.groupId}.events.Scenario</classNames>
+          <classNames>${project.groupId}.Config</classNames>
           <modules>
             <module>
               <name>Jackson</name>

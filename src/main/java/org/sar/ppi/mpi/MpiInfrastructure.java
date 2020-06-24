@@ -13,12 +13,12 @@ import mpi.MPIException;
 import mpi.Status;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.sar.ppi.Config;
 import org.sar.ppi.Infrastructure;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.PpiException;
 import org.sar.ppi.communication.Message;
 import org.sar.ppi.events.Event;
-import org.sar.ppi.events.Scenario;
 import org.sar.ppi.events.ScheduledEvent;
 
 /**
@@ -32,16 +32,16 @@ public class MpiInfrastructure extends Infrastructure {
 	protected Comm comm;
 	protected Queue<Message> sendQueue = new ConcurrentLinkedQueue<>();
 	protected BlockingQueue<Event> recvQueue = new LinkedBlockingQueue<>();
-	protected Scenario scenario;
+	protected Config config;
 
 	/**
 	 * Constructor for MpiInfrastructure.
 	 *
 	 * @param process a {@link org.sar.ppi.NodeProcess} object.
 	 */
-	public MpiInfrastructure(NodeProcess process, Scenario scenario) {
+	public MpiInfrastructure(NodeProcess process, Config config) {
 		super(process);
-		this.scenario = scenario;
+		this.config = config;
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class MpiInfrastructure extends Infrastructure {
 			MPI.InitThread(args, MPI.THREAD_FUNNELED);
 			comm = MPI.COMM_WORLD;
 			currentNode = comm.getRank();
-			scheduleEvents(scenario);
+			scheduleEvents(config);
 			executor.start();
 			while (running.get() || !sendQueue.isEmpty()) {
 				Status s = comm.iProbe(MPI.ANY_SOURCE, MPI.ANY_TAG);
@@ -162,8 +162,8 @@ public class MpiInfrastructure extends Infrastructure {
 		super.processEvent(e);
 	}
 
-	private void scheduleEvents(Scenario scenario) {
-		for (ScheduledEvent e : scenario.getEvents()) {
+	private void scheduleEvents(Config config) {
+		for (ScheduledEvent e : config.getEvents()) {
 			if (e.getNode() != getId()) {
 				continue;
 			}
