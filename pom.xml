@@ -182,6 +182,7 @@
             <enabled>
               <option>DEFINITIONS_FOR_ALL_OBJECTS</option>
               <option>FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT</option>
+              <option>MAP_VALUES_AS_ADDITIONAL_PROPERTIES</option>
             </enabled>
           </options>
         </configuration>

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import org.sar.ppi.events.Call;
 import org.sar.ppi.events.Deploy;
 import org.sar.ppi.events.ScheduledEvent;
@@ -24,6 +26,9 @@ public class Config {
 
 	@JsonPropertyDescription("The list of Call events")
 	private Call[] calls = new Call[0];
+
+	@JsonPropertyDescription("Map of infrastructure specific configurations")
+	private Map<String, Map<String, Object>> infra = new HashMap<>();
 
 	@JsonSetter("$schema")
 	public void setSchema(String schema) {
@@ -52,6 +57,14 @@ public class Config {
 
 	public Call[] getCalls() {
 		return calls;
+	}
+
+	public void setInfra(Map<String, Map<String, Object>> infra) {
+		this.infra = infra;
+	}
+
+	public Map<String, Map<String, Object>> getInfra() {
+		return infra;
 	}
 
 	@JsonIgnore
