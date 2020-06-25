@@ -1,47 +1,57 @@
 package org.sar.ppi;
 
-import java.net.URL;
-import java.net.URLClassLoader;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.Callable;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.concurrent.Callable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.sar.ppi.events.Scenario;
-
 import picocli.CommandLine;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Help.Visibility;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import picocli.CommandLine.Help.Visibility;
 
 /**
  * Ppi Main class.
  */
 @Command(name = "ppi", versionProvider = ManifestVersionProvider.class)
 public class Ppi implements Callable<Integer> {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger();
 	protected static ObjectMapper mapper = new ObjectMapper();
 	protected static Scenario scenario;
 
 	public static ClassLoader loader = ClassLoader.getSystemClassLoader();
-	
-	@Option(names = { "--np" }, paramLabel = "<number>", description = "Number of processus in the network", showDefaultValue = Visibility.ALWAYS)
+
+	@Option(
+		names = { "--np" },
+		paramLabel = "<number>",
+		description = "Number of processus in the network",
+		showDefaultValue = Visibility.ALWAYS
+	)
 	static int nbProcs = 4;
-	
+
 	@ArgGroup(exclusive = true, multiplicity = "0..1")
 	protected static ScenarioOption scenarioOption = new ScenarioOption();
 
 	static class ScenarioOption {
-		@Option(names = { "-s", "--scenario" }, paramLabel = "<path>", description = "Path to the scenario file")
+		@Option(
+			names = { "-s", "--scenario" },
+			paramLabel = "<path>",
+			description = "Path to the scenario file"
+		)
 		protected File scenarioPath = null;
-		@Option(names = { "-c", "--content" }, paramLabel = "<json>", description = "Content of the scenario")
+
+		@Option(
+			names = { "-c", "--content" },
+			paramLabel = "<json>",
+			description = "Content of the scenario"
+		)
 		protected String scenarioContent = null;
 
 		public Scenario get() {
@@ -57,19 +67,32 @@ public class Ppi implements Callable<Integer> {
 		}
 	}
 
-	@Parameters(paramLabel = "<process-class>", description = "Fully qualified name of the class to use as process", index = "0")
+	@Parameters(
+		paramLabel = "<process-class>",
+		description = "Fully qualified name of the class to use as process",
+		index = "0"
+	)
 	static String pClassName;
 
-	@Parameters(paramLabel = "<runner-class>", description = "Fully qualified name of the class to use as runner", index = "1")
+	@Parameters(
+		paramLabel = "<runner-class>",
+		description = "Fully qualified name of the class to use as runner",
+		index = "1"
+	)
 	static String rClassName;
 
-	@Parameters(paramLabel = "<args>", arity = "0..*", description = "Args to pass to the processes", index = "2..*")
+	@Parameters(
+		paramLabel = "<args>",
+		arity = "0..*",
+		description = "Args to pass to the processes",
+		index = "2..*"
+	)
 	static String[] args = new String[0];
 
 	@Option(names = { "-h", "--help" }, usageHelp = true, description = "Display a help message")
 	protected boolean help = false;
 
-	@Option(names = {"-V", "--version"}, versionHelp = true, description = "Print version info")
+	@Option(names = { "-V", "--version" }, versionHelp = true, description = "Print version info")
 	protected boolean version = false;
 
 	// Configure the ObjectMapper once
@@ -101,7 +124,8 @@ public class Ppi implements Callable<Integer> {
 			processClass = Class.forName(pClassName).asSubclass(NodeProcess.class);
 		} catch (ClassNotFoundException e) {
 			try {
-				loader = new URLClassLoader(new URL[] { new File(System.getProperty("user.dir")).toURI().toURL() }, loader);
+				File pwd = new File(System.getProperty("user.dir"));
+				loader = new URLClassLoader(new URL[] { pwd.toURI().toURL() }, loader);
 				processClass = loader.loadClass(pClassName).asSubclass(NodeProcess.class);
 			} catch (ClassCastException | ClassNotFoundException | IOException t) {
 				return exitWithError(1, "Could not find the process class %s", pClassName);
@@ -129,7 +153,8 @@ public class Ppi implements Callable<Integer> {
 	 * @param runner        the runner to use for this execution.
 	 * @throws PpiException if pClass instanciation fails.
 	 */
-	public static void main(Class<? extends NodeProcess> pClass, Runner runner) throws PpiException {
+	public static void main(Class<? extends NodeProcess> pClass, Runner runner)
+		throws PpiException {
 		main(pClass, runner, new String[0], nbProcs, scenarioOption.get());
 	}
 
@@ -140,7 +165,8 @@ public class Ppi implements Callable<Integer> {
 	 * @param args          the args to pass to the processes.
 	 * @throws PpiException if pClass instanciation fails.
 	 */
-	public static void main(Class<? extends NodeProcess> pClass, Runner runner, String[] args) throws PpiException {
+	public static void main(Class<? extends NodeProcess> pClass, Runner runner, String[] args)
+		throws PpiException {
 		main(pClass, runner, args, nbProcs, scenarioOption.get());
 	}
 
@@ -152,7 +178,13 @@ public class Ppi implements Callable<Integer> {
 	 * @param nbProcs       the number of processes to run.
 	 * @throws PpiException if pClass instanciation fails.
 	 */
-	public static void main(Class<? extends NodeProcess> pClass, Runner runner, String[] args, int nbProcs) throws PpiException {
+	public static void main(
+		Class<? extends NodeProcess> pClass,
+		Runner runner,
+		String[] args,
+		int nbProcs
+	)
+		throws PpiException {
 		main(pClass, runner, args, nbProcs, scenarioOption.get());
 	}
 
@@ -165,8 +197,15 @@ public class Ppi implements Callable<Integer> {
 	 * @param scenarioFile  the name of the scenario file.
 	 * @throws PpiException if pClass instanciation fails.
 	 */
-	public static void main(Class<? extends NodeProcess> pClass, Runner runner, String[] args, int nbProcs, File scenarioFile) throws PpiException {
-			main(pClass, runner, args, nbProcs, parseScenario(scenarioFile));
+	public static void main(
+		Class<? extends NodeProcess> pClass,
+		Runner runner,
+		String[] args,
+		int nbProcs,
+		File scenarioFile
+	)
+		throws PpiException {
+		main(pClass, runner, args, nbProcs, parseScenario(scenarioFile));
 	}
 
 	/**
@@ -178,8 +217,14 @@ public class Ppi implements Callable<Integer> {
 	 * @param scenario      the content of the scenario.
 	 * @throws PpiException if pClass instanciation fails.
 	 */
-	public static void main(Class<? extends NodeProcess> pClass, Runner runner, String[] args, int nbProcs, Scenario scenario)
-			throws PpiException {
+	public static void main(
+		Class<? extends NodeProcess> pClass,
+		Runner runner,
+		String[] args,
+		int nbProcs,
+		Scenario scenario
+	)
+		throws PpiException {
 		try {
 			Ppi.scenario = scenario;
 			runner.run(pClass, args, nbProcs, scenario);
@@ -201,14 +246,14 @@ public class Ppi implements Callable<Integer> {
 			return new Scenario();
 		}
 		// temporary fix while https://github.com/remkop/picocli/issues/1113 is open.
-		if (json.length() > 1 && json.startsWith("'") && json.endsWith("'")){
+		if (json.length() > 1 && json.startsWith("'") && json.endsWith("'")) {
 			json = json.substring(1, json.length() - 1);
 		}
 		try {
 			return mapper.readValue(json, Scenario.class);
 		} catch (IOException e) {
-			logger.debug("escaped json: {}", json);
-			logger.error(e.getMessage());
+			LOGGER.debug("escaped json: {}", json);
+			LOGGER.error(e.getMessage());
 			throw new PpiException("Invalid scenario json", e);
 		}
 	}

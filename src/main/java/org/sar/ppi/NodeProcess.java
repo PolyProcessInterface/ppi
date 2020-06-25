@@ -1,18 +1,16 @@
 package org.sar.ppi;
 
-import org.sar.ppi.communication.Message;
-import org.sar.ppi.communication.MessageHandler;
-import org.sar.ppi.communication.MessageHandlerException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.communication.MessageHandler;
+import org.sar.ppi.communication.MessageHandlerException;
 
 /**
  * Node Process Abstract class.
  */
 public abstract class NodeProcess {
-
 	protected Infrastructure infra;
 	private AtomicBoolean deployed = new AtomicBoolean(true);
 
@@ -36,18 +34,28 @@ public abstract class NodeProcess {
 		Method[] methods = this.getClass().getMethods();
 		for (Method method : methods) {
 			Class<?>[] params = method.getParameterTypes();
-			if (!method.isAnnotationPresent(MessageHandler.class))
+			if (!method.isAnnotationPresent(MessageHandler.class)) {
 				continue;
-			if (params.length != 1)
-				throw new MessageHandlerException(method.getName() + ": should only have one parameter");
-			if (!Message.class.isAssignableFrom(params[0]))
-				throw new MessageHandlerException(method.getName() + ": first param must extend Message");
-			if (!params[0].equals(message.getClass()))
+			}
+			if (params.length != 1) {
+				throw new MessageHandlerException(
+					method.getName() + ": should only have one parameter"
+				);
+			}
+			if (!Message.class.isAssignableFrom(params[0])) {
+				throw new MessageHandlerException(
+					method.getName() + ": first param must extend Message"
+				);
+			}
+			if (!params[0].equals(message.getClass())) {
 				continue;
+			}
 			try {
 				method.invoke(this, message);
 				return;
-			} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
+			} catch (
+				InvocationTargetException | IllegalAccessException | IllegalArgumentException e
+			) {
 				e.printStackTrace();
 			}
 		}
@@ -57,7 +65,7 @@ public abstract class NodeProcess {
 	 * Start init sequence for the current node.
 	 */
 	public abstract void init(String[] args);
-	
+
 	/**
 	 * Needed for peersim. Return a new intance of the current class by default.
 	 *

@@ -5,7 +5,7 @@
 			"args": [],
 			"node": 0,
 			"delay": 1000,
-			"function": "FirstToSend"
+			"function": "firstToSend"
 		},
 		{
 			"args": [],

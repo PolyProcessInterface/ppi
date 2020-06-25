@@ -1,16 +1,15 @@
 package org.sar.ppi.events;
 
-import java.util.Arrays;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSetter;
-
-import org.sar.ppi.tools.Utils;
+import java.util.Arrays;
+import org.sar.ppi.tools.PpiUtils;
 
 public class Scenario {
 	@JsonProperty(value = "$schema", access = JsonProperty.Access.WRITE_ONLY)
+	@SuppressWarnings("PMD.UnusedPrivateField")
 	private String schema = "";
 
 	@JsonPropertyDescription("The list of Deploy events")
@@ -53,7 +52,7 @@ public class Scenario {
 
 	@JsonIgnore
 	public ScheduledEvent[] getEvents() {
-		return Utils.concatAll(ScheduledEvent.class, deploys, undeploys, calls);
+		return PpiUtils.concatAll(ScheduledEvent.class, deploys, undeploys, calls);
 	}
 
 	@JsonIgnore

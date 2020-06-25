@@ -11,8 +11,13 @@ public class MpiSubRunner implements Runner {
 
 	/** {@inheritDoc} */
 	@Override
-	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Scenario scenario)
-			throws ReflectiveOperationException {
+	public void run(
+		Class<? extends NodeProcess> pClass,
+		String[] args,
+		int nbProcs,
+		Scenario scenario
+	)
+		throws ReflectiveOperationException {
 		NodeProcess process = pClass.newInstance();
 		MpiInfrastructure infra;
 		infra = new MpiInfrastructure(process, scenario);

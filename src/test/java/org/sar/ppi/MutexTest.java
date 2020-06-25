@@ -2,9 +2,8 @@ package org.sar.ppi;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assume;
 import java.io.File;
-
+import org.junit.Assume;
 import org.junit.Test;
 import org.sar.ppi.communication.Message;
 import org.sar.ppi.communication.MessageHandler;
@@ -12,7 +11,6 @@ import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 
 public class MutexTest extends NodeProcess {
-
 	Integer father = 0;
 	Integer next = null;
 	boolean token = false;
@@ -100,15 +98,20 @@ public class MutexTest extends NodeProcess {
 		token = true;
 	}
 
-
 	public static class Request extends Message {
 		private static final long serialVersionUID = 1L;
-		public Request(int idsrc, int iddest) { super(idsrc, iddest); }
+
+		public Request(int idsrc, int iddest) {
+			super(idsrc, iddest);
+		}
 	}
 
 	public static class Token extends Message {
 		private static final long serialVersionUID = 1L;
-		public Token(int idsrc, int iddest) { super(idsrc, iddest); }
+
+		public Token(int idsrc, int iddest) {
+			super(idsrc, iddest);
+		}
 	}
 
 	// terminaison
@@ -128,21 +131,37 @@ public class MutexTest extends NodeProcess {
 			infra.exit();
 		}
 	}
+
 	public static class End extends Message {
 		private static final long serialVersionUID = 1L;
-		public End(int idsrc, int iddest) { super(idsrc, iddest); }
+
+		public End(int idsrc, int iddest) {
+			super(idsrc, iddest);
+		}
 	}
 
 	@Test
-	public void MpiMutexTest() {
-		Assume.assumeTrue(Environment.mpirunExist());
-		Ppi.main(this.getClass(), new MpiRunner(), new String[0], 6, new File("src/test/resources/MutexTest.json"));
+	public void mpi() {
+		Assume.assumeTrue(EnvUtils.mpirunExist());
+		Ppi.main(
+			this.getClass(),
+			new MpiRunner(),
+			new String[0],
+			6,
+			new File("src/test/resources/MutexTest.json")
+		);
 		assertTrue(true);
 	}
 
 	@Test
-	public void PeersimMutexTest() {
-		Ppi.main(this.getClass(), new PeerSimRunner(), new String[0], 6, new File("src/test/resources/MutexTest.json"));
+	public void peersim() {
+		Ppi.main(
+			this.getClass(),
+			new PeerSimRunner(),
+			new String[0],
+			6,
+			new File("src/test/resources/MutexTest.json")
+		);
 		assertTrue(true);
 	}
 }

@@ -6,7 +6,6 @@ import org.sar.ppi.PpiException;
  * MessageHandlerException.
  */
 public class MessageHandlerException extends PpiException {
-
 	/**
 	 * Version
 	 */

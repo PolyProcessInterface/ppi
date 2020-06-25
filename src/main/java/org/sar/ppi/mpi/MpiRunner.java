@@ -1,12 +1,10 @@
 package org.sar.ppi.mpi;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.sar.ppi.NodeProcess;
@@ -14,17 +12,23 @@ import org.sar.ppi.Ppi;
 import org.sar.ppi.PpiException;
 import org.sar.ppi.Runner;
 import org.sar.ppi.events.Scenario;
-import org.sar.ppi.tools.Utils;
+import org.sar.ppi.tools.PpiUtils;
 
 /**
  * MpiRunner class.
  */
 public class MpiRunner implements Runner {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	/** {@inheritDoc} */
 	@Override
-	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Scenario scenario) throws PpiException {
+	public void run(
+		Class<? extends NodeProcess> pClass,
+		String[] args,
+		int nbProcs,
+		Scenario scenario
+	)
+		throws PpiException {
 		String scenarioJson;
 		String s = null;
 		boolean err = false;
@@ -47,16 +51,20 @@ public class MpiRunner implements Runner {
 			"--np=" + nbProcs,
 			"-c=" + scenarioJson
 		};
-		cmdline = Utils.concatAll(String.class, cmdline, args);
-		logger.debug("mpi cmdline: {}", String.join(" ", cmdline));
+		cmdline = PpiUtils.concatAll(String.class, cmdline, args);
+		LOGGER.debug("mpi cmdline: {}", String.join(" ", cmdline));
 		try {
 			Process p = Runtime.getRuntime().exec(cmdline);
-			Thread killMpi = new Thread(() -> {
-				System.out.println("Interrupt received, killing MPI");
-				p.destroyForcibly();
-				try { p.waitFor(1, TimeUnit.SECONDS); } catch (InterruptedException e) {}
-				p.destroy();
-			});
+			Thread killMpi = new Thread(
+				() -> {
+					System.out.println("Interrupt received, killing MPI");
+					p.destroyForcibly();
+					try {
+						p.waitFor(1, TimeUnit.SECONDS);
+					} catch (InterruptedException e) {}
+					p.destroy();
+				}
+			);
 			Runtime.getRuntime().addShutdownHook(killMpi);
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));

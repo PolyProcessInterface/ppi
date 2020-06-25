@@ -51,16 +51,42 @@ jobs:
         name: ppi-master-bundle.jar
         path: target/ppi-*-bundle.jar
 
-    - name: Build Javadoc
-      run: mvn javadoc:javadoc -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib --no-transfer-progress
-
-    - name: Remove Maven problem matcher
-      run: echo "::remove-matcher owner=maven::"
-
-    - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@releases/v3
-      if: ${{ github.event_name == 'push' }}
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout branch
+      uses: actions/checkout@v2
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: gh-pages # The branch the action should deploy to.
-        FOLDER: target/site/apidocs # The folder the action should deploy.
+        ref: ${{ github.event.pull_request.head.sha }} # Do not create a merge commit
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Download Peersim
+      run: |
+        wget http://downloads.sourceforge.net/project/peersim/peersim-1.0.5.zip
+        unzip peersim-1.0.5.zip
+        cp peersim-1.0.5/*.jar lib
+    - name: Restore Maven cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Add Prettier problem matcher
+      run: echo "::add-matcher::.github/matchers/prettier.json"
+
+    - name: PMD check
+      run: mvn -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib pmd:check --no-transfer-progress
+
+    - name: Add PMD annotations
+      if: ${{ failure() }}
+      uses: jwgmeligmeyling/pmd-github-action@master
+      with:
+        path: 'target/pmd.xml'
+
+    - name: Check prettier
+      if: ${{ always() }}
+      run: mvn -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib prettier:check --no-transfer-progress

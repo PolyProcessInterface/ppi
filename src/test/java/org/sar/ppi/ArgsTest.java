@@ -3,7 +3,6 @@ package org.sar.ppi;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Scanner;
-
 import org.junit.Assume;
 import org.junit.Test;
 import org.sar.ppi.mpi.MpiRunner;
@@ -24,9 +23,9 @@ public class ArgsTest extends RedirectedTest {
 	}
 
 	@Test
-	public void MpiTest() {
-		Assume.assumeTrue(Environment.mpirunExist());
-		String[] args = {"test", "test"};
+	public void mpi() {
+		Assume.assumeTrue(EnvUtils.mpirunExist());
+		String[] args = { "test", "test" };
 		Ppi.main(this.getClass(), new MpiRunner(), args, 2);
 		int i = 0;
 		Scanner scanner = new Scanner(outContent.toString());
@@ -43,8 +42,8 @@ public class ArgsTest extends RedirectedTest {
 	}
 
 	@Test
-	public void PeersimTest() {
-		String[] args = {"test", "test"};
+	public void peersim() {
+		String[] args = { "test", "test" };
 		Ppi.main(this.getClass(), new PeerSimRunner(), args, 2);
 		int i = 0;
 		Scanner scanner = new Scanner(outContent.toString());

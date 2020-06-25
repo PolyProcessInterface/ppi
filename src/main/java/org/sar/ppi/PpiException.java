@@ -4,7 +4,6 @@ package org.sar.ppi;
  * PpiException class.
  */
 public class PpiException extends RuntimeException {
-
 	/**
 	 * Version
 	 */
@@ -29,10 +28,12 @@ public class PpiException extends RuntimeException {
 		super(msg, e);
 	}
 
-    /**
-     * Constructor for PpiException.
-     *
-     * @param error error message.
-     */
-    public PpiException(String error) { super(error);}
+	/**
+	 * Constructor for PpiException.
+	 *
+	 * @param error error message.
+	 */
+	public PpiException(String error) {
+		super(error);
+	}
 }

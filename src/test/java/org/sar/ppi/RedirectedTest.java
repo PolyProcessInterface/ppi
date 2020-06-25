@@ -4,12 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.PrintStream;
 import java.util.Scanner;
-
 import org.junit.After;
 import org.junit.Before;
 
 public abstract class RedirectedTest extends NodeProcess {
-	
 	protected final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 	protected final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 	protected final PrintStream originalOut = System.out;
@@ -32,7 +30,7 @@ public abstract class RedirectedTest extends NodeProcess {
 	public boolean hasNextNonEmpty() {
 		return scanner.hasNext("[^\\s]");
 	}
-	
+
 	@Before
 	public void setUpStreams() {
 		System.setOut(new PrintStream(outContent));

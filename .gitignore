@@ -14,6 +14,7 @@
 /.settings
 /.vscode
 /.idea
+/.pmdCache
 ppi.iml
 
 # Latex files

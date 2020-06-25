@@ -15,10 +15,9 @@ import org.sar.ppi.peersim.PeerSimRunner;
 public class WaitTest extends NodeProcess {
 
 	public static class ExampleMessage extends Message {
-	
 		private static final long serialVersionUID = 1L;
 		private String s;
-		
+
 		public ExampleMessage(int src, int dest, String s) {
 			super(src, dest);
 			this.s = s;
@@ -28,32 +27,34 @@ public class WaitTest extends NodeProcess {
 			return s;
 		}
 	}
-	
-	private final int N = 2;
+
+	private final int n = 2;
 	private int msgReceived = 0;
-			
-	public void helloN(){
+
+	public void helloN() {
 		try {
-			infra.wait( () -> msgReceived >= N );
-			System.out.println(infra.getId()+" Hello !");
+			infra.wait(() -> msgReceived >= n);
+			System.out.println(infra.getId() + " Hello !");
 		} catch (InterruptedException e) {
-			System.out.println(infra.getId()+" Interrupted while waiting !");
+			System.out.println(infra.getId() + " Interrupted while waiting !");
 		}
 	}
-	
+
 	@MessageHandler
 	public void processExampleMessage(ExampleMessage message) {
 		int host = infra.getId();
 		System.out.printf("%d Received '%s' from %d.\n", host, message.getS(), message.getIdsrc());
 		msgReceived++;
 		int dest = (host + 1) % infra.size();
-		
+
 		if (host != 0 && msgReceived == 1) {
-		    infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
-		    if(host==2) helloN();
+			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
+			if (host == 2) {
+				helloN();
+			}
 		} else {
 			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
-		    infra.exit();
+			infra.exit();
 		}
 	}
 
@@ -65,14 +66,14 @@ public class WaitTest extends NodeProcess {
 	}
 
 	@Test
-	public void MpiAnnotatedProcessTest() {
-		Assume.assumeTrue(Environment.mpirunExist());
+	public void mpi() {
+		Assume.assumeTrue(EnvUtils.mpirunExist());
 		Ppi.main(this.getClass(), new MpiRunner());
 		assertTrue(true);
 	}
 
 	@Test
-	public void PeersimWaitNotifyTest() {
+	public void peersim() {
 		Ppi.main(this.getClass(), new PeerSimRunner());
 		assertTrue(true);
 	}

@@ -1,13 +1,5 @@
 package org.sar.ppi;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.sar.ppi.communication.Message;
-import org.sar.ppi.events.Call;
-import org.sar.ppi.events.Deploy;
-import org.sar.ppi.events.Event;
-import org.sar.ppi.events.Undeploy;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -17,21 +9,27 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.sar.ppi.communication.Message;
+import org.sar.ppi.events.Call;
+import org.sar.ppi.events.Deploy;
+import org.sar.ppi.events.Event;
+import org.sar.ppi.events.Undeploy;
 
 /**
  * Abstract Infrastructure class.
  */
 public abstract class Infrastructure {
-	private static Logger logger = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	protected NodeProcess process;
 	protected int currentNode;
-	protected static final Lock lock = new ReentrantLock();
+	protected static final Lock LOCK = new ReentrantLock();
 	protected Thread mainThread;
 	protected Thread nextThread;
 	protected Map<BooleanSupplier, Thread> threads = new ConcurrentHashMap<>();
 	protected Set<Thread> runningThreads = new HashSet<>();
-
 
 	/**
 	 * Constructor for Infrastructure.
@@ -93,7 +91,9 @@ public abstract class Infrastructure {
 	 * @return
 	 * the current process linked to this infra
 	 */
-	public NodeProcess getProcess() { return process; }
+	public NodeProcess getProcess() {
+		return process;
+	}
 
 	/**
 	 * Process an event.
@@ -104,9 +104,11 @@ public abstract class Infrastructure {
 	 */
 	protected void processEvent(Event event) {
 		if (event instanceof Message) {
-			serialThreadRun(() -> {
-				this.process.processMessage((Message) event);
-			});
+			serialThreadRun(
+				() -> {
+					this.process.processMessage((Message) event);
+				}
+			);
 		} else if (event instanceof Deploy) {
 			deploy();
 		} else if (event instanceof Undeploy) {
@@ -116,14 +118,16 @@ public abstract class Infrastructure {
 			Method m;
 			try {
 				m = process.getClass().getMethod(call.getFunction(), call.argsClasses());
-				serialThreadRun(() -> {
-					try {
-						m.invoke(getProcess(), call.getArgs());
-					} catch (IllegalAccessException | InvocationTargetException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				serialThreadRun(
+					() -> {
+						try {
+							m.invoke(getProcess(), call.getArgs());
+						} catch (IllegalAccessException | InvocationTargetException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
-				});
+				);
 			} catch (NoSuchMethodException | SecurityException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -138,24 +142,30 @@ public abstract class Infrastructure {
 	 * @param method a {@link java.lang.Runnable} object.
 	 */
 	public void serialThreadRun(Runnable method) {
-		Thread t = new Thread(() -> {
-			synchronized (lock) {
-				logger.debug("{} Start thread {}", getId(), Thread.currentThread().getId());
-				runningThreads.add(Thread.currentThread());
-				method.run();
-				nextThread = mainThread;
-				lock.notifyAll();
-				runningThreads.remove(Thread.currentThread());
-				logger.debug("{} Terminated thread {}", getId(), Thread.currentThread().getId());
+		Thread t = new Thread(
+			() -> {
+				synchronized (LOCK) {
+					LOGGER.debug("{} Start thread {}", getId(), Thread.currentThread().getId());
+					runningThreads.add(Thread.currentThread());
+					method.run();
+					nextThread = mainThread;
+					LOCK.notifyAll();
+					runningThreads.remove(Thread.currentThread());
+					LOGGER.debug(
+						"{} Terminated thread {}",
+						getId(),
+						Thread.currentThread().getId()
+					);
+				}
 			}
-		});
-		synchronized (lock) {
+		);
+		synchronized (LOCK) {
 			mainThread = Thread.currentThread();
 			nextThread = t;
 			t.start();
 			while (Thread.currentThread() != nextThread) {
 				try {
-					lock.wait();
+					LOCK.wait();
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt(); // preserve interruption status
 					t.interrupt();
@@ -172,15 +182,15 @@ public abstract class Infrastructure {
 	 * they can continue.
 	 */
 	protected void serialThreadScheduler() {
-		synchronized (lock) {
+		synchronized (LOCK) {
 			for (BooleanSupplier condition : threads.keySet()) {
 				if (condition.getAsBoolean()) {
 					Thread thread = threads.get(condition);
 					nextThread = thread;
-					lock.notifyAll();
+					LOCK.notifyAll();
 					while (Thread.currentThread() != nextThread) {
 						try {
-							lock.wait();
+							LOCK.wait();
 						} catch (InterruptedException e) {
 							Thread.currentThread().interrupt(); // preserve interruption status
 							return;
@@ -195,14 +205,14 @@ public abstract class Infrastructure {
 	protected boolean tryJoinThread(Thread thread) {
 		if (!runningThreads.contains(thread)) {
 			try {
-				logger.debug("{} Try joining terminated thread {}", getId(), thread.getId());
+				LOGGER.debug("{} Try joining terminated thread {}", getId(), thread.getId());
 				thread.join();
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt(); // preserve interruption status
-				logger.debug("{} Could not join terminated thread {}", getId(), thread.getId());
+				LOGGER.debug("{} Could not join terminated thread {}", getId(), thread.getId());
 				return false;
 			}
-			logger.debug("{} Succedded joining terminated thread {}", getId(), thread.getId());
+			LOGGER.debug("{} Succedded joining terminated thread {}", getId(), thread.getId());
 			return true;
 		}
 		return false;
@@ -216,21 +226,21 @@ public abstract class Infrastructure {
 	 * @throws java.lang.InterruptedException if the process has been interrupted while waiting.
 	 */
 	public void wait(BooleanSupplier condition) throws InterruptedException {
-		synchronized (lock) {
+		synchronized (LOCK) {
 			if (!condition.getAsBoolean()) {
 				threads.put(condition, Thread.currentThread());
-				logger.info("{} Start waiting on {}", this.getId(), condition);
+				LOGGER.info("{} Start waiting on {}", this.getId(), condition);
 				nextThread = mainThread;
 				while (Thread.currentThread() != nextThread) {
-					lock.notifyAll();
+					LOCK.notifyAll();
 					try {
-						lock.wait();
+						LOCK.wait();
 					} catch (InterruptedException e) {
 						threads.remove(condition);
 						throw new InterruptedException();
 					}
 				}
-				logger.info("{} Stopped waiting", this.getId());
+				LOGGER.info("{} Stopped waiting", this.getId());
 				threads.remove(condition);
 			}
 		}

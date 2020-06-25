@@ -61,3 +61,14 @@ jobs:
           asset_path: ./target/ppi-${{ steps.tag.outputs.new_version}}-bundle.jar
           asset_name: ppi.jar
           asset_content_type: application/java-archive
+
+      - name: Build Javadoc
+        run: mvn javadoc:javadoc -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib --no-transfer-progress
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        if: ${{ github.event_name == 'push' }}
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: target/site/apidocs # The folder the action should deploy.

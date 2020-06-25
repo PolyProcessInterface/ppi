@@ -6,7 +6,6 @@ import org.sar.ppi.events.Scenario;
  * Runner Interface. It is run by Ppi to start the Infractructure.
  */
 public interface Runner {
-
 	/**
 	 * Run the runner.
 	 * @param pClass   the class to execute by Ppi.
@@ -15,5 +14,6 @@ public interface Runner {
 	 * @param scenario the scenario to execute.
 	 * @throws java.lang.ReflectiveOperationException if pClass instanciation fails.
 	 */
-	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Scenario scenario) throws ReflectiveOperationException;
+	void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Scenario scenario)
+		throws ReflectiveOperationException;
 }

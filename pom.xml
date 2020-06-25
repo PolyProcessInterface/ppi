@@ -101,6 +101,20 @@
       </resource>
     </resources>
     <plugins>
+      <!-- Prettify code -->
+      <plugin>
+        <groupId>com.hubspot.maven.plugins</groupId>
+        <artifactId>prettier-maven-plugin</artifactId>
+        <version>0.8</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>write</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Compiler plugin options -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -193,6 +207,21 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <!--  Detect mess -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <rulesets>
+            <ruleset>file:${basedir}/pmd.xml</ruleset>
+          </rulesets>
+          <includeTests>true</includeTests>
+          <targetJdk>${maven.compiler.target}</targetJdk>
+          <skipEmptyReport>false</skipEmptyReport>
+          <linkXRef>false</linkXRef>
+        </configuration>
       </plugin>
     </plugins>
   </build>
