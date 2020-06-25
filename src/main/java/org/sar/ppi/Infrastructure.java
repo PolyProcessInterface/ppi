@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -26,7 +27,7 @@ public abstract class Infrastructure {
 	protected NodeProcess process;
 	protected int currentNode;
 	protected static final Lock LOCK = new ReentrantLock();
-	protected Thread mainThread;
+	protected Stack<Thread> prevThreads = new Stack<>();
 	protected Thread nextThread;
 	protected Map<BooleanSupplier, Thread> threads = new ConcurrentHashMap<>();
 	protected Set<Thread> runningThreads = new HashSet<>();
@@ -136,8 +137,8 @@ public abstract class Infrastructure {
 	}
 
 	/**
-	 * Run a new thread that will start immediately. The current thread
-	 * will wait for it to end or to wait before continuing its process.
+	 * Run a new thread that will start immediately. The current thread will wait
+	 * for it to end or to wait before continuing its process.
 	 *
 	 * @param method a {@link java.lang.Runnable} object.
 	 */
@@ -148,7 +149,7 @@ public abstract class Infrastructure {
 					LOGGER.debug("{} Start thread {}", getId(), Thread.currentThread().getId());
 					runningThreads.add(Thread.currentThread());
 					method.run();
-					nextThread = mainThread;
+					nextThread = prevThreads.pop();
 					LOCK.notifyAll();
 					runningThreads.remove(Thread.currentThread());
 					LOGGER.debug(
@@ -160,7 +161,7 @@ public abstract class Infrastructure {
 			}
 		);
 		synchronized (LOCK) {
-			mainThread = Thread.currentThread();
+			prevThreads.push(Thread.currentThread());
 			nextThread = t;
 			t.start();
 			while (Thread.currentThread() != nextThread) {
@@ -187,6 +188,7 @@ public abstract class Infrastructure {
 				if (condition.getAsBoolean()) {
 					Thread thread = threads.get(condition);
 					nextThread = thread;
+					prevThreads.push(Thread.currentThread());
 					LOCK.notifyAll();
 					while (Thread.currentThread() != nextThread) {
 						try {
@@ -230,7 +232,7 @@ public abstract class Infrastructure {
 			if (!condition.getAsBoolean()) {
 				threads.put(condition, Thread.currentThread());
 				LOGGER.info("{} Start waiting on {}", this.getId(), condition);
-				nextThread = mainThread;
+				nextThread = prevThreads.pop();
 				while (Thread.currentThread() != nextThread) {
 					LOCK.notifyAll();
 					try {
