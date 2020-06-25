@@ -3,16 +3,23 @@ package org.sar.ppi;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.sar.ppi.communication.Message;
-import org.sar.ppi.communication.MessageHandler;
-import org.sar.ppi.communication.MessageHandlerException;
 
 /**
  * Node Process Abstract class.
  */
 public abstract class NodeProcess {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	protected Infrastructure infra;
+	private MessageDispatcher dispatcher;
 	private AtomicBoolean deployed = new AtomicBoolean(true);
+
+	public NodeProcess() {
+		this.dispatcher = new MessageDispatcher(this);
+	}
 
 	/**
 	 * Setter for the field <code>infra</code>.
@@ -29,35 +36,16 @@ public abstract class NodeProcess {
 	 * @param message the message received.
 	 */
 	public void processMessage(Message message) {
-		//System.err.println("Starting to process a message from " + message.getIdsrc() + " to " + message.getIddest());
-
-		Method[] methods = this.getClass().getMethods();
-		for (Method method : methods) {
-			Class<?>[] params = method.getParameterTypes();
-			if (!method.isAnnotationPresent(MessageHandler.class)) {
-				continue;
-			}
-			if (params.length != 1) {
-				throw new MessageHandlerException(
-					method.getName() + ": should only have one parameter"
-				);
-			}
-			if (!Message.class.isAssignableFrom(params[0])) {
-				throw new MessageHandlerException(
-					method.getName() + ": first param must extend Message"
-				);
-			}
-			if (!params[0].equals(message.getClass())) {
-				continue;
-			}
-			try {
-				method.invoke(this, message);
-				return;
-			} catch (
-				InvocationTargetException | IllegalAccessException | IllegalArgumentException e
-			) {
-				e.printStackTrace();
-			}
+		try {
+			Method method = dispatcher.methodFor(message);
+			method.invoke(this, message);
+		} catch (
+			InvocationTargetException
+			| IllegalAccessException
+			| IllegalArgumentException
+			| NoSuchMethodException e
+		) {
+			LOGGER.error("Could not process a message", e);
 		}
 	}
 
