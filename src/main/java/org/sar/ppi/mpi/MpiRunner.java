@@ -19,6 +19,13 @@ import org.sar.ppi.tools.PpiUtils;
  */
 public class MpiRunner implements Runner {
 	private static final Logger LOGGER = LogManager.getLogger();
+	public static final String NAME = "mpi";
+
+	/** {@inheritDoc} */
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
 	/** {@inheritDoc} */
 	@Override

@@ -90,7 +90,6 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol,
 	/** {@inheritDoc} */
 	@Override
 	public int getId() {
-		// TODO Auto-generated method stub
 		return super.getId() % Network.size();
 	}
 

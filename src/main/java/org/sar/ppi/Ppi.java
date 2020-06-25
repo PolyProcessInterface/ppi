@@ -223,8 +223,9 @@ public class Ppi implements Callable<Integer> {
 		Config config
 	)
 		throws PpiException {
+		config.setCurrentInfra(runner.getName());
+		Ppi.config = config;
 		try {
-			Ppi.config = config;
 			runner.run(pClass, args, nbProcs, config);
 		} catch (ReflectiveOperationException e) {
 			throw new PpiException("Failed to intantiate the process class " + pClass.getName(), e);

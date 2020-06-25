@@ -30,6 +30,9 @@ public class Config {
 	@JsonPropertyDescription("Map of infrastructure specific configurations")
 	private Map<String, Map<String, Object>> infra = new HashMap<>();
 
+	@JsonIgnore
+	private String currentInfra = "";
+
 	@JsonSetter("$schema")
 	public void setSchema(String schema) {
 		this.schema = schema;
@@ -63,8 +66,32 @@ public class Config {
 		this.infra = infra;
 	}
 
-	public Map<String, Map<String, Object>> getInfra() {
-		return infra;
+	@JsonIgnore
+	@SuppressWarnings("unchecked")
+	<T> T getInfraProp(String name, String key, T defaultValue) throws ClassCastException {
+		if (infra.containsKey(name) && infra.get(name).containsKey(key)) {
+			return (T) infra.get(name).get(key);
+		}
+		return defaultValue;
+	}
+
+	/**
+	 * Get one of the config properties specific to the current Infrastructure.
+	 *
+	 * @param <T>          the return type of the property.
+	 * @param key          the key of the property.
+	 * @param defaultValue the default value for the property.
+	 * @return             the finale value of the property.
+	 * @throws ClassCastException if the type of the property is incorrect.
+	 */
+	@JsonIgnore
+	public <T> T getInfraProp(String key, T defaultValue) throws ClassCastException {
+		return getInfraProp(currentInfra, key, defaultValue);
+	}
+
+	@JsonIgnore
+	void setCurrentInfra(String currentInfra) {
+		this.currentInfra = currentInfra;
 	}
 
 	@JsonIgnore
@@ -73,8 +100,8 @@ public class Config {
 	}
 
 	@JsonIgnore
-	public boolean isEmpty() {
-		return deploys.length == 0 && undeploys.length == 0 && calls.length == 0;
+	public boolean hasEvents() {
+		return deploys.length > 0 || undeploys.length > 0 || calls.length > 0;
 	}
 
 	@Override

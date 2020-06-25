@@ -11,6 +11,12 @@ public class MpiSubRunner implements Runner {
 
 	/** {@inheritDoc} */
 	@Override
+	public String getName() {
+		return MpiRunner.NAME;
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Config config)
 		throws ReflectiveOperationException {
 		NodeProcess process = pClass.newInstance();
