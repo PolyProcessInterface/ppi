@@ -1,16 +1,15 @@
-package org.sar.ppi;
+package org.sar.ppi.dispatch;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import org.sar.ppi.communication.Message;
-import org.sar.ppi.communication.MessageHandler;
-import org.sar.ppi.communication.MessageHandlerException;
+import org.sar.ppi.NodeProcess;
+import org.sar.ppi.events.Message;
 
-public class MessageDispatcher {
+public class Dispatcher {
 	protected Map<Class<? extends Message>, Method> handlers;
 
-	public MessageDispatcher(NodeProcess process) {
+	public Dispatcher(NodeProcess process) {
 		this.handlers = extractHandlers(process);
 	}
 
@@ -24,14 +23,14 @@ public class MessageDispatcher {
 			}
 			params = m.getParameterTypes();
 			if (params.length != 1) {
-				throw new MessageHandlerException(m.getName() + ": should have a single parameter");
+				throw new DispatcherException(m.getName() + ": should have a single parameter");
 			}
 			if (!Message.class.isAssignableFrom(params[0])) {
-				throw new MessageHandlerException(m.getName() + ": param must extend Message");
+				throw new DispatcherException(m.getName() + ": param must extend Message");
 			}
 			param = params[0].asSubclass(Message.class);
 			if (handlers.containsKey(param)) {
-				throw new MessageHandlerException("More than one handler for: " + param.getName());
+				throw new DispatcherException("More than one handler for: " + param.getName());
 			}
 			handlers.put(param, m);
 		}

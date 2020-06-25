@@ -5,7 +5,8 @@ import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.sar.ppi.communication.Message;
+import org.sar.ppi.dispatch.Dispatcher;
+import org.sar.ppi.events.Message;
 
 /**
  * Node Process Abstract class.
@@ -14,11 +15,11 @@ public abstract class NodeProcess {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	protected Infrastructure infra;
-	private MessageDispatcher dispatcher;
+	private Dispatcher dispatcher;
 	private AtomicBoolean deployed = new AtomicBoolean(true);
 
 	public NodeProcess() {
-		this.dispatcher = new MessageDispatcher(this);
+		this.dispatcher = new Dispatcher(this);
 	}
 
 	/**

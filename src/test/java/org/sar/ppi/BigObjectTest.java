@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assume;
 import org.junit.Test;
-import org.sar.ppi.communication.Message;
-import org.sar.ppi.communication.MessageHandler;
+import org.sar.ppi.dispatch.MessageHandler;
+import org.sar.ppi.events.Message;
 import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 

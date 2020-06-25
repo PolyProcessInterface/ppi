@@ -11,10 +11,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.sar.ppi.communication.Message;
 import org.sar.ppi.events.Call;
 import org.sar.ppi.events.Deploy;
 import org.sar.ppi.events.Event;
+import org.sar.ppi.events.Message;
 import org.sar.ppi.events.Undeploy;
 
 /**

@@ -25,8 +25,8 @@ This is the entry point of the [API](#api-reference).
 ```java
 // ExampleNodeProcess.java
 
-import org.sar.ppi.communication.Message;
-import org.sar.ppi.communication.MessageHandler;
+import org.sar.ppi.dispatch.MessageHandler;
+import org.sar.ppi.events.Message;
 import org.sar.ppi.NodeProcess;
 
 public class ExampleNodeProcess extends NodeProcess {
