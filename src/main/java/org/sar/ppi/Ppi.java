@@ -96,7 +96,7 @@ public class Ppi implements Callable<Integer> {
 
 	// Configure the ObjectMapper once
 	static {
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 	}
 
 	/**
@@ -112,10 +112,25 @@ public class Ppi implements Callable<Integer> {
 	}
 
 	/**
-	 * Process to execute after the CLI args parsing.
+	 * Function executed by picocli after the CLI args parsing.
 	 */
 	@Override
 	public Integer call() {
+		try {
+			main();
+		} catch (PpiException e) {
+			// Log known error quietly
+			LOGGER.fatal(e.getMessage());
+			return -2;
+		} catch (Throwable e) {
+			// Log unkown error with stack trace.
+			LOGGER.fatal("Unkown error occured", e);
+			return -1;
+		}
+		return 0;
+	}
+
+	protected void main() throws PpiException {
 		Class<? extends NodeProcess> processClass;
 		Runner runner;
 		try {
@@ -126,23 +141,19 @@ public class Ppi implements Callable<Integer> {
 				loader = new URLClassLoader(new URL[] { pwd.toURI().toURL() }, loader);
 				processClass = loader.loadClass(pClassName).asSubclass(NodeProcess.class);
 			} catch (ClassCastException | ClassNotFoundException | IOException t) {
-				return exitWithError(1, "Could not find the process class %s", pClassName);
+				throw new PpiException("Could not find the process class " + pClassName);
 			}
 		} catch (ClassCastException e) {
-			return exitWithError(2, "The class %s does not extend NodeProcess", pClassName);
+			throw new PpiException("The class " + pClassName + " does not extend NodeProcess");
 		}
 		try {
 			Class<? extends Runner> rClass = Class.forName(rClassName).asSubclass(Runner.class);
 			runner = rClass.newInstance();
 		} catch (ReflectiveOperationException e) {
-			return exitWithError(3, "Failed to intanciate the Runner %s", rClassName);
+			LOGGER.error(e);
+			throw new PpiException("Could not intanciate the Runner " + rClassName);
 		}
-		try {
-			main(processClass, runner, args, nbProcs, configOption.get());
-		} catch (PpiException e) {
-			return exitWithError(5, e.getMessage());
-		}
-		return 0;
+		main(processClass, runner, args, nbProcs, configOption.get());
 	}
 
 	/**
@@ -252,9 +263,10 @@ public class Ppi implements Callable<Integer> {
 			return mapper.readValue(json, Config.class);
 		} catch (IOException e) {
 			LOGGER.debug("escaped json: {}", json);
-			LOGGER.error(e.getMessage());
-			throw new PpiException("Invalid config json", e);
+			LOGGER.info(e.getMessage());
+			LOGGER.warn("Invalid config json, ignoring it");
 		}
+		return new Config();
 	}
 
 	private static Config parseConfig(File file) {
@@ -264,12 +276,9 @@ public class Ppi implements Callable<Integer> {
 		try {
 			return mapper.readValue(file, Config.class);
 		} catch (IOException e) {
-			throw new PpiException("Invalid config file", e);
+			LOGGER.info(e.getMessage());
+			LOGGER.warn("Invalid config file, ignoring it");
 		}
-	}
-
-	private int exitWithError(int code, String message, Object... params) {
-		System.err.printf(message + "\nuse --help for help\n", params);
-		return code;
+		return new Config();
 	}
 }
