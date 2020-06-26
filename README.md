@@ -149,12 +149,6 @@ If you installed the libraries in a different location you can use the options
 
     mvn package
 
-## Docs
-
-### Install latex
-
-    sudo apt install texlive latexmk texlive-lang-french cm-super
-
 [buildbadge]: https://github.com/PolyProcessInterface/ppi/workflows/build/badge.svg
 [buildurl]: https://github.com/PolyProcessInterface/ppi/actions?query=workflow%3Abuild+branch%3Amaster
 [javadocbadge]: https://img.shields.io/github/deployments/PolyProcessInterface/ppi/github-pages?label=javadoc
