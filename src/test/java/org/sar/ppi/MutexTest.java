@@ -1,6 +1,6 @@
 package org.sar.ppi;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import org.junit.Assume;
@@ -10,7 +10,7 @@ import org.sar.ppi.events.Message;
 import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 
-public class MutexTest extends NodeProcess {
+public class MutexTest extends RedirectedTest {
 	Integer father = 0;
 	Integer next = null;
 	boolean token = false;
@@ -62,7 +62,7 @@ public class MutexTest extends NodeProcess {
 
 	public void release() {
 		requesting = false;
-		System.out.printf("%d left critical section\n", infra.getId());
+		System.out.printf("%d Left critical section\n", infra.getId());
 		if (next != null) {
 			System.out.printf("%d Send token to %d\n", infra.getId(), next);
 			infra.send(new Token(infra.getId(), next));
@@ -150,7 +150,15 @@ public class MutexTest extends NodeProcess {
 			6,
 			new File("src/test/resources/MutexTest.json")
 		);
-		assertTrue(true);
+		String token;
+		for (int i = 0; i < 5; i++) {
+			token = getScanner().findWithinHorizon("[1-5] Requested critical section", 0);
+			assertNotNull(token);
+		}
+		for (int i = 0; i < 5; i++) {
+			token = getScanner().findWithinHorizon("[1-5] Had 2 critical sections", 0);
+			assertNotNull(token);
+		}
 	}
 
 	@Test
@@ -162,6 +170,37 @@ public class MutexTest extends NodeProcess {
 			6,
 			new File("src/test/resources/MutexTest.json")
 		);
-		assertTrue(true);
+		System.out.print(outContent.toString());
+		String token;
+		for (int j = 0; j < 2; j++) {
+			for (int i = 0; i < 5; i++) {
+				token = getScanner().findWithinHorizon("[1-5] Requested critical section", 0);
+				assertNotNull(token);
+			}
+			for (int i = 0; i < 5; i++) {
+				token = getScanner().findWithinHorizon("[1-5] Received token", 0);
+				assertNotNull(token);
+				int node = Integer.valueOf(token.substring(0, 1));
+				token = getScanner().findWithinHorizon(node + " Entered critical section", 0);
+				assertNotNull(token);
+				token = getScanner().findWithinHorizon(node + " Left critical section", 0);
+				assertNotNull(token);
+			}
+			for (int i = 0; i < 5; i++) {
+				token = getScanner().findWithinHorizon("[1-5] Requested critical section", 0);
+				assertNotNull(token);
+			}
+			for (int i = 0; i < 5; i++) {
+				token = getScanner().findWithinHorizon("[1-5] Received token", 0);
+				assertNotNull(token);
+				int node = Integer.valueOf(token.substring(0, 1));
+				token = getScanner().findWithinHorizon(node + " Entered critical section", 0);
+				assertNotNull(token);
+				token = getScanner().findWithinHorizon(node + " Left critical section", 0);
+				assertNotNull(token);
+				token = getScanner().findWithinHorizon(node + " Had 2 critical sections", 0);
+				assertNotNull(token);
+			}
+		}
 	}
 }
