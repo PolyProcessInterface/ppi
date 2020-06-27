@@ -93,17 +93,17 @@ which can be access via the `infra` property.
 ### CLI reference
 
 ```
-Usage: ppi [-s=<path> | -c=<json>] [-hV] [--np=<number>] <process-class>
+Usage: ppi [-c=<path> | -j=<content>] [-hV] [--np=<number>] <process-class>
            <runner-class> [<args>...]
-      <process-class>     Fully qualified name of the class to use as process
-      <runner-class>      Fully qualified name of the class to use as runner
-      [<args>...]         Args to pass to the processes
-  -c, --content=<json>    Content of the scenario
-  -h, --help              Display a help message
-      --np=<number>       Number of processus in the network
-                            Default: 4
-  -s, --scenario=<path>   Path to the scenario file
-  -V, --version           Print version info
+      <process-class>    Fully qualified name of the class to use as process
+      <runner-class>     Fully qualified name of the class to use as runner
+      [<args>...]        Args to pass to the processes
+  -c, --config=<path>    Path to the config file
+  -h, --help             Display a help message
+  -j, --json=<content>   Content of the config
+      --np=<number>      Number of processus in the network
+                           Default: 4
+  -V, --version          Print version info
 ```
 
 ## Requirement

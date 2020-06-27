@@ -7,11 +7,11 @@ import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.sar.ppi.Config;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Ppi;
 import org.sar.ppi.PpiException;
 import org.sar.ppi.Runner;
-import org.sar.ppi.events.Scenario;
 import org.sar.ppi.tools.PpiUtils;
 
 /**
@@ -19,23 +19,25 @@ import org.sar.ppi.tools.PpiUtils;
  */
 public class MpiRunner implements Runner {
 	private static final Logger LOGGER = LogManager.getLogger();
+	public static final String NAME = "mpi";
 
 	/** {@inheritDoc} */
 	@Override
-	public void run(
-		Class<? extends NodeProcess> pClass,
-		String[] args,
-		int nbProcs,
-		Scenario scenario
-	)
+	public String getName() {
+		return NAME;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Config config)
 		throws PpiException {
-		String scenarioJson;
+		String configJson;
 		String s = null;
 		boolean err = false;
 		try {
-			scenarioJson = Ppi.getMapper().writeValueAsString(scenario);
+			configJson = Ppi.getMapper().writeValueAsString(config);
 		} catch (JsonProcessingException e) {
-			throw new PpiException("Could not serialize this scenario", e);
+			throw new PpiException("Could not serialize this config", e);
 		}
 		String[] cmdline = new String[] {
 			"mpirun",
@@ -49,7 +51,7 @@ public class MpiRunner implements Runner {
 			pClass.getName(),
 			MpiSubRunner.class.getName(),
 			"--np=" + nbProcs,
-			"-c=" + scenarioJson
+			"-j=" + configJson
 		};
 		cmdline = PpiUtils.concatAll(String.class, cmdline, args);
 		LOGGER.debug("mpi cmdline: {}", String.join(" ", cmdline));
