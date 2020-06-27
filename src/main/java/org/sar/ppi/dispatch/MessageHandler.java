@@ -1,4 +1,4 @@
-package org.sar.ppi.communication;
+package org.sar.ppi.dispatch;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

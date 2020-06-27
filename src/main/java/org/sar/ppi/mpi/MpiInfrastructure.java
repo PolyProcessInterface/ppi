@@ -17,8 +17,8 @@ import org.sar.ppi.Config;
 import org.sar.ppi.Infrastructure;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.PpiException;
-import org.sar.ppi.communication.Message;
 import org.sar.ppi.events.Event;
+import org.sar.ppi.events.Message;
 import org.sar.ppi.events.ScheduledEvent;
 
 /**

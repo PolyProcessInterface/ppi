@@ -1,11 +1,11 @@
-package org.sar.ppi.communication;
+package org.sar.ppi.dispatch;
 
 import org.sar.ppi.PpiException;
 
 /**
  * MessageHandlerException.
  */
-public class MessageHandlerException extends PpiException {
+public class DispatcherException extends PpiException {
 	/**
 	 * Version
 	 */
@@ -14,7 +14,7 @@ public class MessageHandlerException extends PpiException {
 	/**
 	 * {@inheritDoc}
 	 */
-	public MessageHandlerException(String error) {
+	public DispatcherException(String error) {
 		super(error);
 	}
 }

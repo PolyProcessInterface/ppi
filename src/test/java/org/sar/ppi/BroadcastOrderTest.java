@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Scanner;
 import org.junit.Test;
-import org.sar.ppi.communication.Message;
-import org.sar.ppi.communication.MessageHandler;
+import org.sar.ppi.dispatch.MessageHandler;
+import org.sar.ppi.events.Message;
 import org.sar.ppi.peersim.PeerSimRunner;
 import peersim.config.Configuration;
 

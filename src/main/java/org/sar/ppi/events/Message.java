@@ -1,6 +1,4 @@
-package org.sar.ppi.communication;
-
-import org.sar.ppi.events.Event;
+package org.sar.ppi.events;
 
 /**
  * Abstract Message class.

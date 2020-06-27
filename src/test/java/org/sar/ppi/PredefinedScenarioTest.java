@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import org.junit.Assume;
 import org.junit.Test;
-import org.sar.ppi.communication.Message;
+import org.sar.ppi.events.Message;
 import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 
