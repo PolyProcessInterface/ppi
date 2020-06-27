@@ -196,7 +196,7 @@
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>
           <descriptors>
-            <descriptor>${basedir}/assembly.xml</descriptor>
+            <descriptor>${basedir}/src/main/assembly/bundle.xml</descriptor>
           </descriptors>
         </configuration>
         <executions>

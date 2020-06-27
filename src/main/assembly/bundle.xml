@@ -16,6 +16,18 @@
       <useProjectArtifact>true</useProjectArtifact>
       <unpack>true</unpack>
       <scope>runtime</scope>
+      <unpackOptions>
+        <excludes>
+          <exclude>META-INF/maven/**</exclude>
+          <exclude>META-INF/native-images/**</exclude>
+          <exclude>META-INF/org/**</exclude>
+          <exclude>META-INF/services/javax.annotation.processing.Processor</exclude>
+          <exclude>META-INF/versions/**</exclude>
+          <exclude>META-INF/*</exclude>
+          <exclude>Log4j-*</exclude>
+          <exclude>module-info.class</exclude>
+        </excludes>
+      </unpackOptions>
     </dependencySet>
     <dependencySet>
       <outputDirectory>/</outputDirectory>
