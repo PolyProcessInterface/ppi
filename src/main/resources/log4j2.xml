@@ -3,12 +3,12 @@
 	<Appenders>
 		<Appender type="Console" name="STDOUT">
 			<Layout type="PatternLayout">
-				<pattern>[%-5p] %m (%F:%L)%n</pattern>
+				<Pattern>[%highlight{%-5p}] %m (%F:%L)%n</Pattern>
 			</Layout>
 		</Appender>
 		<Appender type="File" name="LOGFILE" fileName="${project.build.directory}/ppi.log" immediateFlush="false">
 			<Layout type="PatternLayout">
-				<Pattern>%d [%-5p] %m (%F:%M:%L)%n</Pattern>
+				<Pattern>%d [%-5p] %m (%F:%L)%n</Pattern>
 			</Layout>
 		</Appender>
 	</Appenders>
