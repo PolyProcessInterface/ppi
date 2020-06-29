@@ -12,7 +12,8 @@
 /.factorypath
 /.project
 /.settings
-/.vscode
+/.vscode/*
+!.vscode/extensions.json
 /.idea
 /.pmdCache
 ppi.iml
