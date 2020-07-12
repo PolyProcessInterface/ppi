@@ -12,14 +12,19 @@ public abstract class RedirectedTest extends NodeProcess {
 	protected final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 	protected final PrintStream originalOut = System.out;
 	protected final PrintStream originalErr = System.err;
-	protected Scanner scanner = null;
+	private Scanner scanner = null;
 
-	public String nextNonEmpty() throws EOFException {
+	public Scanner getScanner() {
 		if (scanner == null) {
 			scanner = new Scanner(outContent.toString());
 		}
-		while (scanner.hasNextLine()) {
-			String line = scanner.nextLine();
+		return scanner;
+	}
+
+	public String nextNonEmpty() throws EOFException {
+		Scanner sc = getScanner();
+		while (sc.hasNextLine()) {
+			String line = sc.nextLine();
 			if (!line.isEmpty()) {
 				return line;
 			}
@@ -28,7 +33,7 @@ public abstract class RedirectedTest extends NodeProcess {
 	}
 
 	public boolean hasNextNonEmpty() {
-		return scanner.hasNext("[^\\s]");
+		return getScanner().hasNext("[^\\s]");
 	}
 
 	@Before

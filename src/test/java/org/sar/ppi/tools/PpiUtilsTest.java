@@ -1,11 +1,10 @@
-package org.sar.ppi;
+package org.sar.ppi.tools;
 
 import static org.junit.Assert.assertArrayEquals;
 
 import org.junit.Test;
-import org.sar.ppi.tools.PpiUtils;
 
-public class UtilsTest {
+public class PpiUtilsTest {
 
 	@Test
 	public void concatAllTestBasic() {
