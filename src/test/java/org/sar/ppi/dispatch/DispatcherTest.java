@@ -1,17 +1,14 @@
 package org.sar.ppi.dispatch;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import java.lang.reflect.Method;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.events.Message;
 
 public class DispatcherTest {
-	@Rule
-	public ExpectedException exceptionRule = ExpectedException.none();
 
 	public class TestMessage extends Message {
 		private static final long serialVersionUID = 1L;
@@ -40,9 +37,11 @@ public class DispatcherTest {
 
 	@Test
 	public void multipleParametersHandlerTest() {
-		exceptionRule.expect(DispatcherException.class);
-		exceptionRule.expectMessage("should have a single parameter");
-		new Dispatcher(new MultipleParametersHandler());
+		assertThrows(
+			"should have a single parameter",
+			DispatcherException.class,
+			() -> new Dispatcher(new MultipleParametersHandler())
+		);
 	}
 
 	public class NotMessage extends NodeProcess {
@@ -56,9 +55,11 @@ public class DispatcherTest {
 
 	@Test
 	public void notMessageTest() {
-		exceptionRule.expect(DispatcherException.class);
-		exceptionRule.expectMessage("param must extend Message");
-		new Dispatcher(new NotMessage());
+		assertThrows(
+			"param must extend Message",
+			DispatcherException.class,
+			() -> new Dispatcher(new NotMessage())
+		);
 	}
 
 	public class MultipleHandlers extends NodeProcess {
@@ -75,9 +76,11 @@ public class DispatcherTest {
 
 	@Test
 	public void multipleHandlersTest() {
-		exceptionRule.expect(DispatcherException.class);
-		exceptionRule.expectMessage("More than one handler for");
-		new Dispatcher(new MultipleHandlers());
+		assertThrows(
+			"More than one handler for",
+			DispatcherException.class,
+			() -> new Dispatcher(new MultipleHandlers())
+		);
 	}
 
 	public class Correct extends NodeProcess {
@@ -94,7 +97,6 @@ public class DispatcherTest {
 		Dispatcher d = new Dispatcher(new Correct());
 		Method m = d.methodFor(new TestMessage(0, 0));
 		assertEquals("existingMethod", m.getName());
-		exceptionRule.expect(NoSuchMethodException.class);
-		d.methodFor(new UnhandledMessage(0, 0));
+		assertThrows(NoSuchMethodException.class, () -> d.methodFor(new UnhandledMessage(0, 0)));
 	}
 }
