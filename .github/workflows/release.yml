@@ -62,6 +62,11 @@ jobs:
           asset_name: ppi.jar
           asset_content_type: application/java-archive
 
+      - name: Publish package
+        run: mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build Javadoc
         run: mvn javadoc:javadoc -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib --no-transfer-progress
 
