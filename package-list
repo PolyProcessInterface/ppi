@@ -1,5 +1,5 @@
 org.sar.ppi
-org.sar.ppi.communication
+org.sar.ppi.dispatch
 org.sar.ppi.events
 org.sar.ppi.mpi
 org.sar.ppi.peersim
