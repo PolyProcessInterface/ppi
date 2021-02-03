@@ -63,7 +63,7 @@ jobs:
           asset_content_type: application/java-archive
 
       - name: Publish package
-        run: mvn --batch-mode deploy
+        run: mvn --batch-mode deploy -Dmpi.path=$PWD/lib -Dpeersim.path=$PWD/lib
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
