@@ -67,8 +67,8 @@ Then you can compile your class and run it with the bundled jar which will
 dynamically load it:
 
 ```bash
-javac -cp ppi-0.2-dev-bundle.jar ExampleNodeProcess
-java -jar ppi-0.2-dev-bundle.jar ExampleNodeProcess org.sar.ppi.peersim.PeerSimRunner --np=4
+javac -cp ppi-bundle.jar ExampleNodeProcess.java
+java -jar ppi-bundle.jar ExampleNodeProcess org.sar.ppi.peersim.PeerSimRunner --np=4
 ```
 
 Alternatively you can call `Ppi.main()` yourself like this and then run your
@@ -81,8 +81,8 @@ public static void main(String[] args) {
 ```
 
 ```bash
-javac -cp ppi-0.2-dev-bundle.jar ExampleNodeProcess
-java -cp .:ppi-0.2-dev-bundle.jar ExampleNodeProcess
+javac -cp ppi-bundle.jar ExampleNodeProcess.java
+java -cp .:ppi-bundle.jar ExampleNodeProcess
 ```
 
 ### API reference
