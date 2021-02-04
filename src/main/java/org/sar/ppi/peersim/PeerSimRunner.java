@@ -1,16 +1,15 @@
 package org.sar.ppi.peersim;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.nio.file.Paths;
+import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.sar.ppi.Config;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Runner;
-import org.sar.ppi.tools.PpiUtils;
 import peersim.Simulator;
 
 /**
@@ -31,20 +30,21 @@ public class PeerSimRunner implements Runner {
 	public void run(Class<? extends NodeProcess> pClass, String[] args, int nbProcs, Config config)
 		throws ReflectiveOperationException {
 		String tmpdir = System.getProperty("java.io.tmpdir");
-		String tmpfile = Paths.get(tmpdir, "ppi-peersim.config").toString();
-		LOGGER.debug("peersim config file: '{}'", config.getInfraProp("configFile", ""));
-		try (
-			OutputStream os = new FileOutputStream(tmpfile);
-			PrintStream ps = new PrintStream(os)
-		) {
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			InputStream base;
-			base = loader.getResourceAsStream("peersimSimulate.base.conf");
-			assert base != null;
-			PpiUtils.transferTo(base, os);
-			ps.println();
-			ps.println("protocol.infra.nodeprocess " + pClass.getName());
-			ps.printf("network.size %d\n", nbProcs);
+		String tmpfile = Paths.get(tmpdir, "ppi-peersim.properties").toString();
+		String userconfig = config.getInfraProp("properties", "");
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		LOGGER.debug("peersim config file: '{}'", userconfig);
+		try (OutputStream os = new FileOutputStream(tmpfile);) {
+			Properties properties = new Properties();
+			properties.load(loader.getResourceAsStream("peersim.default.properties"));
+			if (!userconfig.isEmpty()) {
+				Properties overrides = new Properties();
+				overrides.load(new FileInputStream(userconfig));
+				properties.putAll(overrides);
+			}
+			properties.setProperty("protocol.infra.nodeprocess", pClass.getName());
+			properties.setProperty("network.size", String.valueOf(nbProcs));
+			properties.store(os, "tmp properties");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -13,5 +13,10 @@
 			"node": 0,
 			"delay": 1
 		}
-	]
+	],
+	"infra": {
+		"peersim": {
+			"properties": "src/test/resources/peersim.properties"
+		}
+	}
 }

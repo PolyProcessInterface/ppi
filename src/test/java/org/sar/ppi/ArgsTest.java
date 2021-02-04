@@ -56,6 +56,6 @@ public class ArgsTest extends RedirectedTest {
 				assertEquals("test", line);
 			}
 		}
-		assertEquals(4, i);
+		assertEquals(2, i);
 	}
 }
