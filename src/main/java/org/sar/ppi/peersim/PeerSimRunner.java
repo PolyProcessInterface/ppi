@@ -2,6 +2,8 @@ package org.sar.ppi.peersim;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -39,8 +41,12 @@ public class PeerSimRunner implements Runner {
 			properties.load(loader.getResourceAsStream("peersim.default.properties"));
 			if (!userconfig.isEmpty()) {
 				Properties overrides = new Properties();
-				overrides.load(new FileInputStream(userconfig));
-				properties.putAll(overrides);
+				try (InputStream is = new FileInputStream(userconfig)) {
+					overrides.load(is);
+					properties.putAll(overrides);
+				} catch (IOException e) {
+					LOGGER.warn("Invalid peersim properties file, ignoring it");
+				}
 			}
 			properties.setProperty("protocol.infra.nodeprocess", pClass.getName());
 			properties.setProperty("network.size", String.valueOf(nbProcs));
