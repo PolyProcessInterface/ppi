@@ -13,10 +13,5 @@
 			"delay": 1000000,
 			"function": "end"
 		}
-	],
-	"infra": {
-		"peersim": {
-			"configFile": "peersim.properties"
-		}
-	}
+	]
 }

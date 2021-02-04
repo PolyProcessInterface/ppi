@@ -28,5 +28,10 @@
 			"delay": 3000,
 			"function": "callMe"
 		}
-	]
+	],
+	"infra": {
+		"peersim": {
+			"properties": "src/test/resources/peersim.properties"
+		}
+	}
 }

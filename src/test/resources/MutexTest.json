@@ -62,5 +62,10 @@
 			"node": 5,
 			"delay": 5000
 		}
-	]
+	],
+	"infra": {
+		"peersim": {
+			"properties": "src/test/resources/peersim.properties"
+		}
+	}
 }
