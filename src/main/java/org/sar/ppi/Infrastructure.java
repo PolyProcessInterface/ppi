@@ -70,6 +70,32 @@ public abstract class Infrastructure {
 	public abstract int size();
 
 	/**
+	 * Get current time.
+	 *
+	 * The unit will depend on the infrastructure.
+	 *
+	 * @return current time.
+	 */
+	public abstract long currentTime();
+
+	/**
+	 * Schedule a call to trigger after a delay.
+	 */
+	public void scheduleCall(String function, Object[] args, int delay) {
+		Call call = new Call();
+		call.setNode(getId());
+		call.setFunction(function);
+		call.setArgs(args);
+		call.setDelay(delay);
+		scheduleCall(call);
+	}
+
+	/**
+	 * Internally schedule a call.
+	 */
+	protected abstract void scheduleCall(Call call);
+
+	/**
 	 * Deploy the current node so it can receive messages.
 	 */
 	protected void deploy() {
