@@ -4,13 +4,16 @@ import java.lang.reflect.InvocationTargetException;
 import org.sar.ppi.Infrastructure;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Ppi;
+import org.sar.ppi.events.Call;
 import org.sar.ppi.events.Event;
 import org.sar.ppi.events.Message;
 import peersim.config.Configuration;
+import peersim.core.CommonState;
 import peersim.core.Network;
 import peersim.core.Node;
 import peersim.dynamics.NodeInitializer;
 import peersim.edsim.EDProtocol;
+import peersim.edsim.EDSimulator;
 import peersim.transport.Transport;
 
 /**
@@ -128,6 +131,18 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol,
 	@Override
 	public void initialize(Node node) {
 		this.process.init(args.clone());
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long currentTime() {
+		return CommonState.getTime();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void scheduleCall(Call call) {
+		EDSimulator.add(call.getDelay(), call, Network.get(call.getNode()), protocolPid);
 	}
 
 	/** {@inheritDoc} */
