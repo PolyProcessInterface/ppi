@@ -16,8 +16,8 @@ import org.sar.ppi.peersim.PeerSimRunner;
 public class TimeoutTest extends RedirectedTest {
 	long before;
 	long after;
-	final boolean FALSE = false;
-	final long DELAY = 100;
+	static final boolean FALSE = false;
+	static final long DELAY = 100;
 
 	@Override
 	public void init(String[] args) {
