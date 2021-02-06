@@ -146,7 +146,7 @@ public abstract class Infrastructure {
 			Timeout timout = (Timeout) event;
 			for (Thread t : Thread.getAllStackTraces().keySet()) {
 				if (t.getId() == timout.getThreadId()) {
-					t.interrupt();
+					serialThreadWakeUp(t);
 				}
 			}
 		} else if (event instanceof Call) {
@@ -224,20 +224,26 @@ public abstract class Infrastructure {
 			for (BooleanSupplier condition : threads.keySet()) {
 				if (condition.getAsBoolean()) {
 					Thread thread = threads.get(condition);
-					nextThread = thread;
-					prevThreads.push(Thread.currentThread());
-					LOCK.notifyAll();
-					while (Thread.currentThread() != nextThread) {
-						try {
-							LOCK.wait();
-						} catch (InterruptedException e) {
-							Thread.currentThread().interrupt(); // preserve interruption status
-							return;
-						}
-					}
-					tryJoinThread(thread);
+					serialThreadWakeUp(thread);
 				}
 			}
+		}
+	}
+
+	protected void serialThreadWakeUp(Thread thread) {
+		synchronized (LOCK) {
+			nextThread = thread;
+			prevThreads.push(Thread.currentThread());
+			LOCK.notifyAll();
+			while (Thread.currentThread() != nextThread) {
+				try {
+					LOCK.wait();
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt(); // preserve interruption status
+					return;
+				}
+			}
+			tryJoinThread(thread);
 		}
 	}
 
@@ -298,14 +304,14 @@ public abstract class Infrastructure {
 						LOCK.wait();
 					} catch (InterruptedException e) {
 						threads.remove(condition);
-						if (hasTimeout && deadline <= currentTime()) {
-							return false;
-						}
 						throw new InterruptedException();
 					}
 				}
 				LOGGER.info("{} Stopped waiting", this.getId());
 				threads.remove(condition);
+				if (hasTimeout && deadline <= currentTime()) {
+					return false;
+				}
 			}
 		}
 		return true;

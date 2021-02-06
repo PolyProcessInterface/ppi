@@ -62,7 +62,6 @@ public class TimeoutTest extends RedirectedTest {
 			if (line.isEmpty()) {
 				continue;
 			}
-			originalOut.println(line);
 			i++;
 			Scanner sc = new Scanner(line);
 			long diff = sc.nextLong();
