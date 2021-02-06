@@ -167,8 +167,9 @@ public abstract class Infrastructure {
 	 * for it to end or to wait before continuing its process.
 	 *
 	 * @param method a {@link java.lang.Runnable} object.
+	 * @return the created thread;
 	 */
-	public void serialThreadRun(Runnable method) {
+	public Thread serialThreadRun(Runnable method) {
 		Thread t = new Thread(
 			() -> {
 				synchronized (LOCK) {
@@ -202,6 +203,7 @@ public abstract class Infrastructure {
 			tryJoinThread(t);
 			serialThreadScheduler();
 		}
+		return t;
 	}
 
 	/**
