@@ -16,6 +16,8 @@ import org.sar.ppi.events.Call;
 import org.sar.ppi.events.Deploy;
 import org.sar.ppi.events.Event;
 import org.sar.ppi.events.Message;
+import org.sar.ppi.events.ScheduledEvent;
+import org.sar.ppi.events.Timeout;
 import org.sar.ppi.events.Undeploy;
 
 /**
@@ -87,13 +89,13 @@ public abstract class Infrastructure {
 		call.setFunction(function);
 		call.setArgs(args);
 		call.setDelay(delay);
-		scheduleCall(call);
+		scheduleEvent(call);
 	}
 
 	/**
 	 * Internally schedule a call.
 	 */
-	protected abstract void scheduleCall(Call call);
+	protected abstract void scheduleEvent(ScheduledEvent event);
 
 	/**
 	 * Deploy the current node so it can receive messages.
@@ -140,6 +142,13 @@ public abstract class Infrastructure {
 			deploy();
 		} else if (event instanceof Undeploy) {
 			undeploy();
+		} else if (event instanceof Timeout) {
+			Timeout timout = (Timeout) event;
+			for (Thread t : Thread.getAllStackTraces().keySet()) {
+				if (t.getId() == timout.getThreadId()) {
+					t.interrupt();
+				}
+			}
 		} else if (event instanceof Call) {
 			Call call = (Call) event;
 			Method m;
@@ -250,12 +259,32 @@ public abstract class Infrastructure {
 
 	/**
 	 * Wait until the condition is true. This function can not be used in
-	 * {@link org.sar.ppi.NodeProcess#init(String[])}.
+	 * {@link org.sar.ppi.NodeProcess#init(String[])}, because it is not run in a serialThread yet.
 	 *
 	 * @param condition a lambda which returns a boolean.
 	 * @throws java.lang.InterruptedException if the process has been interrupted while waiting.
 	 */
 	public void wait(BooleanSupplier condition) throws InterruptedException {
+		waitFor(condition, 0);
+	}
+
+	/**
+	 * Wait until the condition is true or the timout is reached. This function can not be used in
+	 * {@link org.sar.ppi.NodeProcess#init(String[])}, because it is not run in a serialThread yet.
+	 *
+	 * @param condition a lambda which returns a boolean.
+	 * @param timout duration until the wait should abort. (ignored if <= 0)
+	 * @return true if the condition is fulfilled, false if it was aborted because of the timeout.
+	 * @throws java.lang.InterruptedException if the process has been interrupted while waiting.
+	 */
+	public boolean waitFor(BooleanSupplier condition, long timeout) throws InterruptedException {
+		if (timeout > 0) {
+			Timeout event = new Timeout();
+			event.setNode(getId());
+			event.setDelay(timeout);
+			event.setThreadId(Thread.currentThread().getId());
+			scheduleEvent(event);
+		}
 		synchronized (LOCK) {
 			if (!condition.getAsBoolean()) {
 				threads.put(condition, Thread.currentThread());
@@ -267,6 +296,9 @@ public abstract class Infrastructure {
 						LOCK.wait();
 					} catch (InterruptedException e) {
 						threads.remove(condition);
+						if (!condition.getAsBoolean() && timeout >= currentTime()) {
+							return false;
+						}
 						throw new InterruptedException();
 					}
 				}
@@ -274,5 +306,6 @@ public abstract class Infrastructure {
 				threads.remove(condition);
 			}
 		}
+		return true;
 	}
 }

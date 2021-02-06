@@ -52,6 +52,8 @@ public class WaitTest extends NodeProcess {
 			if (host == 2) {
 				helloN();
 			}
+		} else if (host == 0 && msgReceived == 2) {
+			infra.exit();
 		} else {
 			infra.send(new ExampleMessage(infra.getId(), dest, "hello"));
 			infra.exit();

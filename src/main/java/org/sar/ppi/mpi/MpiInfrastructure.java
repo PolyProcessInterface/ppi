@@ -17,7 +17,6 @@ import org.sar.ppi.Config;
 import org.sar.ppi.Infrastructure;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.PpiException;
-import org.sar.ppi.events.Call;
 import org.sar.ppi.events.Event;
 import org.sar.ppi.events.Message;
 import org.sar.ppi.events.ScheduledEvent;
@@ -169,12 +168,6 @@ public class MpiInfrastructure extends Infrastructure {
 		return System.currentTimeMillis();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void scheduleCall(Call call) {
-		scheduleEvent(call);
-	}
-
 	private void scheduleEvents(Config config) {
 		for (ScheduledEvent e : config.getEvents()) {
 			if (e.getNode() != getId()) {
@@ -184,7 +177,9 @@ public class MpiInfrastructure extends Infrastructure {
 		}
 	}
 
-	private void scheduleEvent(ScheduledEvent e) {
+	/** {@inheritDoc} */
+	@Override
+	protected void scheduleEvent(ScheduledEvent e) {
 		timer.schedule(new EventTimer(this, e), e.getDelay());
 	}
 
