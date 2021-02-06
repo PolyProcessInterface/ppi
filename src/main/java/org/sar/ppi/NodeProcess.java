@@ -52,6 +52,8 @@ public abstract class NodeProcess {
 
 	/**
 	 * Start init sequence for the current node.
+	 *
+	 * @param args arguments to pass to this node process.
 	 */
 	public abstract void init(String[] args);
 

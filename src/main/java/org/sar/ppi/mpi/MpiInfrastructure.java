@@ -38,6 +38,7 @@ public class MpiInfrastructure extends Infrastructure {
 	 * Constructor for MpiInfrastructure.
 	 *
 	 * @param process a {@link org.sar.ppi.NodeProcess} object.
+	 * @param config ppi config.
 	 */
 	public MpiInfrastructure(NodeProcess process, Config config) {
 		super(process);

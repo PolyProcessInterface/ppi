@@ -11,9 +11,6 @@ public class DispatcherException extends PpiException {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public DispatcherException(String error) {
 		super(error);
 	}
