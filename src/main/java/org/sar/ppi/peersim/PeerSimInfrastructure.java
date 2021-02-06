@@ -4,9 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import org.sar.ppi.Infrastructure;
 import org.sar.ppi.NodeProcess;
 import org.sar.ppi.Ppi;
-import org.sar.ppi.events.Call;
 import org.sar.ppi.events.Event;
 import org.sar.ppi.events.Message;
+import org.sar.ppi.events.ScheduledEvent;
 import peersim.config.Configuration;
 import peersim.core.CommonState;
 import peersim.core.Network;
@@ -141,8 +141,8 @@ public class PeerSimInfrastructure extends Infrastructure implements EDProtocol,
 
 	/** {@inheritDoc} */
 	@Override
-	protected void scheduleCall(Call call) {
-		EDSimulator.add(call.getDelay(), call, Network.get(call.getNode()), protocolPid);
+	protected void scheduleEvent(ScheduledEvent event) {
+		EDSimulator.add(event.getDelay(), event, Network.get(event.getNode()), protocolPid);
 	}
 
 	/** {@inheritDoc} */

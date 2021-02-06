@@ -9,7 +9,7 @@ public abstract class ScheduledEvent implements Event {
 	protected int node;
 
 	@JsonPropertyDescription("The delay before the event execution")
-	protected int delay;
+	protected long delay;
 
 	public void setNode(int node) {
 		this.node = node;
@@ -19,11 +19,11 @@ public abstract class ScheduledEvent implements Event {
 		return node;
 	}
 
-	public void setDelay(int delay) {
+	public void setDelay(long delay) {
 		this.delay = delay;
 	}
 
-	public int getDelay() {
+	public long getDelay() {
 		return delay;
 	}
 

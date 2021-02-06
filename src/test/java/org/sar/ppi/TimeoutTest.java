@@ -11,27 +11,33 @@ import org.sar.ppi.mpi.MpiRunner;
 import org.sar.ppi.peersim.PeerSimRunner;
 
 /**
- * ScheduleCallTest
+ * TimeoutTest
  */
-public class ScheduleCallTest extends RedirectedTest {
+public class TimeoutTest extends RedirectedTest {
 	long before;
 	long after;
+	final boolean FALSE = false;
+	final long DELAY = 100;
 
 	@Override
 	public void init(String[] args) {
 		if (infra.getId() == 0) {
-			Object[] callArgs = { new Integer(42), "test" };
-			before = infra.currentTime();
-			infra.scheduleCall("runTest", callArgs, 100);
+			infra.serialThreadRun(() -> runTest());
 		} else {
 			infra.exit();
 		}
 	}
 
-	public void runTest(Integer arg1, String arg2) {
-		after = infra.currentTime();
-		long diff = after - before;
-		System.out.printf("%d %d %s\n", diff, arg1, arg2);
+	public void runTest() {
+		before = infra.currentTime();
+		try {
+			boolean result = infra.waitFor(() -> FALSE == true, DELAY);
+			after = infra.currentTime();
+			long diff = after - before;
+			System.out.printf("%d %s\n", diff, result ? "true" : "false");
+		} catch (InterruptedException e) {
+			System.out.println("error");
+		}
 		infra.exit();
 	}
 
@@ -51,9 +57,7 @@ public class ScheduleCallTest extends RedirectedTest {
 	public void verify(OutputStream os) {
 		Scanner scanner = new Scanner(os.toString());
 		long diff = scanner.nextLong();
-		assertTrue(diff >= 100);
-		assertTrue(diff < 150);
-		assertEquals(42, scanner.nextInt());
-		assertEquals("test", scanner.next());
+		assertTrue(diff >= DELAY);
+		assertEquals("false", scanner.next());
 	}
 }
