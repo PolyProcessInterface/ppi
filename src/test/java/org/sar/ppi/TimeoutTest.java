@@ -56,8 +56,20 @@ public class TimeoutTest extends RedirectedTest {
 
 	public void verify(OutputStream os) {
 		Scanner scanner = new Scanner(os.toString());
-		long diff = scanner.nextLong();
-		assertTrue(diff >= DELAY);
-		assertEquals("false", scanner.next());
+		int i = 0;
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+			if (line.isEmpty()) {
+				continue;
+			}
+			originalOut.println(line);
+			i++;
+			Scanner sc = new Scanner(line);
+			long diff = sc.nextLong();
+			assertTrue(diff >= DELAY);
+			assertEquals("false", sc.next());
+			sc.close();
+		}
+		assertEquals(1, i);
 	}
 }

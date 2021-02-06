@@ -278,7 +278,9 @@ public abstract class Infrastructure {
 	 * @throws java.lang.InterruptedException if the process has been interrupted while waiting.
 	 */
 	public boolean waitFor(BooleanSupplier condition, long timeout) throws InterruptedException {
-		if (timeout > 0) {
+		long deadline = currentTime() + timeout;
+		boolean hasTimeout = timeout > 0;
+		if (hasTimeout) {
 			Timeout event = new Timeout();
 			event.setNode(getId());
 			event.setDelay(timeout);
@@ -296,7 +298,7 @@ public abstract class Infrastructure {
 						LOCK.wait();
 					} catch (InterruptedException e) {
 						threads.remove(condition);
-						if (!condition.getAsBoolean() && timeout >= currentTime()) {
+						if (hasTimeout && deadline <= currentTime()) {
 							return false;
 						}
 						throw new InterruptedException();
