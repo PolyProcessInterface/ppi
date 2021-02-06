@@ -31,8 +31,11 @@ public class PeerSimInit implements Control {
 	@Override
 	public boolean execute() {
 		long seed = Configuration.getLong(PAR_SEED, System.currentTimeMillis());
-		System.err.println("SETTING THE RANDOM.SEED TO " + seed);
-		CommonState.r = new ExtendedRandom(seed);
+		boolean seedKeep = Configuration.contains(PAR_SEED + ".keep");
+		if (seedKeep) {
+			System.err.println("SETTING THE RANDOM.SEED TO " + seed);
+			CommonState.r = new ExtendedRandom(seed);
+		}
 		for (int i = 0; i < Network.size(); i++) {
 			Node node = Network.get(i);
 			PeerSimInfrastructure pInfra = (PeerSimInfrastructure) node.getProtocol(infraPid);
