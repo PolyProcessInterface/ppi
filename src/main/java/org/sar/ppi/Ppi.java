@@ -264,7 +264,7 @@ public class Ppi implements Callable<Integer> {
 		} catch (IOException e) {
 			LOGGER.debug("escaped json: {}", json);
 			LOGGER.info(e.getMessage());
-			LOGGER.warn("Invalid config json, ignoring it");
+			LOGGER.warn("Invalid ppi config json, ignoring it");
 		}
 		return new Config();
 	}
@@ -277,7 +277,7 @@ public class Ppi implements Callable<Integer> {
 			return mapper.readValue(file, Config.class);
 		} catch (IOException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.warn("Invalid config file, ignoring it");
+			LOGGER.warn("Invalid ppi config file '{}', ignoring it", file.getPath());
 		}
 		return new Config();
 	}

@@ -45,7 +45,7 @@ public class PeerSimRunner implements Runner {
 					overrides.load(is);
 					properties.putAll(overrides);
 				} catch (IOException e) {
-					LOGGER.warn("Invalid peersim properties file, ignoring it");
+					LOGGER.warn("Invalid peersim properties file '{}', ignoring it", userconfig);
 				}
 			}
 			properties.setProperty("protocol.infra.nodeprocess", pClass.getName());
