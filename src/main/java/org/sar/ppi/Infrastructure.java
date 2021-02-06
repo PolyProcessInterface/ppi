@@ -82,6 +82,10 @@ public abstract class Infrastructure {
 
 	/**
 	 * Schedule a call to trigger after a delay.
+	 *
+	 * @param function name of the function to call.
+	 * @param args arguments to pass to the function.
+	 * @param delay time to wait before calling the function.
 	 */
 	public void scheduleCall(String function, Object[] args, int delay) {
 		Call call = new Call();
@@ -116,9 +120,9 @@ public abstract class Infrastructure {
 	}
 
 	/**
+	 * Get the process current process.
 	 *
-	 * @return
-	 * the current process linked to this infra
+	 * @return the current process linked to this infra
 	 */
 	public NodeProcess getProcess() {
 		return process;
@@ -129,7 +133,7 @@ public abstract class Infrastructure {
 	 *
 	 * Infrastructure implementations should call this method for each
 	 * event to process.
-	 * @param event
+	 * @param event the event to process.
 	 */
 	protected void processEvent(Event event) {
 		if (event instanceof Message) {
@@ -279,7 +283,7 @@ public abstract class Infrastructure {
 	 * {@link org.sar.ppi.NodeProcess#init(String[])}, because it is not run in a serialThread yet.
 	 *
 	 * @param condition a lambda which returns a boolean.
-	 * @param timout duration until the wait should abort. (ignored if <= 0)
+	 * @param timeout duration until the wait should abort. (ignored if inferior or equals to 0)
 	 * @return true if the condition is fulfilled, false if it was aborted because of the timeout.
 	 * @throws java.lang.InterruptedException if the process has been interrupted while waiting.
 	 */
